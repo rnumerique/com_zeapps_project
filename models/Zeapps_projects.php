@@ -43,7 +43,7 @@ class Zeapps_projects extends ZeModel {
         }
     }
 
-    public function insert($data = null){
+    public function insert($data = array()){
         if(isset($data['id_parent']) && $data['id_parent'] > 0){
             if($parent = $this->get($data['id_parent'])){
                 $data['spaces'] = intval($parent->spaces) + 1;
@@ -56,7 +56,7 @@ class Zeapps_projects extends ZeModel {
         return parent::insert($data);
     }
 
-    public function update($data = NULL, $where = NULL){
+    public function update($data = array(), $where = array()){
         if(isset($data['id_parent']) && $data['id_parent'] > 0){
             if($parent = $this->get($data['id_parent'])){
                 $data['spaces'] = intval($parent->spaces) + 1;

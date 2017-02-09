@@ -1,7 +1,7 @@
 <?php
 class Zeapps_project_sprints extends ZeModel {
 
-    public function update($data = NULL, $where = NULL){
+    public function update($data = array(), $where = array()){
 
         if(!isset($data['title']) || $data['title'] === ''){
             $data['title'] = 'Sprint n°' . $data['numerotation'];
@@ -10,7 +10,7 @@ class Zeapps_project_sprints extends ZeModel {
         return parent::update($data, $where);
     }
 
-    public function insert($data = NULL){
+    public function insert($data = array()){
 
         if($last = $this->database()->select('numerotation')->order_by('numerotation', 'DESC')->limit(1)->where(array('id_project'=>$data['id_project']))->table('zeapps_project_sprints')->result())
             $data['numerotation'] = intval($last[0]->numerotation) + 1;
