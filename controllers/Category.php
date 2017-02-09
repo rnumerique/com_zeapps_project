@@ -9,7 +9,7 @@ class Category extends ZeCtrl
 
 
     public function get_categories($id_project = 0){
-        $this->load->model("zeapps_project_categories", "categories");
+        $this->load->model("Zeapps_project_categories", "categories");
 
         $where = array('id_project' => $id_project);
 
@@ -19,7 +19,7 @@ class Category extends ZeCtrl
     }
 
     public function get_category($id){
-        $this->load->model("zeapps_project_categories", "categories");
+        $this->load->model("Zeapps_project_categories", "categories");
 
         $category = $this->categories->get($id);
 
@@ -27,7 +27,7 @@ class Category extends ZeCtrl
     }
 
     public function save_category(){
-        $this->load->model("zeapps_project_categories", "categories");
+        $this->load->model("Zeapps_project_categories", "categories");
 
         // constitution du tableau
         $data = array() ;
@@ -49,9 +49,9 @@ class Category extends ZeCtrl
     }
 
     public function delete_category($id = null){
-        $this->load->model("zeapps_project_categories", "categories");
-        $this->load->model("zeapps_project_cards", "cards");
-        $this->load->model("zeapps_project_deadlines", "deadlines");
+        $this->load->model("Zeapps_project_categories", "categories");
+        $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_deadlines", "deadlines");
 
         if($id){
             $this->categories->delete(array('id' => $id));

@@ -27,7 +27,7 @@ class Sprint extends ZeCtrl
 
 
     public function get_sprint($id){
-        $this->load->model("zeapps_project_sprints", "sprints");
+        $this->load->model("Zeapps_project_sprints", "sprints");
 
         $sprint = $this->sprints->get($id);
 
@@ -35,7 +35,7 @@ class Sprint extends ZeCtrl
     }
 
     public function get_sprints($id_project = null){
-        $this->load->model("zeapps_project_sprints", "sprints");
+        $this->load->model("Zeapps_project_sprints", "sprints");
 
         if($id_project)
             $where = array('id_project' => $id_project);
@@ -48,7 +48,7 @@ class Sprint extends ZeCtrl
     }
 
     public function save_sprint(){
-        $this->load->model("zeapps_project_sprints", "sprints");
+        $this->load->model("Zeapps_project_sprints", "sprints");
 
         // constitution du tableau
         $data = array() ;
@@ -70,8 +70,8 @@ class Sprint extends ZeCtrl
     }
 
     public function delete_sprint($id = null){
-        $this->load->model("zeapps_project_sprints", "sprints");
-        $this->load->model("zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_sprints", "sprints");
+        $this->load->model("Zeapps_project_cards", "cards");
 
         $this->sprints->delete($id);
 
@@ -81,7 +81,7 @@ class Sprint extends ZeCtrl
     }
 
     public function updateCardsOf($id){
-        $this->load->model("zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_cards", "cards");
 
         // constitution du tableau
         $data = array() ;
@@ -99,9 +99,9 @@ class Sprint extends ZeCtrl
 
 
     public function get_filters(){
-        $this->load->model("zeapps_projects", "projects");
-        $this->load->model("zeapps_project_cards", "cards");
-        $this->load->model("zeapps_project_deadlines", "deadlines");
+        $this->load->model("Zeapps_projects", "projects");
+        $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_deadlines", "deadlines");
 
         $companies = $this->projects->get_companies();
         $managers = $this->projects->get_managers();

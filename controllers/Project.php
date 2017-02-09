@@ -34,8 +34,8 @@ class Project extends ZeCtrl
 
 
     public function get_filters(){
-        $this->load->model("zeapps_project_cards", "cards");
-        $this->load->model("zeapps_project_deadlines", "deadlines");
+        $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_deadlines", "deadlines");
 
         $dates_tmp = $this->cards->get_dates();
         $dates_merged = array_merge($dates_tmp, $this->deadlines->get_dates());
@@ -51,7 +51,7 @@ class Project extends ZeCtrl
     }
 
     public function get_project($id = 0){
-        $this->load->model("zeapps_projects", "projects");
+        $this->load->model("Zeapps_projects", "projects");
 
         $project = $this->projects->get($id);
 
@@ -59,7 +59,7 @@ class Project extends ZeCtrl
     }
 
     public function get_projects($id_parent = 0, $spaces = 'false', $filter = 'false'){
-        $this->load->model("zeapps_projects", "projects");
+        $this->load->model("Zeapps_projects", "projects");
 
         if($id_parent)
             $where = array('id_parent' => $id_parent);
@@ -72,7 +72,7 @@ class Project extends ZeCtrl
     }
 
     public function get_childs($id){
-        $this->load->model("zeapps_projects", "projects");
+        $this->load->model("Zeapps_projects", "projects");
 
         $childs = $this->_getChildsOf($id);
 
@@ -80,7 +80,7 @@ class Project extends ZeCtrl
     }
 
     public function get_projects_tree(){
-        $this->load->model("zeapps_projects", "projects");
+        $this->load->model("Zeapps_projects", "projects");
 
         $projects = $this->projects->all();
 
@@ -93,7 +93,7 @@ class Project extends ZeCtrl
     }
 
     public function save_project(){
-        $this->load->model("zeapps_projects", "projects");
+        $this->load->model("Zeapps_projects", "projects");
 
         // constitution du tableau
         $data = array() ;
@@ -115,9 +115,9 @@ class Project extends ZeCtrl
     }
 
     public function delete_project($id = null, $force = 'false'){
-        $this->load->model("zeapps_projects", "projects");
-        $this->load->model("zeapps_project_deadlines", "deadlines");
-        $this->load->model("zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_projects", "projects");
+        $this->load->model("Zeapps_project_deadlines", "deadlines");
+        $this->load->model("Zeapps_project_cards", "cards");
 
         if($force == 'false'){
             if($this->projects->all(array('id_parent' => $id)) || $this->deadlines->all(array('id_project' => $id)) || $this->cards->all(array('id_project' => $id))){

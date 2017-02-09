@@ -14,7 +14,7 @@ class Card extends ZeCtrl
 
 
     public function get_cards($id = 0){
-        $this->load->model("zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_cards", "cards");
 
         if($id)
             $where = array('id_project' => $id);
@@ -27,7 +27,7 @@ class Card extends ZeCtrl
     }
 
     public function get_card($id){
-        $this->load->model("zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_cards", "cards");
 
         $cards = $this->cards->get($id);
 
@@ -35,7 +35,7 @@ class Card extends ZeCtrl
     }
 
     public function save_card(){
-        $this->load->model("zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_cards", "cards");
 
         // constitution du tableau
         $data = array() ;
@@ -56,7 +56,7 @@ class Card extends ZeCtrl
     }
 
     public function validate_idea($id){
-        $this->load->model("zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_cards", "cards");
 
         $this->cards->update(array('step' => 1), $id);
 
@@ -67,12 +67,12 @@ class Card extends ZeCtrl
 
         if($id){
             if($deadline == 'true'){
-                $this->load->model("zeapps_project_deadlines", "deadlines");
+                $this->load->model("Zeapps_project_deadlines", "deadlines");
 
                 $this->deadlines->update(array('completed' => 'Y'), $id);
             }
             else{
-                $this->load->model("zeapps_project_cards", "cards");
+                $this->load->model("Zeapps_project_cards", "cards");
 
                 $this->cards->update(array('completed' => 'Y'), $id);
             }
@@ -85,12 +85,12 @@ class Card extends ZeCtrl
 
         if($id){
             if($deadline == 'true'){
-                $this->load->model("zeapps_project_deadlines", "deadlines");
+                $this->load->model("Zeapps_project_deadlines", "deadlines");
 
                 $this->deadlines->delete(array('id' => $id));
             }
             else{
-                $this->load->model("zeapps_project_cards", "cards");
+                $this->load->model("Zeapps_project_cards", "cards");
 
                 $this->cards->delete(array('id' => $id));
             }
