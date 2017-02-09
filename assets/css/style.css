@@ -1,0 +1,90 @@
+.sprints{
+    margin-bottom: 1em;
+    background: #333;
+    padding-bottom: .5em;
+    box-sizing: border-box;
+    overflow: auto;
+}
+.sprints_project{
+    padding: 0 10px;
+    line-height: 2em;
+    color: #fff;
+}
+
+.sprint,
+.sprint_separator{
+    float: left;
+}
+.sprint{
+    background: #ccc;
+    border-radius: 5px;
+    margin: .25em .75em;
+    width: 12em;
+}
+.sprint.active{
+    background: #fff;
+}
+.sprint_separator{
+    margin-top: 2.75em;
+    color: #ccc;
+}
+.sprint_content{
+    margin: 1em;
+}
+
+.scrum{
+    padding-bottom: 1em;
+    background: #333;
+}
+.scrum_step,
+.scrum_category{
+    color: #fff;
+}
+
+.scrum_step{
+    width: 25%;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.scrum_category{
+    overflow: hidden;
+    vertical-align: middle;
+}
+.scrum_category_inner{
+    display: inline-block;
+
+    padding-top: 100%;
+
+    -ms-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+.scrum_category_inner:after{
+    content: "";
+    float: left;
+    margin-top: 100%;
+}
+
+.scrum_card{
+    background: #ccc;
+    border-radius: 5px;
+    color: initial;
+    margin: .5em 0;
+    padding: 8px 10px;
+}
+
+.scrum.table{
+    display: table;
+    border-collapse: collapse;
+}
+
+.scrum .table-row{
+    display: table-row;
+    border-bottom: 1px solid #fff;
+}
+
+.scrum .table-cell{
+    display: table-cell;
+    border-right: 1px solid #fff;
+}
