@@ -1,22 +1,15 @@
 <?php
 class Zeapps_projects extends ZeModel {
 
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->soft_deletes = TRUE;
-    }
-
     public function get_companies(){
-        return $this->_database->select('id_company, name_company')->group_by('id_company')->get('zeapps_projects')->result();
+        return $this->database()->select('id_company, name_company')->group_by('id_company')->table('zeapps_projects')->result();
     }
 
     public function get_managers(){
-        return $this->_database->select('id_manager, name_manager')->group_by('id_manager')->get('zeapps_projects')->result();
+        return $this->database()->select('id_manager, name_manager')->group_by('id_manager')->table('zeapps_projects')->result();
     }
 
-    public function get_all($where = null, $spaces = 'false', $filter = 'false'){
+    public function all($where = array(), $spaces = 'false', $filter = 'false'){
 
         if(isset($where['id_parent']))
             $id = $where['id_parent'];
@@ -28,7 +21,7 @@ class Zeapps_projects extends ZeModel {
             $haystack[] = $filter;
         }
 
-        if($ret = parent::get_all($where)) {
+        if($ret = parent::all($where)) {
             $ret = $this->_parentChild_sort($ret, $id);
             foreach ($ret as $row) {
                 if ($filter !== 'false') {
@@ -63,7 +56,7 @@ class Zeapps_projects extends ZeModel {
         return parent::insert($data);
     }
 
-    public function update($data = NULL, $column_name_where = NULL, $escape = TRUE){
+    public function update($data = NULL, $where = NULL){
         if(isset($data['id_parent']) && $data['id_parent'] > 0){
             if($parent = $this->get($data['id_parent'])){
                 $data['spaces'] = intval($parent->spaces) + 1;
@@ -75,15 +68,15 @@ class Zeapps_projects extends ZeModel {
 
         $this->_updateChildsBreadcrumbsOf($data['id'], $data['breadcrumbs']);
 
-        return parent::update($data, $column_name_where, $escape);
+        return parent::update($data, $where);
     }
 
     // where is a primary key for delete
-    public function delete($where = null){
+    public function delete($arrData, $forceDelete = false){
         $this->load->model("zeapps_project_deadlines", "deadlines");
         $this->load->model("zeapps_project_cards", "cards");
 
-        $subs = $this->get_all(array('id_parent' => $where));
+        $subs = $this->all(array('id_parent' => $arrData), $forceDelete);
 
         if($subs) {
             foreach ($subs as $sub) {
@@ -93,8 +86,8 @@ class Zeapps_projects extends ZeModel {
 
         $now = time();
 
-        $this->deadlines->update(array('deleted_at' => $now), array('id_project' => $where));
-        $this->cards->update(array('deleted_at' => $now), array('id_project' => $where));
+        $this->deadlines->delete(array('id_project' => $where));
+        $this->cards->delete(array('id_project' => $where));
 
         return parent::delete($where);
     }
@@ -133,7 +126,7 @@ class Zeapps_projects extends ZeModel {
     }
 
     private function _updateChildsBreadcrumbsOf($id, $breadcrumbs){
-        if($projects = parent::get_all(array('id_parent' => $id))){
+        if($projects = parent::all(array('id_parent' => $id))){
             foreach($projects as $project){
                 $project->breadcrumbs = $breadcrumbs . ' : ' . $project->title;
                 parent::update($project, $project->id);

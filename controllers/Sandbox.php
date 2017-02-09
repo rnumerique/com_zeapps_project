@@ -18,7 +18,7 @@ class Sandbox extends ZeCtrl
 
         $where = array('step' => 0);
 
-        $sandboxes = $this->cards->get_all($where);
+        $sandboxes = $this->cards->all($where);
 
         echo json_encode($sandboxes);
     }

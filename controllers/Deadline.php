@@ -11,9 +11,9 @@ class Deadline extends ZeCtrl
         if($id)
             $where = array('id_project' => $id);
         else
-            $where = '';
+            $where = array();
 
-        $deadlines = $this->deadlines->get_all($where);
+        $deadlines = $this->deadlines->all($where);
 
         echo json_encode($deadlines);
     }

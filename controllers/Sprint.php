@@ -40,9 +40,9 @@ class Sprint extends ZeCtrl
         if($id_project)
             $where = array('id_project' => $id_project);
         else
-            $where = '';
+            $where = array();
 
-        $sprints = $this->sprints->order_by('completed', 'ASC')->order_by('active', 'ASC')->get_all($where);
+        $sprints = $this->sprints->order_by('completed', 'ASC')->order_by('active', 'ASC')->all($where);
 
         echo json_encode($sprints);
     }

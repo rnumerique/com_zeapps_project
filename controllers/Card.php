@@ -17,11 +17,11 @@ class Card extends ZeCtrl
         $this->load->model("zeapps_project_cards", "cards");
 
         if($id)
-            $where = array('zeapps_project_cards.id_project' => $id);
+            $where = array('id_project' => $id);
         else
-            $where = '';
+            $where = array();
 
-        $cards = $this->cards->get_all($where);
+        $cards = $this->cards->all($where);
 
         echo json_encode($cards);
     }
@@ -46,7 +46,7 @@ class Card extends ZeCtrl
         }
 
         if(isset($data['id'])){
-            $id = $this->cards->update($data, $data['id']);
+            $id = $this->cards->update($data, array('id'=>$data['id']));
         }
         else{
             $id = $this->cards->insert($data);

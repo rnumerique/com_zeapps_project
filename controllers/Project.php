@@ -64,9 +64,9 @@ class Project extends ZeCtrl
         if($id_parent)
             $where = array('id_parent' => $id_parent);
         else
-            $where = '';
+            $where = array();
 
-        $projects = $this->projects->get_all($where, $spaces, $filter);
+        $projects = $this->projects->all($where, $spaces, $filter);
 
         echo json_encode($projects);
     }
@@ -82,7 +82,7 @@ class Project extends ZeCtrl
     public function get_projects_tree(){
         $this->load->model("zeapps_projects", "projects");
 
-        $projects = $this->projects->get_all();
+        $projects = $this->projects->all();
 
         if ($projects == false) {
             echo json_encode(array());
@@ -120,7 +120,7 @@ class Project extends ZeCtrl
         $this->load->model("zeapps_project_cards", "cards");
 
         if($force == 'false'){
-            if($this->projects->get_all(array('id_parent' => $id)) || $this->deadlines->get_all(array('id_project' => $id)) || $this->cards->get_all(array('id_project' => $id))){
+            if($this->projects->all(array('id_parent' => $id)) || $this->deadlines->all(array('id_project' => $id)) || $this->cards->all(array('id_project' => $id))){
                 echo json_encode(array('hasDependencies' => true));
                 return;
             }
@@ -154,7 +154,7 @@ class Project extends ZeCtrl
 
         $arr = [];
 
-        if($childs = $this->projects->get_all(array('id_parent' => $id))){
+        if($childs = $this->projects->all(array('id_parent' => $id))){
             foreach($childs as $child){
                 $arr[] = $child;
                 $ret = $this->_getChildsOf($child->id);

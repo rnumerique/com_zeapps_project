@@ -13,7 +13,7 @@ class Category extends ZeCtrl
 
         $where = array('id_project' => $id_project);
 
-        $categories = $this->categories->get_all($where);
+        $categories = $this->categories->all($where);
 
         echo json_encode($categories);
     }
