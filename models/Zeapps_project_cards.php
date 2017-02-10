@@ -1,8 +1,7 @@
 <?php
 class Zeapps_project_cards extends ZeModel {
 
-    public function get_all($where = array()){
-        $where['zeapps_project_cards.deleted_at'] = null;
+    public function all($where = array()){
         return $this->database()->select('*, 
                                         zeapps_project_cards.id as id, 
                                         zeapps_project_cards.description as description, 

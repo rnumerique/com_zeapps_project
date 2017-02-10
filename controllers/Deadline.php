@@ -6,7 +6,7 @@ class Deadline extends ZeCtrl
 
 
     public function get_deadlines($id = 0){
-        $this->load->model("zeapps_project_deadlines", "deadlines");
+        $this->load->model("Zeapps_project_deadlines", "deadlines");
 
         if($id)
             $where = array('id_project' => $id);
@@ -19,7 +19,7 @@ class Deadline extends ZeCtrl
     }
 
     public function get_deadline($id){
-        $this->load->model("zeapps_project_deadlines", "deadlines");
+        $this->load->model("Zeapps_project_deadlines", "deadlines");
 
         $deadlines = $this->deadlines->get($id);
 
@@ -27,7 +27,7 @@ class Deadline extends ZeCtrl
     }
 
     public function save_deadline(){
-        $this->load->model("zeapps_project_deadlines", "deadlines");
+        $this->load->model("Zeapps_project_deadlines", "deadlines");
 
         // constitution du tableau
         $data = array() ;

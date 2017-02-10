@@ -14,9 +14,9 @@ class Planning extends ZeCtrl
 
 
     public function get_filters(){
-        $this->load->model("zeapps_projects", "projects");
-        $this->load->model("zeapps_project_cards", "cards");
-        $this->load->model("zeapps_project_deadlines", "deadlines");
+        $this->load->model("Zeapps_projects", "projects");
+        $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_deadlines", "deadlines");
 
         $companies = $this->projects->get_companies();
         $managers = $this->projects->get_managers();

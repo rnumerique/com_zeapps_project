@@ -71,12 +71,11 @@ class Zeapps_projects extends ZeModel {
         return parent::update($data, $where);
     }
 
-    // where is a primary key for delete
-    public function delete($arrData, $forceDelete = false){
+    public function delete($where, $forceDelete = false){
         $this->load->model("zeapps_project_deadlines", "deadlines");
         $this->load->model("zeapps_project_cards", "cards");
 
-        $subs = $this->all(array('id_parent' => $arrData), $forceDelete);
+        $subs = $this->all(array('id_parent' => $where), $forceDelete);
 
         if($subs) {
             foreach ($subs as $sub) {

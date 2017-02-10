@@ -53,6 +53,7 @@
 }
 .scrum_category_inner{
     display: inline-block;
+    min-height: 70px;
 
     padding-top: 100%;
 

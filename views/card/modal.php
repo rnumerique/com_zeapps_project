@@ -5,9 +5,12 @@
 
 <div class="modal-body table">
     <div class="row table-row">
-        <div class="table_cell scrum_card pointer" ng-repeat="card in cards | cardmodalFilter:option" ng-click="add(card)">
+        <div class="table_cell scrum_card pointer" ng-repeat="card in cards | cardmodalFilter:option" ng-click="toggle(card)">
             <i class="fa fa-fw" ng-class="isSelected(card) ? 'text-success fa-check' : 'fa-circle-o'"></i>
-            {{ card.title }}
+            <b>{{ card.title }}</b>
+            <div>
+                {{ card.description }}
+            </div>
         </div>
     </div>
 </div>
