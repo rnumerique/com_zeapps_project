@@ -33,10 +33,12 @@ app.controller('ZeAppsProjectsModalCardCtrl', function($scope, $uibModalInstance
     };
     loadList() ;
 
-    $scope.add = function(card){
+    $scope.toggle = function(card){
         var i = $scope.selectedCards.indexOf(card.id);
         if(i === -1)
-            $scope.selectedCards.push(card.id)
+            $scope.selectedCards.push(card.id);
+        else
+            $scope.selectedCards.splice(i, 1);
     };
 
     $scope.isSelected = function(card){

@@ -77,19 +77,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </div>
     <div class="row">
         <div class="col-md-12">
-            <table class="table table-stripped">
+            <table class="table table-stripped table-condensed">
                 <thead>
                 <tr>
-                    <th class="col-xs-3">Idée</th>
-                    <th class="col-xs-7">Description</th>
-                    <th class="col-xs-1">Auteur</th>
-                    <th class="col-xs-1"></th>
+                    <th>Idée</th>
+                    <th>Description</th>
+                    <th>Auteur</th>
+                    <th></th>
                 </tr>
                 </thead>
-            </table>
-            <table class="table table-condensed table-stripped" ng-repeat="project in projects" ng-if="(cardsByProject[project.id] | backlogFilter:options).length > 0">
-                <thead>
-                <tr class="info">
+                <tbody>
+                <tr class="info" ng-repeat-start="project in projects" ng-if="(cardsByProject[project.id] | backlogFilter:options).length > 0">
                     <th colspan="4">
                         {{ project.breadcrumbs }}{{ project.name_company ? ' (' + project.name_company + ')' : '' }}
                         <a class="pull-right text-success pointer" ng-href="/ng/com_zeapps_project/backlog/new/{{project.id}}">
@@ -98,13 +96,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </a>
                     </th>
                 </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="card in cardsByProject[project.id] | backlogFilter:options | orderBy:['title']">
-                    <td class="col-xs-3"><i class="fa fa-lg fa-check text-success" ng-if="task.completed === 'Y'"></i> {{ card.title }}</td>
-                    <td class="col-xs-7" ng-class="'text-' + compareDates(task.due_date)">{{ card.description }}</td>
-                    <td class="col-xs-1">{{ card.name_author }}</td>
-                    <td class="col-xs-1 text-right">
+                <tr ng-repeat-end ng-repeat="card in cardsByProject[project.id] | backlogFilter:options | orderBy:['title']">
+                    <td><i class="fa fa-lg fa-check text-success" ng-if="task.completed === 'Y'"></i> {{ card.title }}</td>
+                    <td ng-class="'text-' + compareDates(task.due_date)">{{ card.description }}</td>
+                    <td>{{ card.name_author }}</td>
+                    <td class="text-right no-wrap">
                         <button type="button" class="btn btn-info btn-xs" ng-click="edit(card)">
                             <i class="fa fa-pencil" ></i>
                         </button>

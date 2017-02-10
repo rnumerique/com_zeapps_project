@@ -6,7 +6,8 @@ app.controller('ComZeappsSprintFormCardCtrl', ['$scope', '$route', '$routeParams
         $scope.$on('triggerFormCard', function(){
             $scope.$broadcast('dataFormCard',
                 {
-                    url : '/ng/com_zeapps_project/sprint/' + $routeParams.id_project + '/' + $routeParams.id_sprint
+                    url : '/ng/com_zeapps_project/sprint/' + $routeParams.id_project + '/' + $routeParams.id_sprint,
+                    step : 2
                 }
             );
         });

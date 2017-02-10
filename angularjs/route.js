@@ -33,7 +33,7 @@ app.config(['$routeProvider',
                 controller: 'ComZeappsSprintFormCtrl'
             })
 
-            .when('/ng/com_zeapps_project/sprint/create/:id_project/:id_sprint', {
+            .when('/ng/com_zeapps_project/sprint/create/:id_project', {
                 templateUrl: '/com_zeapps_project/sprint/form',
                 controller: 'ComZeappsSprintFormCtrl'
             })

@@ -17,7 +17,7 @@ class Card extends ZeCtrl
         $this->load->model("Zeapps_project_cards", "cards");
 
         if($id)
-            $where = array('id_project' => $id);
+            $where = array('zeapps_project_cards.id_project' => $id);
         else
             $where = array();
 
