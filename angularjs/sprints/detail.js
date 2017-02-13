@@ -140,7 +140,7 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
         };
 
         $scope.detailCard = function(card){
-            zeapps_modal.loadModule("com_zeapps_project", "detail_card", {id : card.id});
+            zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card});
         };
 
         $scope.editCard = function(card, event){

@@ -14,12 +14,7 @@ app.controller('ZeAppsProjectsModalDetailCardCtrl', function($scope, $uibModalIn
         $uibModalInstance.dismiss('cancel');
     };
 
-
-    zeHttp.project.card.get(option.id).then(function (response) {
-        if (response.status == 200) {
-            $scope.card = response.data ;
-        }
-    });
+    $scope.card = option.card;
 
     $scope.close = function () {
         $uibModalInstance.close($scope.selectedCards);
