@@ -139,7 +139,12 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
             });
         };
 
-        $scope.editCard = function(card){
+        $scope.detailCard = function(card){
+            zeapps_modal.loadModule("com_zeapps_project", "detail_card", {id : card.id});
+        };
+
+        $scope.editCard = function(card, event){
+            event.stopPropagation();
             $location.url('/ng/com_zeapps_project/sprint/edit/card/' + card.id_project + '/' + card.id_sprint + '/' + card.id);
         };
 

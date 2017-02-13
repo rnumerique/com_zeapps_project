@@ -11,6 +11,10 @@ class Card extends ZeCtrl
         $this->load->view('card/modal');
     }
 
+    public function modal_detail(){
+        $this->load->view('card/modal_detail');
+    }
+
 
 
     public function get_cards($id = 0){
