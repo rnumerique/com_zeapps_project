@@ -88,9 +88,10 @@
                         </div>
                     </div>
                     <div ui-sortable="sortable" class="sortableContainer table-cell scrum_step" ng-repeat="(step, step_name) in steps" ng-model="cards[category.id][step]" data-step="{{ step }}" data-category="{{ category.id }}">
-                        <div class="scrum_card card_{{ card.id }}" ng-repeat="card in cards[category.id][step]" data-id="{{ card.id }}" ng-click="editCard(card)">
-                            <div class="pull-right" ng-if="card.description !== ''">
-                                <i class="fa fa-fw fa-commenting-o"></i>
+                        <div class="scrum_card card_{{ card.id }}" ng-repeat="card in cards[category.id][step]" data-id="{{ card.id }}" ng-click="detailCard(card)">
+                            <div class="text-right">
+                                <i class="fa fa-fw fa-commenting-o" ng-if="card.description !== ''"></i>
+                                <i class="fa fa-fw fa-pencil" ng-click="editCard(card, $event)"></i>
                             </div>
                             <h5 class="text-center">
                                 {{ card.title }}
