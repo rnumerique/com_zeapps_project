@@ -1,5 +1,10 @@
 <div class="modal-header">
-    <h3 class="modal-title">{{card.title}}</h3>
+    <strong class="pull-right">
+        {{ '#' + card.id }}
+    </strong>
+    <h3 class="modal-title">
+        {{card.title}}
+    </h3>
 </div>
 
 
