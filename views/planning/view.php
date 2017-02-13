@@ -21,14 +21,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
         </div>
         <div class="text-center col-md-1">
-                <span class="pointer" ng-click="shownFilter = !shownFilter">
-                    <i class="fa fa-filter"></i> Filtres <i class="fa" ng-class="shownFilter ? 'fa-caret-up' :  'fa-caret-down'"></i>
-                </span>
+            <span class="pointer" ng-click="shownFilter = !shownFilter">
+                <i class="fa fa-filter"></i> Filtres <i class="fa" ng-class="shownFilter ? 'fa-caret-up' :  'fa-caret-down'"></i>
+            </span>
         </div>
     </div>
-    <div class="row">
+    <div class="row" ng-if="shownFilter">
         <div class="col-md-12">
-            <div class="well" ng-if="shownFilter">
+            <div class="well">
                 <div class="form-group">
                     <label>Tache :</label>
                     <input type="text" class="form-control" ng-model="options.title">
