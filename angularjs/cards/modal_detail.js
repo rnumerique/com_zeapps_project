@@ -10,14 +10,10 @@ listModuleModalFunction.push({
 
 
 app.controller('ZeAppsProjectsModalDetailCardCtrl', function($scope, $uibModalInstance, zeHttp, option) {
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss('cancel');
-    };
-
     $scope.card = option.card;
 
     $scope.close = function () {
-        $uibModalInstance.close($scope.selectedCards);
+        $uibModalInstance.dismiss();
     }
 
 }) ;
