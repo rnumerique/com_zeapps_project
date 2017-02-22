@@ -7,7 +7,7 @@ app.controller('ComZeappsBacklogViewCtrl', ['$scope', '$route', '$routeParams', 
             'projectId': 'all',
             'id_company': 'all',
             'id_manager': 'all',
-            'id_assigned_to': 'all',
+            'id_assigned_to':  $rootScope.user.id,
             'completed': false,
             'step' : '1'
         };
@@ -77,6 +77,10 @@ app.controller('ComZeappsBacklogViewCtrl', ['$scope', '$route', '$routeParams', 
 
         $scope.edit = function(card){
             $location.url('/ng/com_zeapps_project/backlog/edit/'+card.id);
+        };
+
+        $scope.detailCard = function(card){
+            zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card});
         };
 
         $scope.delete = function (card) {

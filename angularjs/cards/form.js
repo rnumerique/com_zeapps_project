@@ -5,19 +5,7 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
         $scope.categories = [];
         var step;
         var url;
-
-        var getContext = function(id_project, id_sprint){
-            $scope.$emit('triggerFormCard', {id_project : id_project, id_sprint: id_sprint});
-        };
-
-        var getCategoriesOf = function(id_project){
-            zhttp.project.category.get_all(id_project).then(function(response){
-                if(response.data && response.data != 'false'){
-                    $scope.categories = response.data;
-                    $scope.form.id_category = $scope.form.id_category;
-                }
-            });
-        };
+        var whitelist_ids = [];
 
         $scope.$on('dataFormCard', function(event, data){
             step = data.step;
@@ -52,6 +40,10 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                         zhttp.project.project.get($scope.form.id_project).then(function (response) {
                             if (response.data && response.data != 'false') {
                                 $scope.form.title_project = response.data.breadcrumbs;
+                                whitelist_ids = [];
+                                angular.forEach(response.data.users, function(user){
+                                     whitelist_ids.push(user.id_user);
+                                });
                             }
                         });
                         if($scope.form.id_sprint && $scope.form.id_sprint > 0) {
@@ -80,6 +72,10 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                 if(response.data && response.data != 'false'){
                     $scope.form.id_project = response.data.id;
                     $scope.form.title_project = response.data.breadcrumbs;
+                    whitelist_ids = [];
+                    angular.forEach(response.data.users, function(user){
+                        whitelist_ids.push(user.id_user);
+                    });
                     getContext($scope.form.id_project);
                     getCategoriesOf($scope.form.id_project);
                 }
@@ -91,10 +87,14 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                 if (objReturn) {
                     $scope.form.id_project = objReturn.id;
                     $scope.form.title_project = objReturn.breadcrumbs;
-                    getCategoriesOf($scope.form.id_project);
+                    whitelist_ids = [];
+                    angular.forEach(response.data.users, function(user){
+                        whitelist_ids.push(user.id_user);
+                    });
                     $scope.form.id_sprint = 0;
                     $scope.form.title_sprint = '';
                     $scope.form.step = 1;
+                    getCategoriesOf($scope.form.id_project);
                 } else {
                     $scope.form.id_project = 0;
                     $scope.form.title_project = '';
@@ -128,7 +128,7 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
         };
 
         $scope.loadAssigned = function () {
-            zeapps_modal.loadModule("com_zeapps_core", "search_user", {}, function(objReturn) {
+            zeapps_modal.loadModule("com_zeapps_core", "search_user", {whitelist_ids : whitelist_ids}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_assigned_to = objReturn.id;
                     $scope.form.name_assigned_to = objReturn.firstname ? objReturn.firstname[0]  + '. ' + objReturn.lastname : objReturn.lastname;
@@ -155,7 +155,7 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                 var M = $scope.form.start_date.getMonth();
                 var d = $scope.form.start_date.getDate();
 
-                $scope.form.start_date = new Date(Date.UTC(y, M, d));;
+                $scope.form.start_date = new Date(Date.UTC(y, M, d));
             }
 
             if($scope.form.due_date) {
@@ -163,7 +163,7 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                 var M2 = $scope.form.due_date.getMonth();
                 var d2 = $scope.form.due_date.getDate();
 
-                $scope.form.due_date = new Date(Date.UTC(y2, M2, d2));;
+                $scope.form.due_date = new Date(Date.UTC(y2, M2, d2));
             }
 
             if($scope.type == 'card') {
@@ -201,5 +201,17 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
         $scope.cancel = function(){
             $location.url(url)
         };
+
+        function getContext(id_project, id_sprint){
+            $scope.$emit('triggerFormCard', {id_project : id_project, id_sprint: id_sprint});
+        }
+
+        function getCategoriesOf(id_project){
+            zhttp.project.category.get_all(id_project).then(function(response){
+                if(response.data && response.data != 'false'){
+                    $scope.categories = response.data;
+                }
+            });
+        }
 
     }]);

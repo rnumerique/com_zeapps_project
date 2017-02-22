@@ -29,7 +29,7 @@ app.filter('planningFilter', function($filter){
                         return false;
                 }
                 if(filters.id_assigned_to != undefined && filters.id_assigned_to != 'all') {
-                    if(listItem.id_assigned_to != filters.id_assigned_to)
+                    if(listItem.id_assigned_to != filters.id_assigned_to && listItem.id_assigned_to !== undefined)
                         return false;
                 }
                 if(filters.step != undefined) {
@@ -47,11 +47,7 @@ app.filter('planningFilter', function($filter){
         if(filters){
             return $filter("filter")(list, function(listItem){
                 if(filters.id != undefined){
-                    if(filters.id.indexOf(listItem.id_project) === -1)
-                        return false;
-                }
-                if(filters.step != undefined){
-                    if(listItem.step !== filters.step)
+                    if(filters.id.indexOf(listItem.id) === -1)
                         return false;
                 }
                 return true;
@@ -70,6 +66,10 @@ app.filter('planningFilter', function($filter){
                 }
                 if(filters.step != undefined){
                     if(listItem.step !== filters.step)
+                        return false;
+                }
+                if(filters.id_assigned_to != undefined && filters.id_assigned_to != 'all') {
+                    if(listItem.id_assigned_to != filters.id_assigned_to && listItem.id_assigned_to !== undefined)
                         return false;
                 }
                 return true;

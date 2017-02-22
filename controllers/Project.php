@@ -56,8 +56,10 @@ class Project extends ZeCtrl
 
     public function get_project($id = 0){
         $this->load->model("Zeapps_projects", "projects");
+        $this->load->model("Zeapps_project_rights", "rights");
 
         $project = $this->projects->get($id);
+        $project->users = $this->rights->all(array('id_project' => $id));
 
         echo json_encode($project);
     }
@@ -110,7 +112,6 @@ class Project extends ZeCtrl
 
     public function save_project(){
         $this->load->model("Zeapps_projects", "projects");
-        $this->load->model("Zeapps_project_rights", "rights");
 
         // constitution du tableau
         $data = array() ;
@@ -128,26 +129,17 @@ class Project extends ZeCtrl
             $id = $this->projects->insert($data);
         }
 
-        if($data['id_parent'] && !$data['id']){
-            if($users = $this->rights->all(array('id_project' => $data['id_parent']))){
-                foreach($users as $user){
-                    unset($user->id);
-                    $user->id_project = $id;
-                    $this->rights->insert($user);
-                }
-            }
-        }
-
-        if($data['id_manager']){
-            if($manager = $this->rights->get(array('id_project' => $id, 'id_user' => $data['id_manager']))){
-                $this->rights->update(array('access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1), $manager->id);
-            }
-            else{
-                $this->rights->insert(array('id_project' => $id, 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1));
-            }
-        }
-
         echo $id;
+    }
+
+    public function archive_project($id = null){
+        $this->load->model("Zeapps_projects", "projects");
+
+        if($id) {
+            $this->projects->update(array('archived' => 1), $id);
+        }
+
+        echo json_encode('OK');
     }
 
     public function delete_project($id = null, $force = 'false'){

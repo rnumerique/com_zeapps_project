@@ -35,4 +35,12 @@ class Zeapps_project_cards extends ZeModel {
     public function get_assigned(){
         return $this->database()->select('id_assigned_to, name_assigned_to')->group_by('id_assigned_to')->table('zeapps_project_cards')->result();
     }
+
+    public function updateOldSort($id_sprint, $id_category, $step, $sort) {
+        $this->database()->query('UPDATE zeapps_project_cards SET sort = (sort-1) WHERE id_sprint = ' . $id_sprint . ' AND id_category = ' . $id_category . ' AND step = ' . $step . ' AND sort > ' . $sort);
+    }
+
+    public function updateNewSort($id_sprint, $id_category, $step, $sort) {
+        $this->database()->query('UPDATE zeapps_project_cards SET sort = (sort+1) WHERE id_sprint = ' . $id_sprint . ' AND id_category = ' . $id_category . ' AND step = ' . $step . ' AND sort >= ' . $sort);
+    }
 }

@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <div id="content">
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-5">
             <div class="form-group">
                 <select class="form-control" ng-model="options.projectId">
                     <option value="all">
@@ -18,6 +18,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         {{ company.name_company || 'Aucun' }}
                     </option>
                 </select>
+            </div>
+        </div>
+        <div class="col-md-6 form-horizontal">
+            <div class="form-group">
+                <label class="col-md-2 control-label">Assigné à :</label>
+                <div class="col-md-10">
+                    <select class="form-control" ng-model="options.id_assigned_to">
+                        <option value="all">
+                            Tous
+                        </option>
+                        <option ng-repeat="worker in assigned" value="{{worker.id_assigned_to}}">
+                            {{ worker.name_assigned_to || 'Aucun' }}
+                        </option>
+                    </select>
+                </div>
             </div>
         </div>
         <div class="text-center col-md-1">
@@ -52,17 +67,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </option>
                         <option ng-repeat="manager in managers" value="{{manager.id_manager}}">
                             {{ manager.name_manager || 'Aucun' }}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Assigné à :</label>
-                    <select class="form-control" ng-model="options.id_assigned_to">
-                        <option value="all">
-                            Tous
-                        </option>
-                        <option ng-repeat="worker in assigned" value="{{worker.id_assigned_to}}">
-                            {{ worker.name_assigned_to || 'Aucun' }}
                         </option>
                     </select>
                 </div>

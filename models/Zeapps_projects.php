@@ -21,6 +21,7 @@ class Zeapps_projects extends ZeModel {
             $haystack[] = $filter;
         }
 
+        $where['zeapps_projects.archived'] = 0;
         $where['zeapps_projects.deleted_at'] = null;
         $where['zeapps_project_rights.access'] = 1;
 
@@ -28,6 +29,7 @@ class Zeapps_projects extends ZeModel {
                                         zeapps_projects.id as id')
                                 ->join('zeapps_project_rights', 'zeapps_project_rights.id_project = zeapps_projects.id', 'LEFT')
                                 ->where($where)
+                                ->order_by('zeapps_projects.title')
                                 ->table('zeapps_projects')
                                 ->result();
 
@@ -54,6 +56,8 @@ class Zeapps_projects extends ZeModel {
     }
 
     public function insert($data = array()){
+        $this->load->model("Zeapps_project_rights", "rights");
+
         if(isset($data['id_parent']) && $data['id_parent'] > 0){
             if($parent = $this->get($data['id_parent'])){
                 $data['spaces'] = intval($parent->spaces) + 1;
@@ -63,10 +67,33 @@ class Zeapps_projects extends ZeModel {
         else
             $data['breadcrumbs'] = $data['title'];
 
-        return parent::insert($data);
+        $id = parent::insert($data);
+
+        if($data['id_parent']){
+            if($users = $this->load->ctrl->rights->all(array('id_project' => $data['id_parent']))){
+                foreach($users as $user){
+                    unset($user->id);
+                    $user->id_project = $id;
+                    $this->load->ctrl->rights->insert($user);
+                }
+            }
+        }
+
+        if($data['id_manager']){
+            if($manager = $this->load->ctrl->rights->get(array('id_project' => $id, 'id_user' => $data['id_manager']))){
+                $this->load->ctrl->rights->update(array('access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1), $manager->id);
+            }
+            else{
+                $this->load->ctrl->rights->insert(array('id_project' => $id, 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1));
+            }
+        }
+
+        return $id;
     }
 
     public function update($data = array(), $where = array()){
+        $this->load->model("Zeapps_project_rights", "rights");
+
         if(isset($data['id_parent']) && $data['id_parent'] > 0){
             if($parent = $this->get($data['id_parent'])){
                 $data['spaces'] = intval($parent->spaces) + 1;
@@ -78,12 +105,22 @@ class Zeapps_projects extends ZeModel {
 
         $this->_updateChildsBreadcrumbsOf($data['id'], $data['breadcrumbs']);
 
+        if($data['id_manager']){
+            if($manager = $this->load->ctrl->rights->get(array('id_project' => $data['id'], 'id_user' => $data['id_manager']))){
+                $this->load->ctrl->rights->update(array('access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1), $manager->id);
+            }
+            else{
+                $this->load->ctrl->rights->insert(array('id_project' => $data['id'], 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1));
+            }
+        }
+
         return parent::update($data, $where);
     }
 
     public function delete($where, $forceDelete = false){
         $this->load->model("zeapps_project_deadlines", "deadlines");
         $this->load->model("zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_rights", "rights");
 
         $subs = $this->all(array('id_parent' => $where), $forceDelete);
 
@@ -95,8 +132,9 @@ class Zeapps_projects extends ZeModel {
 
         $now = time();
 
-        $this->deadlines->delete(array('id_project' => $where));
-        $this->cards->delete(array('id_project' => $where));
+        $this->load->ctrl->deadlines->delete(array('id_project' => $where));
+        $this->load->ctrl->cards->delete(array('id_project' => $where));
+        $this->load->ctrl->rights->delete(array('id_project' => $where));
 
         return parent::delete($where);
     }

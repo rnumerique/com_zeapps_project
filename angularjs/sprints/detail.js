@@ -16,6 +16,61 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
             '5': 'Terminé'
         };
 
+        $scope.sortable = {
+            connectWith: ".sortableContainer",
+            placeholder: "sprint_placeholder",
+            disabled: true,
+            delay: 200,
+            stop: function( event, ui ) {
+
+                var idObj = $(ui.item[0]).attr("data-id") ;
+                var ligneSelectionnee = $(".card_" + idObj) ;
+                var step = ligneSelectionnee.parent().attr("data-step") ;
+                var category = ligneSelectionnee.parent().attr("data-category") ;
+
+                var data = {} ;
+                data.id = idObj;
+
+                data.step = step ;
+                if(step == 5){
+                    data.completed = 'Y';
+                }
+                else{
+                    data.completed = 'N';
+                }
+                data.id_category = category ;
+
+                for(var k = 0; k < $scope.cards[category][step].length; k++){
+                    if($scope.cards[category][step][k].id == data.id){
+                        data.id_sprint = $scope.cards[category][step][k].id_sprint;
+                        data.oldSort = $scope.cards[category][step][k].sort;
+                        data.oldStep = $scope.cards[category][step][k].step;
+                        data.oldCategory = $scope.cards[category][step][k].id_category;
+
+                        $scope.cards[category][step][k].category = category;
+                        $scope.cards[category][step][k].step = step;
+                        $scope.cards[category][step][k].sort = k;
+
+                        data.sort = $scope.cards[category][step][k].sort;
+
+                        break;
+                    }
+                }
+
+                for(var i = data.oldSort; i < $scope.cards[data.oldCategory][data.oldStep].length; i++){
+                    $scope.cards[data.oldCategory][data.oldStep][i].sort--;
+                }
+
+                for(var j = data.sort + 1; j < $scope.cards[category][step].length; j++){
+                    $scope.cards[category][step][j].sort++;
+                }
+
+                var formatted_data = angular.toJson(data);
+
+                zhttp.project.card.move(formatted_data);
+            }
+        };
+
         var defaultCategory = {
             id: 0,
             title: ""
@@ -98,6 +153,7 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
 
         if($routeParams.id_project){
             $scope.options.projectId = $routeParams.id_project;
+            $scope.sortable.disabled = !$rootScope.project_rights || $rootScope.project_rights[$scope.options.projectId]['card'] == '0';
             get_categories($routeParams.id_project);
             get_cards($routeParams.id_project);
         }
@@ -105,6 +161,7 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
         $scope.$watch("options.projectId", function(id, oldId, scope){
             if(id != undefined && id != oldId) {
                 scope.options.sprintId = 0;
+                scope.sortable.disabled = $rootScope.project_rights[id]['card'] == '0';
                 get_categories(id);
                 angular.forEach(scope.sprintsByProject[id], function (sprint) {
                     if(sprint.active === 'Y')
@@ -119,7 +176,7 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                 for(var i = 0; i < scope.sprintsByProject[scope.options.projectId].length; i++){
                     if(scope.sprintsByProject[scope.options.projectId][i].id === id) {
                         scope.current = scope.sprintsByProject[scope.options.projectId][i];
-                        scope.sortable.disabled = scope.current.completed === 'Y';
+                        scope.sortable.disabled = (scope.current.completed === 'Y' || $rootScope.project_rights[scope.current.id_project]['card'] == '0');
                         break;
                     }
                 }
@@ -322,35 +379,6 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                     break;
                 }
                 next = $scope.sprintsByProject[$scope.options.projectId][i].id === $scope.options.sprintId;
-            }
-        };
-
-        $scope.sortable = {
-            connectWith: ".sortableContainer",
-            placeholder: "app",
-            disabled: false,
-            delay: 200,
-            stop: function( event, ui ) {
-
-                var idObj = $(ui.item[0]).attr("data-id") ;
-                var ligneSelectionnee = $(".card_" + idObj) ;
-                var step = ligneSelectionnee.parent().attr("data-step") ;
-                var category = ligneSelectionnee.parent().attr("data-category") ;
-
-                var data = {} ;
-                data.id = idObj;
-                data.step = step ;
-                if(step == 5){
-                    data.completed = 'Y';
-                }
-                else{
-                    data.completed = 'N';
-                }
-                data.id_category = category ;
-
-                var formatted_data = angular.toJson(data);
-
-                zhttp.project.card.post(formatted_data);
             }
         };
 

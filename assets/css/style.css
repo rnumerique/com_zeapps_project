@@ -3,8 +3,13 @@
     color: #fff;
 }
 
-.card_description{
+.card_description,
+.card_comment{
     white-space: pre-line;
+}
+.card_comment,
+.card_document{
+    margin-bottom: 10px;
 }
 
 .sprints{
@@ -83,6 +88,15 @@
     color: initial;
     margin: .5em 0;
     padding: 8px 10px;
+}
+
+.sprint_placeholder{
+    background: #777;
+    border-radius: 5px;
+    color: initial;
+    margin: .5em 0;
+    padding: 8px 10px;
+    height : 5em;
 }
 
 .scrum.table{

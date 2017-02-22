@@ -5,10 +5,6 @@ app.controller('ComZeappsSandboxViewCtrl', ['$scope', '$route', '$routeParams', 
 
         $scope.options = {
             'projectId': 'all',
-            'subProjectId': 'all',
-            'id_company': 'all',
-            'id_manager': 'all',
-            'id_assigned_to': 'all',
             'completed': false,
             'step' : '0'
         };
@@ -73,6 +69,10 @@ app.controller('ComZeappsSandboxViewCtrl', ['$scope', '$route', '$routeParams', 
 
         $scope.edit = function(sandbox){
             $location.url('/ng/com_zeapps_project/sandbox/edit/'+sandbox.id);
+        };
+
+        $scope.detailCard = function(card){
+            zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card});
         };
 
         $scope.delete = function (sandbox) {
