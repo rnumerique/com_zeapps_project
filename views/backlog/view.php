@@ -75,12 +75,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <table class="table table-stripped table-condensed">
                 <thead>
                 <tr>
-                    <th>Idée</th>
+                    <th>Titre</th>
                     <th>Description</th>
                     <th>Auteur</th>
                     <th></th>
@@ -90,7 +91,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <tr class="info" ng-repeat-start="project in projects" ng-if="(cardsByProject[project.id] | backlogFilter:options).length > 0">
                     <th colspan="4">
                         {{ project.breadcrumbs }}{{ project.name_company ? ' (' + project.name_company + ')' : '' }}
-                        <a class="pull-right text-success pointer" ng-href="/ng/com_zeapps_project/backlog/new/{{project.id}}">
+                        <a class="pull-right text-success pointer" ng-href="/ng/com_zeapps_project/backlog/new/{{project.id}}" ze-auth="{id_project : project.id, right : 'card'}">
                             <i class="fa fa-plus"></i>
                             Nouvelle carte
                         </a>
@@ -101,12 +102,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <td ng-class="'text-' + compareDates(task.due_date)">{{ card.description }}</td>
                     <td>{{ card.name_author }}</td>
                     <td class="text-right no-wrap">
-                        <button type="button" class="btn btn-info btn-xs" ng-click="edit(card)">
-                            <i class="fa fa-pencil" ></i>
-                        </button>
-                        <button type="button" class="btn btn-danger btn-xs" ng-click="delete(card)">
-                            <i class="fa fa-trash" ></i>
-                        </button>
+                        <div ze-auth="{id_project : project.id, right : 'card'}">
+                            <button type="button" class="btn btn-info btn-xs" ng-click="edit(card)">
+                                <i class="fa fa-pencil" ></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-xs" ng-click="delete(card)">
+                                <i class="fa fa-trash" ></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 </tbody>

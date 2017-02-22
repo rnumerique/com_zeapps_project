@@ -7,11 +7,16 @@ class Deadline extends ZeCtrl
 
     public function get_deadlines($id = 0){
         $this->load->model("Zeapps_project_deadlines", "deadlines");
+        $this->load->model("Zeapps_users", "user");
 
         if($id)
             $where = array('id_project' => $id);
         else
             $where = array();
+
+        if($user = $this->user->getUserByToken($this->session->get('token'))){
+            $where['zeapps_project_rights.id_user'] = $user[0]->id;
+        }
 
         $deadlines = $this->deadlines->all($where);
 

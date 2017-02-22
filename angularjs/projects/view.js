@@ -18,6 +18,8 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
 
         $scope.view = '/com_zeapps_project/planning/table';
 
+        var project_users_ids = [];
+
         $scope.compareDates = function(date){
             return zhttp.project.compareDate(date);
         };
@@ -45,6 +47,8 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                 return true;
             else if(tab === 'categories' && $scope.view === '/com_zeapps_project/project/categories')
                 return true;
+            else if(tab === 'rights' && $scope.view === '/com_zeapps_project/project/rights')
+                return true;
             else
                 return false;
         };
@@ -56,6 +60,10 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
 
         $scope.showCategories = function(){
             $scope.view = '/com_zeapps_project/project/categories';
+        };
+
+        $scope.showRights = function(){
+            $scope.view = '/com_zeapps_project/project/rights';
         };
 
         zhttp.project.card.get_all().then(function(response){
@@ -116,6 +124,91 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
             });
         };
 
+        var getRightsFor = function(id_project){
+            zhttp.project.right.get_all(id_project).then(function(response){
+                if(response.data && response.data != 'false'){
+                    $scope.project_users = response.data;
+                    project_users_ids = [];
+                    angular.forEach($scope.project_users, function(user){
+                        project_users_ids.push(user.id_user);
+                        user.access = !!parseInt(user.access);
+                        user.sandbox = !!parseInt(user.sandbox);
+                        user.card = !!parseInt(user.card);
+                        user.sprint = !!parseInt(user.sprint);
+                        user.project = !!parseInt(user.project);
+                    });
+                }
+                else
+                    $scope.project_users = [];
+            });
+        };
+
+        $scope.addProjectUser = function(){
+            zeapps_modal.loadModule("com_zeapps_core", "search_user", {banned_ids : project_users_ids}, function(objReturn) {
+                if (objReturn) {
+                    var user = {};
+
+                    user.id_user = objReturn.id;
+                    user.id_project = $scope.activeCategory.data.id;
+                    user.name = objReturn.firstname ? objReturn.firstname[0]  + '. ' + objReturn.lastname : objReturn.lastname;
+                    user.access = 1;
+
+                    var formatted_data = angular.toJson(user);
+                    zhttp.project.right.post(formatted_data).then(function(response){
+                        if(response.data && response.data != 'false'){
+                            user.id = response.data;
+                            user.access = true;
+                            $scope.project_users.push(Object.create(user));
+                            project_users_ids.push(user.id_user);
+                        }
+                    });
+                } else {
+                }
+            });
+        };
+
+        $scope.deleteRightsOf = function(user){
+            zhttp.project.right.del(user.id).then(function(response){
+                if(response.data && response.data != 'false'){
+                    $scope.project_users.splice($scope.project_users.indexOf(user), 1);
+                    project_users_ids.splice(project_users_ids.indexOf(user.id_user), 1);
+                }
+            })
+        };
+
+        $scope.changeRights = function(user, right){
+            if(!user[right]) {
+                switch(right){
+                    case 'access' :
+                        user['sandbox'] = false;
+                    case 'sandbox' :
+                        user['card'] = false;
+                    case 'card' :
+                        user['sprint'] = false;
+                    case 'sprint' :
+                        user['project'] = false;
+                    default :
+                        break;
+                }
+            }
+            else{
+                switch(right){
+                    case 'project' :
+                        user['sprint'] = true;
+                    case 'sprint' :
+                        user['card'] = true;
+                    case 'card' :
+                        user['sandbox'] = true;
+                    case 'sandox' :
+                        user['access'] = true;
+                    default :
+                        break;
+                }
+            }
+            console.log(user);
+            saveRightsOf(user);
+        };
+
         $scope.$watch('activeCategory.data', function(value, old, scope){
             if(typeof(value.id) !== 'undefined' && value.id != old.id){
                 scope.options.id_project = [];
@@ -129,6 +222,7 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                     }
                 });
                 getCategories(value.id);
+                getRightsFor(value.id);
             }
         });
 
@@ -222,5 +316,26 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
             });
 
         };
+
+        function saveRightsOf(user){
+
+            var data = {};
+
+            if(user.id){
+                data.id = user.id;
+            }
+
+            data.access = user.access ? 1 : 0;
+            data.sandbox = user.sandbox ? 1 : 0;
+            data.card = user.card ? 1 : 0;
+            data.sprint = user.sprint ? 1 : 0;
+            data.project = user.project ? 1 : 0;
+
+            data.id_user = user.id_user;
+            data.id_project = user.id_project;
+
+            var formatted_data = angular.toJson(data);
+            zhttp.project.right.post(formatted_data);
+        }
 
     }]);

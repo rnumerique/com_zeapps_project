@@ -19,11 +19,16 @@ class Card extends ZeCtrl
 
     public function get_cards($id = 0){
         $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_users", "user");
 
         if($id)
             $where = array('zeapps_project_cards.id_project' => $id);
         else
             $where = array();
+
+        if($user = $this->user->getUserByToken($this->session->get('token'))){
+            $where['zeapps_project_rights.id_user'] = $user[0]->id;
+        }
 
         $cards = $this->cards->all($where);
 

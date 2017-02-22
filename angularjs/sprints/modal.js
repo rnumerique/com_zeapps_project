@@ -16,6 +16,32 @@ listModuleModalFunction.push({
 app.controller('ZeAppsProjectsModalSprintCtrl', function($scope, $uibModalInstance, zeHttp, titre, option) {
     $scope.titre = titre ;
 
+    $scope.formCtrl = {};
+
+    $scope.form = {
+        id_project : option.id_project
+    };
+    $scope.showForm = false;
+
+    $scope.addSprint = function(){
+        var formatted_data = angular.toJson($scope.form);
+
+        zeHttp.project.sprint.post(formatted_data).then(function(response){
+            if(response.data && response.data != 'false'){
+                zeHttp.project.sprint.get(response.data).then(function(response){
+                    if(response.data && response.data != 'false'){
+                        $uibModalInstance.close(response.data);
+                    }
+                });
+            }
+        })
+    };
+
+    $scope.updateDueDate = function(){
+        $scope.form.due_date = new Date($scope.form.start_date);
+        $scope.form.due_date.setDate($scope.form.due_date.getDate() + 15);
+    };
+
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
@@ -33,18 +59,8 @@ app.controller('ZeAppsProjectsModalSprintCtrl', function($scope, $uibModalInstan
 
 
 
-    $scope.loadSprint = function (id) {
-
-
-        // search the company
-        var sprint = false ;
-        for (var i = 0 ; i < $scope.sprints.length ; i++) {
-            if ($scope.sprints[i].id == id) {
-                sprint = $scope.sprints[i] ;
-                break;
-            }
-        }
-
+    $scope.loadSprint = function (sprint) {
+        sprint = sprint || false;
         $uibModalInstance.close(sprint);
     }
 

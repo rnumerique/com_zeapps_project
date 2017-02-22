@@ -2,6 +2,9 @@
 class Zeapps_project_cards extends ZeModel {
 
     public function all($where = array()){
+        $where['zeapps_project_cards.deleted_at'] = null;
+        $where['zeapps_project_rights.access'] = 1;
+
         return $this->database()->select('*, 
                                         zeapps_project_cards.id as id, 
                                         zeapps_project_cards.description as description, 
@@ -12,7 +15,12 @@ class Zeapps_project_cards extends ZeModel {
                                         zeapps_project_categories.title as category_title')
             ->join('zeapps_projects', 'zeapps_project_cards.id_project = zeapps_projects.id', 'LEFT')
             ->join('zeapps_project_categories', 'zeapps_project_categories.id = zeapps_project_cards.id_category', 'LEFT')
-            ->where($where)->table('zeapps_project_cards')->result();
+            ->join('zeapps_project_rights', 'zeapps_project_rights.id_project = zeapps_project_cards.id_project', 'LEFT')
+            ->where($where)
+            ->where_not(array('zeapps_project_cards.id' => null))
+            ->group_by('zeapps_project_cards.id')
+            ->table('zeapps_project_cards')
+            ->result();
     }
 
     public function updateStateOf($ids, $id_sprint){

@@ -1,13 +1,18 @@
 <?php
 class Zeapps_project_sprints extends ZeModel {
 
-    public function update($data = array(), $where = array()){
+    public function all($where = array()){
+        $where['zeapps_project_sprints.deleted_at'] = null;
+        $where['zeapps_project_rights.access'] = 1;
 
-        if(!isset($data['title']) || $data['title'] === ''){
-            $data['title'] = 'Sprint n°' . $data['numerotation'];
-        }
-
-        return parent::update($data, $where);
+        return $this->database()->select('*,
+                                        zeapps_project_sprints.id as id')
+            ->join('zeapps_project_rights', 'zeapps_project_rights.id_project = zeapps_project_sprints.id_project', 'LEFT')
+            ->where($where)
+            ->where_not(array('zeapps_project_sprints.id' => null))
+            ->group_by('zeapps_project_sprints.id')
+            ->table('zeapps_project_sprints')
+            ->result();
     }
 
     public function insert($data = array()){

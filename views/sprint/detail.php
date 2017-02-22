@@ -4,7 +4,7 @@
 
 <div id="content">
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-6">
             <div class="form-group">
                 <select class="form-control" ng-model="options.projectId">
                     <option value="none">
@@ -24,20 +24,20 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-1 text-center">
-            <button type="button" class="btn btn-success btn-sm" ng-click="new()">
-                <i class="fa fa-plus" ></i>
+        <div class="col-md-2 text-center">
+            <button type="button" class="btn btn-success btn-xs" ng-click="new()"  ze-auth="{id_project : options.projectId, right : 'sprint'}">
+                <i class="fa fa-fw fa-plus" ></i> Sprint
             </button>
-            <button type="button" class="btn btn-primary btn-sm" ng-click="prev()" ng-disabled="!hasPrev()">
-                <i class="fa fa-chevron-left" ></i>
+            <button type="button" class="btn btn-primary btn-xs" ng-click="prev()" ng-disabled="!hasPrev()">
+                <i class="fa fa-fw fa-chevron-left" ></i>
             </button>
-            <button type="button" class="btn btn-primary btn-sm" ng-click="next()" ng-disabled="!hasNext()">
-                <i class="fa fa-chevron-right" ></i>
+            <button type="button" class="btn btn-primary btn-xs" ng-click="next()" ng-disabled="!hasNext()">
+                <i class="fa fa-fw fa-chevron-right" ></i>
             </button>
         </div>
     </div>
 
-    <div class="row" ng-if="!current && options.projectId !== 'none'">
+    <div class="row" ng-if="!current && options.projectId !== 'none'" ze-auth="{id_project : options.projectId, right : 'sprint'}">
         <div class="col-md-12">
             <h1 class="text-center pointer" ng-click="new()">
                 <i class="fa fa-plus" ></i> Créer un sprint pour ce projet
@@ -49,19 +49,24 @@
         <div class="col-md-12">
             <h3 class="text-center">
                 {{ current.title }} {{ current.active === 'Y' ? '- En cours' : '' }}
-                <button type="button" class="btn btn-info btn-xs" ng-click="edit()" ng-if="current.completed === 'N'">
-                    <i class="fa fa-pencil" ></i>
-                </button>
-                <button type="button" class="btn btn-danger btn-xs" ng-click="delete()" ng-if="current.completed === 'N' && current.active === 'N'">
-                    <i class="fa fa-trash" ></i>
-                </button>
+                <span ze-auth="{id_project : project.id, right : 'sprint'}">
+                    <button type="button" class="btn btn-info btn-xs" ng-click="edit()" ng-if="current.completed === 'N'">
+                        <i class="fa fa-pencil" ></i>
+                    </button>
+                    <button type="button" class="btn btn-success btn-xs" ng-click="finalize()" ng-if="current.completed === 'N' && current.active === 'Y'">
+                        <i class="fa fa-check" ></i> Clôturer
+                    </button>
+                    <button type="button" class="btn btn-danger btn-xs" ng-click="delete()" ng-if="current.completed === 'N' && current.active === 'N'">
+                        <i class="fa fa-trash" ></i>
+                    </button>
+                </span>
             </h3>
             <div class="text-center">
                 {{ current.start_date | date:'dd/MM/yyyy' }}
                 au
                 {{ current.due_date | date:'dd/MM/yyyy' }}
             </div>
-            <div class="text-right">
+            <div class="text-right" ze-auth="{id_project : options.projectId, right : 'sprint'}">
                 <button type="button" class="btn btn-warning btn-xs" ng-click="addCards()" ng-if="current.completed === 'N'">
                     Ajouter des cartes
                 </button>
@@ -93,15 +98,15 @@
                                 {{ '#' + card.id }}
                                 <div class="pull-right">
                                     <i class="fa fa-fw fa-commenting-o" ng-if="card.description !== ''"></i>
-                                    <i class="fa fa-fw fa-pencil" ng-click="editCard(card, $event)"></i>
+                                    <i class="fa fa-fw fa-pencil" ng-click="editCard(card, $event)" ze-auth="{id_project : options.projectId, right : 'card'}"></i>
                                 </div>
                             </div>
                             <h5 class="text-center">
                                 {{ card.title }}
                             </h5>
                             <div class="clearfix">
-                                <span ng-if="card.due_date != '0000-00-00'">Echéance : {{ card.due_date | date:'dd/MM/yyyy'}}</span>
-                                <span class="pull-right" ng-if="card.name_assigned_to">Par : <i>{{ card.name_assigned_to }}</i></span>
+                                <span ng-if="card.due_date != '0000-00-00'"><i class="fa fa-fw fa-clock-o"></i>{{ card.due_date | date:'dd/MM/yyyy'}}</span>
+                                <span class="pull-right" ng-if="card.name_assigned_to"><i class="fa fa-fw fa-user"></i><i>{{ card.name_assigned_to }}</i></span>
                             </div>
                         </div>
                     </div>

@@ -26,8 +26,18 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
                 if(response.data && response.data != 'false'){
                     $scope.form.id_parent = response.data.id;
                     $scope.form.title_parent = response.data.breadcrumbs;
+                    $scope.form.id_company = response.data.id_company;
+                    $scope.form.name_company = response.data.name_company;
+                    $scope.form.id_contact = response.data.id_contact;
+                    $scope.form.name_contact = response.data.name_contact;
+                    $scope.form.id_manager = response.data.id_manager;
+                    $scope.form.name_manager = response.data.name_manager;
                 }
             })
+        }
+        else{ // New Project
+            $scope.form.id_manager = $rootScope.user.id;
+            $scope.form.name_manager = $rootScope.user.firstname ? $rootScope.user.firstname[0] + '. ' + $rootScope.user.lastname : $rootScope.user.lastname;
         }
 
         $scope.loadProject = function () {
@@ -68,7 +78,7 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
             zeapps_modal.loadModule("com_zeapps_contact", "search_contact", {}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_contact = objReturn.id;
-                    $scope.form.name_contact = objReturn.name_contact;
+                    $scope.form.name_contact = objReturn.first_name ? objReturn.first_name[0] + '. ' + objReturn.last_name : objReturn.last_name;
                 } else {
                     $scope.form.id_contact = 0;
                     $scope.form.name_contact = '';
@@ -85,7 +95,7 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
             zeapps_modal.loadModule("com_zeapps_core", "search_user", {}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_manager = objReturn.id;
-                    $scope.form.name_manager = objReturn.firstname + ' ' + objReturn.lastname;
+                    $scope.form.name_manager = objReturn.firstname ? objReturn.firstname[0]  + '. ' + objReturn.lastname : objReturn.lastname;
                 } else {
                     $scope.form.id_manager = 0;
                     $scope.form.name_manager = '';

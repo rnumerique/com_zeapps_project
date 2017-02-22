@@ -41,7 +41,6 @@ class Category extends ZeCtrl
             $id = $this->categories->update($data, $data['id']);
         }
         else{
-            var_dump($data);
             $id = $this->categories->insert($data);
         }
 

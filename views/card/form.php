@@ -11,7 +11,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
                         <label>Projet</label>
                         <div class="input-group">
@@ -27,23 +27,20 @@
                     </div>
                 </div>
 
-                <div class="col-md-4" ng-if="type == 'card'">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <label>Assigné à</label>
-                        <div class="input-group">
-                            <input type="text" ng-model="form.name_assigned_to" class="form-control" disabled>
-
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" ng-click="removeAssigned()"
-                                        ng-show="form.id_assigned_to != 0 && form.id_assigned_to != undefined">x
-                                </button>
-                                <button class="btn btn-default" type="button" ng-click="loadAssigned()">...</button>
-                            </span>
-                        </div>
+                        <label>Catégorie</label>
+                        <select ng-model="form.id_category" class="form-control">
+                            <option ng-repeat="category in categories" ng-value="category.id">
+                                {{ category.title }}
+                            </option>
+                        </select>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-md-4" ng-if="type == 'card' && form.id_project">
+            <div class="row">
+                <div class="col-md-6" ng-if="type == 'card' && form.id_project">
                     <div class="form-group">
                         <label>Sprint</label>
                         <div class="input-group">
@@ -54,6 +51,22 @@
                                         ng-show="form.id_sprint != 0 && form.id_sprint != undefined">x
                                 </button>
                                 <button class="btn btn-default" type="button" ng-click="loadSprint()">...</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6" ng-if="type == 'card'">
+                    <div class="form-group">
+                        <label>Assigné à</label>
+                        <div class="input-group">
+                            <input type="text" ng-model="form.name_assigned_to" class="form-control" disabled>
+
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" ng-click="removeAssigned()"
+                                        ng-show="form.id_assigned_to != 0 && form.id_assigned_to != undefined">x
+                                </button>
+                                <button class="btn btn-default" type="button" ng-click="loadAssigned()">...</button>
                             </span>
                         </div>
                     </div>

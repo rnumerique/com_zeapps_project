@@ -20,7 +20,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </div>
         </div>
         <div class="col-md-1 text-center">
-            <a class='text-success' ng-href='/ng/com_zeapps_project/sprint/create/'><span class='fa fa-plus' aria-hidden='true'></span> Sprint</a>
+            <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/sprint/create/'><span class='fa fa-fw fa-plus' aria-hidden='true'></span> Sprint</a>
         </div>
     </div>
     <div class="row">
