@@ -51,16 +51,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 {{ card.name_assigned_to }}
             </td>
             <td class="text-right no-wrap">
-                <div ze-auth="{id_project : card.id_project, right : 'card'}">
-                    <button type="button" class="btn btn-success btn-xs" ng-click="complete(card)" ng-if="card.completed === 'N'">
-                        <i class="fa fa-fw fa-check" ></i>
+                <div>
+                    <button type="button" class="btn btn-info btn-xs" ng-click="detailCard(card)">
+                        <i class="fa fa-fw fa-eye" ></i>
                     </button>
-                    <button type="button" class="btn btn-info btn-xs" ng-click="edit(card)">
-                        <i class="fa fa-fw fa-pencil" ></i>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-xs" ng-click="delete(card)">
-                        <i class="fa fa-fw fa-trash" ></i>
-                    </button>
+                    <span ze-auth="{id_project : card.id_project, right : 'card'}">
+                        <button type="button" class="btn btn-success btn-xs" ng-click="complete(card)" ng-if="card.completed === 'N'">
+                            <i class="fa fa-fw fa-check" ></i>
+                        </button>
+                        <button type="button" class="btn btn-info btn-xs" ng-click="edit(card)">
+                            <i class="fa fa-fw fa-pencil" ></i>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-xs" ng-click="delete(card)">
+                            <i class="fa fa-fw fa-trash" ></i>
+                        </button>
+                    </span>
                 </div>
             </td>
         </tr>

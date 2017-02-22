@@ -12,15 +12,19 @@ app.config(['$provide',
                     get_all : getAll_project,
                     get_childs : getChilds_project,
                     post : post_project,
+                    archive : archive_project,
                     del : delete_project
                 },
                 card : {
                     get_all : getAll_card,
                     get : get_card,
                     post : post_card,
+                    move : move_card,
                     del : delete_card,
                     complete : complete_card,
-                    validate : validate_idea
+                    validate : validate_idea,
+                    comment : comment,
+                    document : document_url
                 },
                 deadline : {
                     get_all : getAll_deadline,
@@ -87,6 +91,9 @@ app.config(['$provide',
             function post_project(data){
                 return zeHttp.post('/com_zeapps_project/project/save_project/', data);
             }
+            function archive_project(id){
+                return zeHttp.get('/com_zeapps_project/project/archive_project/' + id);
+            }
             function delete_project(id, force){
                 force = !!force;
                 return zeHttp.get('/com_zeapps_project/project/delete_project/' + id + '/' + force);
@@ -104,6 +111,9 @@ app.config(['$provide',
             function post_card(data){
                 return zeHttp.post('/com_zeapps_project/card/save_card/', data);
             }
+            function move_card(data){
+                return zeHttp.post('/com_zeapps_project/card/move_card/', data);
+            }
             function delete_card(id, deadline){
                 deadline = !!deadline;
                 return zeHttp.get('/com_zeapps_project/card/delete_card/' + id + '/' + deadline);
@@ -114,6 +124,12 @@ app.config(['$provide',
             }
             function validate_idea(id){
                 return zeHttp.get('/com_zeapps_project/card/validate_idea/' + id);
+            }
+            function comment(data){
+                return zeHttp.post('/com_zeapps_project/card/comment/', data);
+            }
+            function document_url(){
+                return '/com_zeapps_project/card/uploadDocuments/';
             }
 
 

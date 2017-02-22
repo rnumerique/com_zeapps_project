@@ -25,7 +25,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="sprints clearfix" ng-repeat="project in projects | sprintFilter:options" ng-if="sprintsByProject[project.id] && sprintsByProject[project.id].length > 0">
+            <div class="sprints clearfix"
+                 ng-repeat="project in projects | sprintFilter:options | orderBy:'breadcrumbs'"
+                 ng-if="sprintsByProject[project.id] && (sprintsByProject[project.id] | filter:{ active : 'Y' }).length > 0"
+            >
                 <div class="sprints_project">
                     <strong>{{ project.breadcrumbs }}</strong>{{ project.name_company ? ' (' + project.name_company + ')' : '' }}
                 </div>

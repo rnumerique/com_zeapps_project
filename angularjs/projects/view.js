@@ -226,6 +226,49 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
             }
         });
 
+        $scope.archive_project = function (id) {
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: '/assets/angular/popupModalDeBase.html',
+                controller: 'ZeAppsPopupModalDeBaseCtrl',
+                size: 'lg',
+                resolve: {
+                    titre: function () {
+                        return 'Attention';
+                    },
+                    msg: function () {
+                        return 'Souhaitez-vous archiver ce projet ?';
+                    },
+                    action_danger: function () {
+                        return 'Annuler';
+                    },
+                    action_primary: function () {
+                        return false;
+                    },
+                    action_success: function () {
+                        return 'Confirmer';
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+                if (selectedItem.action == 'danger') {
+
+                } else if (selectedItem.action == 'success') {
+                    zhttp.project.project.archive(id).then(function (response) {
+                        if (response.data && response.data != 'false') {
+                            $scope.activeCategory.data = '';
+                            getTree();
+                        }
+                    });
+                }
+
+            }, function () {
+                //console.log("rien");
+            });
+
+        };
+
         $scope.delete_project = function (id) {
             var modalInstance = $uibModal.open({
                 animation: true,

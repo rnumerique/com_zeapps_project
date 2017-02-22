@@ -49,8 +49,8 @@
         <div class="col-md-12">
             <h3 class="text-center">
                 {{ current.title }} {{ current.active === 'Y' ? '- En cours' : '' }}
-                <span ze-auth="{id_project : project.id, right : 'sprint'}">
-                    <button type="button" class="btn btn-info btn-xs" ng-click="edit()" ng-if="current.completed === 'N'">
+                <span ze-auth="{id_project : options.projectId, right : 'sprint'}">
+                    <button type="button" class="btn btn-info btn-xs" ng-click="edit()">
                         <i class="fa fa-pencil" ></i>
                     </button>
                     <button type="button" class="btn btn-success btn-xs" ng-click="finalize()" ng-if="current.completed === 'N' && current.active === 'Y'">

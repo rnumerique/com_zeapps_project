@@ -7,7 +7,7 @@ app.controller('ComZeappsPlanningViewCtrl', ['$scope', '$route', '$routeParams',
             'projectId': 'all',
             'id_company': 'all',
             'id_manager': 'all',
-            'id_assigned_to': 'all',
+            'id_assigned_to': $rootScope.user.id,
             'step' : 1,
             'completed': false
         };

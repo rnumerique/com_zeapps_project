@@ -23,6 +23,10 @@ app.controller('ComZeAppsPlanningTableCtrl', ['$scope', '$route', '$routeParams'
             });
         };
 
+        $scope.detailCard = function(card){
+            zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card});
+        };
+
         $scope.edit = function(card){
             var type = card.deadline ? 'deadline' : 'card';
             $location.url('/ng/com_zeapps_project/project/card/edit/'+type+'/'+card.id);

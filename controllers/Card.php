@@ -19,6 +19,8 @@ class Card extends ZeCtrl
 
     public function get_cards($id = 0){
         $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_card_comments", "comments");
+        $this->load->model("Zeapps_project_card_documents", "documents");
         $this->load->model("Zeapps_users", "user");
 
         if($id)
@@ -30,17 +32,35 @@ class Card extends ZeCtrl
             $where['zeapps_project_rights.id_user'] = $user[0]->id;
         }
 
-        $cards = $this->cards->all($where);
+        if($cards = $this->cards->order_by('sort')->all($where)) {
+            foreach ($cards as $card){
+                $card->comments = $this->comments->all(array('id_card' => $card->id));
+                if(!$card->comments)
+                    $card->comments = [];
+                $card->documents = $this->documents->all(array('id_card' => $card->id));
+                if(!$card->documents)
+                    $card->documents = [];
+            }
+        }
 
         echo json_encode($cards);
     }
 
     public function get_card($id){
         $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_card_comments", "comments");
+        $this->load->model("Zeapps_project_card_documents", "documents");
 
-        $cards = $this->cards->get($id);
+        if($card = $this->cards->get($id)) {
+            $card->comments = $this->comments->all(array('id_card' => $card->id));
+            if(!$card->comments)
+                $card->comments = [];
+            $card->documents = $this->documents->all(array('id_card' => $card->id));
+            if(!$card->documents)
+                $card->documents = [];
+        }
 
-        echo json_encode($cards);
+        echo json_encode($card);
     }
 
     public function save_card(){
@@ -62,6 +82,32 @@ class Card extends ZeCtrl
         }
 
         echo json_encode($id);
+    }
+
+    public function move_card(){
+        $this->load->model("Zeapps_project_cards", "cards");
+
+        // constitution du tableau
+        $data = array() ;
+
+        if (strcasecmp($_SERVER['REQUEST_METHOD'], 'post') === 0 && stripos($_SERVER['CONTENT_TYPE'], 'application/json') !== FALSE) {
+            // POST is actually in json format, do an internal translation
+            $data = json_decode(file_get_contents('php://input'), true);
+        }
+
+        $newPos = [
+            'id_category' => $data['id_category'],
+            'step' => $data['step'],
+            'sort' => $data['sort'],
+            'completed' => $data['completed']
+        ];
+
+        $this->cards->updateOldSort($data['id_sprint'], $data['oldCategory'], $data['oldStep'], $data['oldSort']);
+        $this->cards->updateNewSort($data['id_sprint'], $data['id_category'], $data['step'], $data['sort']);
+
+        $this->cards->update($newPos, array('id'=>$data['id']));
+
+        echo json_encode('OK');
     }
 
     public function validate_idea($id){
@@ -108,4 +154,73 @@ class Card extends ZeCtrl
         echo json_encode('OK');
     }
 
+    public function comment(){
+        $this->load->model("Zeapps_project_card_comments", "comments");
+
+        // constitution du tableau
+        $data = array() ;
+
+        if (strcasecmp($_SERVER['REQUEST_METHOD'], 'post') === 0 && stripos($_SERVER['CONTENT_TYPE'], 'application/json') !== FALSE) {
+            // POST is actually in json format, do an internal translation
+            $data = json_decode(file_get_contents('php://input'), true);
+        }
+
+        $id = $this->comments->insert($data);
+
+        $comment = $this->comments->get($id);
+
+        echo json_encode($comment);
+    }
+
+    public function uploadDocuments($id_card = null){
+        if($id_card) {
+            $this->load->model("Zeapps_project_card_documents", "documents");
+
+            $data = [];
+            $res = [];
+
+            $data['id_card'] = $id_card;
+
+            $files = $_FILES['files'];
+
+            $path = '/assets/upload/project/cards/';
+
+            $time = time();
+
+            $year = date('Y', $time);
+            $month = date('m', $time);
+            $day = date('d', $time);
+            $hour = date('H', $time);
+
+            $data['created_at'] = $year . '-' . $month . '-' . $day;
+
+            $path .= $year . '/' . $month . '/' . $day . '/' . $hour . '/';
+
+            recursive_mkdir(FCPATH . $path);
+
+            for ($i = 0; $i < sizeof($files['name']); $i++) {
+                $arr = explode(".", $files["name"][$i]);
+                $extension = end($arr);
+
+                $data['name'] = implode('.', array_slice($arr, 0, -1)); // entire name except the extension
+
+                $data['path'] = $path . ltrim(str_replace(' ', '', microtime()), '0.') . "." . $extension;
+
+                move_uploaded_file($files["tmp_name"][$i], FCPATH . $data['path']);
+
+                $data['id'] = $this->documents->insert($data);
+
+                $data['date'] = date('Y-m-d');
+
+                array_push($res, $data);
+
+                unset($data['id']);
+            }
+
+            echo json_encode($res);
+        }
+        else {
+            echo json_encode('false');
+        }
+    }
 }

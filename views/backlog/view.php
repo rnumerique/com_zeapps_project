@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <div id="content">
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-5">
             <div class="form-group">
                 <select class="form-control" ng-model="options.projectId">
                     <option value="all">
@@ -18,6 +18,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         {{ company.name_company || 'Aucun' }}
                     </option>
                 </select>
+            </div>
+        </div>
+        <div class="col-md-6 form-horizontal">
+            <div class="form-group">
+                <label class="col-md-2 control-label">Assigné à :</label>
+                <div class="col-md-10">
+                    <select class="form-control" ng-model="options.id_assigned_to">
+                        <option value="all">
+                            Tous
+                        </option>
+                        <option ng-repeat="worker in assigned" value="{{worker.id_assigned_to}}">
+                            {{ worker.name_assigned_to || 'Aucun' }}
+                        </option>
+                    </select>
+                </div>
             </div>
         </div>
         <div class="text-center col-md-1">
@@ -55,17 +70,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Assigné à :</label>
-                    <select class="form-control" ng-model="options.id_assigned_to">
-                        <option value="all">
-                            Tous
-                        </option>
-                        <option ng-repeat="worker in assigned" value="{{worker.id_assigned_to}}">
-                            {{ worker.name_assigned_to || 'Aucun' }}
-                        </option>
-                    </select>
-                </div>
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" ng-model="options.completed">
@@ -83,7 +87,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <tr>
                     <th>Titre</th>
                     <th>Description</th>
-                    <th>Auteur</th>
+                    <th>Assigné à</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -97,18 +101,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </a>
                     </th>
                 </tr>
-                <tr ng-repeat-end ng-repeat="card in cardsByProject[project.id] | backlogFilter:options | orderBy:['title']">
+                <tr ng-repeat-end ng-repeat="card in cardsByProject[project.id] | backlogFilter:options | orderBy:'title'">
                     <td><i class="fa fa-lg fa-check text-success" ng-if="task.completed === 'Y'"></i> {{ card.title }}</td>
                     <td ng-class="'text-' + compareDates(task.due_date)">{{ card.description }}</td>
-                    <td>{{ card.name_author }}</td>
+                    <td>{{ card.name_assigned_to }}</td>
                     <td class="text-right no-wrap">
-                        <div ze-auth="{id_project : project.id, right : 'card'}">
-                            <button type="button" class="btn btn-info btn-xs" ng-click="edit(card)">
-                                <i class="fa fa-pencil" ></i>
+                        <div>
+                            <button type="button" class="btn btn-info btn-xs" ng-click="detailCard(card)">
+                                <i class="fa fa-fw fa-eye" ></i>
                             </button>
-                            <button type="button" class="btn btn-danger btn-xs" ng-click="delete(card)">
-                                <i class="fa fa-trash" ></i>
-                            </button>
+                            <span ze-auth="{id_project : project.id, right : 'card'}">
+                                <button type="button" class="btn btn-info btn-xs" ng-click="edit(card)">
+                                    <i class="fa fa-pencil" ></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs" ng-click="delete(card)">
+                                    <i class="fa fa-trash" ></i>
+                                </button>
+                            </span>
                         </div>
                     </td>
                 </tr>

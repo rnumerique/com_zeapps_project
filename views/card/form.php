@@ -5,7 +5,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Intitulé</label>
-                        <input class="form-control" type='text' ng-model="form.title">
+                        <input class="form-control" type='text' ng-model="form.title" ng-required="true">
                     </div>
                 </div>
             </div>
@@ -15,7 +15,7 @@
                     <div class="form-group">
                         <label>Projet</label>
                         <div class="input-group">
-                            <input type="text" ng-model="form.title_project" class="form-control" disabled>
+                            <input type="text" ng-model="form.title_project" class="form-control" disabled ng-required="true">
 
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button" ng-click="removeProject()"
@@ -31,7 +31,10 @@
                     <div class="form-group">
                         <label>Catégorie</label>
                         <select ng-model="form.id_category" class="form-control">
-                            <option ng-repeat="category in categories" ng-value="category.id">
+                            <option value="0">
+                                Sans catégorie
+                            </option>
+                            <option ng-repeat="category in categories" value="{{category.id}}">
                                 {{ category.title }}
                             </option>
                         </select>

@@ -136,6 +136,15 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
 
             zhttp.project.project.post(formatted_data).then(function(response){
                 if(response.data && response.data != 'false'){
+                    if(!$scope.form.id){ // new project, let's assign the rights so we can manage it w/o reloading the app
+                        $rootScope.project_rights[response.data] = {
+                            access : '1',
+                            sandbox : '1',
+                            card : '1',
+                            sprint : '1',
+                            project : '1'
+                        }
+                    }
                     $location.url('/ng/com_zeapps_project/project/' + response.data);
                 }
             })

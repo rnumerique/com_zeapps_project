@@ -15,16 +15,16 @@
         <div class="col-md-9">
             <div class="pull-right">
                 <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/create/'>
-                    <span class='fa fa-plus' aria-hidden='true'></span> Projet
+                    <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Projet
                 </a>
                 <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/create/{{ activeCategory.data.id }}' ng-if="activeCategory.data.id" ze-auth="{id_project : activeCategory.data.id, right : 'project'}">
-                    <span class='fa fa-plus' aria-hidden='true'></span> Sous Projet
+                    <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Sous Projet
                 </a>
                 <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/card/create/card/{{ activeCategory.data.id }}' ng-if="activeCategory.data.id" ze-auth="{id_project : activeCategory.data.id, right : 'card'}">
-                    <span class='fa fa-plus' aria-hidden='true'></span> Carte
+                    <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Carte
                 </a>
                 <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/card/create/deadline/{{ activeCategory.data.id }}' ng-if="activeCategory.data.id" ze-auth="{id_project : activeCategory.data.id, right : 'card'}">
-                    <span class='fa fa-plus' aria-hidden='true'></span> Deadline
+                    <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Deadline
                 </a>
             </div>
             <div ng-if="activeCategory.data.id">
@@ -32,10 +32,13 @@
                     {{ activeCategory.data.title }}
                     <span ze-auth="{id_project : activeCategory.data.id, right : 'project'}">
                         <a type="button" class="btn btn-info btn-xs" ng-href="/ng/com_zeapps_project/project/edit/{{ activeCategory.data.id }}">
-                            <i class="fa fa-pencil" ></i>
+                            <i class="fa fa-fw fa-pencil" ></i>
                         </a>
+                        <button type="button" class="btn btn-warning btn-xs" ng-click="archive_project(activeCategory.data.id)">
+                            <i class="fa fa-fw fa-archive" ></i>
+                        </button>
                         <button type="button" class="btn btn-danger btn-xs" ng-click="delete_project(activeCategory.data.id)">
-                            <i class="fa fa-trash" ></i>
+                            <i class="fa fa-fw fa-trash" ></i>
                         </button>
                     </span>
                 </h3>
