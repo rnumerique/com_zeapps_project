@@ -36,11 +36,16 @@ class Sprint extends ZeCtrl
 
     public function get_sprints($id_project = null){
         $this->load->model("Zeapps_project_sprints", "sprints");
+        $this->load->model("Zeapps_users", "user");
 
         if($id_project)
             $where = array('id_project' => $id_project);
         else
             $where = array();
+
+        if($user = $this->user->getUserByToken($this->session->get('token'))){
+            $where['zeapps_project_rights.id_user'] = $user[0]->id;
+        }
 
         $sprints = $this->sprints->order_by('completed', 'ASC')->order_by('active', 'ASC')->all($where);
 
@@ -94,6 +99,46 @@ class Sprint extends ZeCtrl
         $this->cards->updateStateOf($data, $id);
 
         echo json_encode('OK');
+    }
+
+    public function finalize_sprint($id, $next){
+        $this->load->model("Zeapps_project_sprints", "sprints");
+        $this->load->model("Zeapps_project_cards", "cards");
+
+        $sprint = $this->sprints->get($id);
+
+        $this->sprints->update(array('active' => 'N', 'completed' => 'Y'), $sprint->id);
+        $this->cards->update(array('completed' => 'Y'), array('id_sprint' => $sprint->id, 'step' => 5));
+
+        if($next === 'true') {
+
+            if ($new_sprint = $this->sprints->all(array('id_project' => $sprint->id_project, 'numerotation >' => $sprint->numerotation))) {
+                $new_sprint = $new_sprint[0];
+                $this->sprints->update(array('active' => 'Y'), $new_sprint->id);
+            } else {
+                $due_date_prev = new DateTime($sprint->due_date);
+                $due_date_prev->modify('+1 day');
+                $start_date = $due_date_prev->format('Y-m-d');
+                $due_date_prev->modify('+15 day');
+                $due_date = $due_date_prev->format('Y-m-d');
+                $new_sprint = array(
+                    'id_project' => $sprint->id_project,
+                    'active' => 'Y',
+                    'completed' => 'N',
+                    'start_date' => $start_date,
+                    'due_date' => $due_date
+                );
+                $id = $this->sprints->insert($new_sprint);
+                $new_sprint = $this->sprints->get($id);
+            }
+
+            $this->cards->update(array('step' => 2, 'id_sprint' => $new_sprint->id), array('id_sprint' => $sprint->id, 'step <' => 5));
+
+            echo $new_sprint->id;
+        }
+        else{
+            echo "OK";
+        }
     }
 
 

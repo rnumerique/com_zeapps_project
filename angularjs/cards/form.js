@@ -2,11 +2,21 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
     function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, $timeout) {
 
         $scope.form = {};
+        $scope.categories = [];
         var step;
         var url;
 
         var getContext = function(id_project, id_sprint){
             $scope.$emit('triggerFormCard', {id_project : id_project, id_sprint: id_sprint});
+        };
+
+        var getCategoriesOf = function(id_project){
+            zhttp.project.category.get_all(id_project).then(function(response){
+                if(response.data && response.data != 'false'){
+                    $scope.categories = response.data;
+                    $scope.form.id_category = $scope.form.id_category;
+                }
+            });
         };
 
         $scope.$on('dataFormCard', function(event, data){
@@ -28,6 +38,7 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                             }
                         });
                         getContext($scope.form.id_project);
+                        getCategoriesOf($scope.form.id_project);
                     }
                 })
             }
@@ -51,6 +62,7 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                             });
                         }
                         getContext($scope.form.id_project);
+                        getCategoriesOf($scope.form.id_project);
                     }
                 })
             }
@@ -69,6 +81,7 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                     $scope.form.id_project = response.data.id;
                     $scope.form.title_project = response.data.breadcrumbs;
                     getContext($scope.form.id_project);
+                    getCategoriesOf($scope.form.id_project);
                 }
             });
         }
@@ -78,6 +91,10 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                 if (objReturn) {
                     $scope.form.id_project = objReturn.id;
                     $scope.form.title_project = objReturn.breadcrumbs;
+                    getCategoriesOf($scope.form.id_project);
+                    $scope.form.id_sprint = 0;
+                    $scope.form.title_sprint = '';
+                    $scope.form.step = 1;
                 } else {
                     $scope.form.id_project = 0;
                     $scope.form.title_project = '';
@@ -114,7 +131,7 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
             zeapps_modal.loadModule("com_zeapps_core", "search_user", {}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_assigned_to = objReturn.id;
-                    $scope.form.name_assigned_to = objReturn.firstname + ' ' + objReturn.lastname;
+                    $scope.form.name_assigned_to = objReturn.firstname ? objReturn.firstname[0]  + '. ' + objReturn.lastname : objReturn.lastname;
                 } else {
                     $scope.form.id_assigned_to = 0;
                     $scope.form.name_assigned_to = '';

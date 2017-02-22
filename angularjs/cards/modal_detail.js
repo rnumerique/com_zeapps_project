@@ -9,11 +9,16 @@ listModuleModalFunction.push({
 });
 
 
-app.controller('ZeAppsProjectsModalDetailCardCtrl', function($scope, $uibModalInstance, zeHttp, option) {
+app.controller('ZeAppsProjectsModalDetailCardCtrl', function($scope, $uibModalInstance, zeHttp, option, $location) {
     $scope.card = option.card;
+
+    $scope.edit = function(){
+        $location.url('/ng/com_zeapps_project/sprint/edit/card/' + $scope.card.id_project + '/' + $scope.card.id_sprint + '/' + $scope.card.id);
+        $uibModalInstance.dismiss();
+    };
 
     $scope.close = function () {
         $uibModalInstance.dismiss();
-    }
+    };
 
 }) ;

@@ -1,9 +1,19 @@
+.outdated{
+    background-color: #dd0000 !important;
+    color: #fff;
+}
+
+.card_description{
+    white-space: pre-line;
+}
+
 .sprints{
     margin-bottom: 1em;
     background: #333;
     padding-bottom: .5em;
     box-sizing: border-box;
-    overflow: auto;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 .sprints_project{
     padding: 0 10px;
@@ -13,7 +23,7 @@
 
 .sprint,
 .sprint_separator{
-    float: left;
+    display: inline-block;
 }
 .sprint{
     background: #ccc;

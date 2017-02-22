@@ -11,6 +11,10 @@ class Project extends ZeCtrl
         $this->load->view('project/categories');
     }
 
+    public function rights(){
+        $this->load->view('project/rights');
+    }
+
     public function form(){
         $this->load->view('project/form');
     }
@@ -60,11 +64,16 @@ class Project extends ZeCtrl
 
     public function get_projects($id_parent = 0, $spaces = 'false', $filter = 'false'){
         $this->load->model("Zeapps_projects", "projects");
+        $this->load->model("Zeapps_users", "user");
 
         if($id_parent)
             $where = array('id_parent' => $id_parent);
         else
             $where = array();
+
+        if($user = $this->user->getUserByToken($this->session->get('token'))){
+            $where['zeapps_project_rights.id_user'] = $user[0]->id;
+        }
 
         $projects = $this->projects->all($where, $spaces, $filter);
 
@@ -81,8 +90,15 @@ class Project extends ZeCtrl
 
     public function get_projects_tree(){
         $this->load->model("Zeapps_projects", "projects");
+        $this->load->model("Zeapps_users", "user");
 
-        $projects = $this->projects->all();
+        $where = [];
+
+        if($user = $this->user->getUserByToken($this->session->get('token'))){
+            $where['zeapps_project_rights.id_user'] = $user[0]->id;
+        }
+
+        $projects = $this->projects->all($where);
 
         if ($projects == false) {
             echo json_encode(array());
@@ -94,6 +110,7 @@ class Project extends ZeCtrl
 
     public function save_project(){
         $this->load->model("Zeapps_projects", "projects");
+        $this->load->model("Zeapps_project_rights", "rights");
 
         // constitution du tableau
         $data = array() ;
@@ -109,6 +126,25 @@ class Project extends ZeCtrl
         }
         else{
             $id = $this->projects->insert($data);
+        }
+
+        if($data['id_parent'] && !$data['id']){
+            if($users = $this->rights->all(array('id_project' => $data['id_parent']))){
+                foreach($users as $user){
+                    unset($user->id);
+                    $user->id_project = $id;
+                    $this->rights->insert($user);
+                }
+            }
+        }
+
+        if($data['id_manager']){
+            if($manager = $this->rights->get(array('id_project' => $id, 'id_user' => $data['id_manager']))){
+                $this->rights->update(array('access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1), $manager->id);
+            }
+            else{
+                $this->rights->insert(array('id_project' => $id, 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1));
+            }
         }
 
         echo $id;

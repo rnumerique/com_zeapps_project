@@ -159,6 +159,95 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
             $location.url('/ng/com_zeapps_project/sprint/edit/' + $scope.options.sprintId);
         };
 
+        $scope.finalize = function(){
+            if(hasCardsNotFinished()) {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: '/assets/angular/popupModalDeBase.html',
+                    controller: 'ZeAppsPopupModalDeBaseCtrl',
+                    size: 'lg',
+                    resolve: {
+                        titre: function () {
+                            return 'Attention';
+                        },
+                        msg: function () {
+                            return 'Ce sprint a des cartes non terminées. Souhaitez-vous les transferer vers le sprint suivant ?';
+                        },
+                        action_danger: function () {
+                            return 'Annuler';
+                        },
+                        action_primary: function () {
+                            return false;
+                        },
+                        action_success: function () {
+                            return 'Confirmer';
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (selectedItem) {
+                    if (selectedItem.action == 'danger') {
+
+                    } else if (selectedItem.action == 'success') {
+                        zhttp.project.sprint.finalize($scope.current.id, true).then(function (response) {
+                            if (response.status == 200) {
+                                $location.url('/ng/com_zeapps_project/sprint/' + $scope.current.id_project + '/' + response.data);
+                            }
+                        });
+                    }
+
+                }, function () {
+                    //console.log("rien");
+                });
+            }
+            else{
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: '/assets/angular/popupModalDeBase.html',
+                    controller: 'ZeAppsPopupModalDeBaseCtrl',
+                    size: 'lg',
+                    resolve: {
+                        titre: function () {
+                            return 'Attention';
+                        },
+                        msg: function () {
+                            return 'Souhaitez-vous clôturer ce sprint ?';
+                        },
+                        action_danger: function () {
+                            return 'Annuler';
+                        },
+                        action_primary: function () {
+                            return 'Clôturer';
+                        },
+                        action_success: function () {
+                            return 'Clôturer et ouvrir le suivant';
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (selectedItem) {
+                    if (selectedItem.action == 'danger') {
+
+                    } else if (selectedItem.action == 'primary') {
+                        zhttp.project.sprint.finalize($scope.current.id, false).then(function (response) {
+                            if (response.status == 200) {
+                                $location.url('/ng/com_zeapps_project/sprint/' + $scope.current.id_project);
+                            }
+                        });
+                    } else if (selectedItem.action == 'success') {
+                        zhttp.project.sprint.finalize($scope.current.id, true).then(function (response) {
+                            if (response.status == 200) {
+                                $location.url('/ng/com_zeapps_project/sprint/' + $scope.current.id_project + '/' + response.data);
+                            }
+                        });
+                    }
+
+                }, function () {
+                    //console.log("rien");
+                });
+            }
+        };
+
         $scope.delete = function(){
             var modalInstance = $uibModal.open({
                 animation: true,
@@ -251,6 +340,12 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                 var data = {} ;
                 data.id = idObj;
                 data.step = step ;
+                if(step == 5){
+                    data.completed = 'Y';
+                }
+                else{
+                    data.completed = 'N';
+                }
                 data.id_category = category ;
 
                 var formatted_data = angular.toJson(data);
@@ -258,4 +353,16 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                 zhttp.project.card.post(formatted_data);
             }
         };
+
+        function hasCardsNotFinished(){
+            var hasCards = false;
+            angular.forEach($scope.categories, function(category){
+                if(($scope.cards[category.id][2] && $scope.cards[category.id][2].length > 0) ||
+                    ($scope.cards[category.id][3] && $scope.cards[category.id][3].length > 0) ||
+                    ($scope.cards[category.id][4] && $scope.cards[category.id][4].length > 0)){
+                    hasCards = true;
+                }
+            });
+            return hasCards;
+        }
     }]);

@@ -63,7 +63,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <tr class="info" ng-repeat-start="project in projects">
                     <th colspan="4">
                         {{ project.breadcrumbs }}{{ project.name_company ? ' (' + project.name_company + ')' : '' }}
-                        <a class="pull-right text-success pointer" ng-href="/ng/com_zeapps_project/sandbox/new/{{project.id}}">
+                        <a class="pull-right text-success pointer" ng-href="/ng/com_zeapps_project/sandbox/new/{{project.id}}" ze-auth="{id_project : project.id, right : 'sandbox'}">
                             <i class="fa fa-plus"></i>
                             Nouvelle idée
                         </a>
@@ -74,15 +74,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <td ng-class="'text-' + compareDates(task.due_date)">{{ sandbox.description }}</td>
                     <td>{{ sandbox.name_author }}</td>
                     <td class="text-right no-wrap">
-                        <button type="button" class="btn btn-success btn-xs" ng-click="validate(sandbox)">
-                            <i class="fa fa-share" ></i>
-                        </button>
-                        <button type="button" class="btn btn-info btn-xs" ng-click="edit(sandbox)">
-                            <i class="fa fa-pencil" ></i>
-                        </button>
-                        <button type="button" class="btn btn-danger btn-xs" ng-click="delete(sandbox)">
-                            <i class="fa fa-trash" ></i>
-                        </button>
+                        <div ze-auth="{id_project : project.id, right : 'sandbox'}">
+                            <button type="button" class="btn btn-success btn-xs" ng-click="validate(sandbox)">
+                                <i class="fa fa-share" ></i>
+                            </button>
+                            <button type="button" class="btn btn-info btn-xs" ng-click="edit(sandbox)">
+                                <i class="fa fa-pencil" ></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-xs" ng-click="delete(sandbox)">
+                                <i class="fa fa-trash" ></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 </tbody>

@@ -1,6 +1,9 @@
 app.controller('ComZeAppsPlanningTableCtrl', ['$scope', '$route', '$routeParams', '$location', '$rootScope', 'zeHttp', 'zeapps_modal', '$uibModal',
     function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal) {
 
+        $scope.showDate = [];
+        $scope.showDate['0000-00-00'] = true;
+
         $scope.stepOf = function(card){
             if(card.step === '2')
                 return 'fa-calendar-o text-muted';

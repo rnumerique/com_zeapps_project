@@ -21,7 +21,17 @@ class Zeapps_projects extends ZeModel {
             $haystack[] = $filter;
         }
 
-        if($ret = parent::all($where)) {
+        $where['zeapps_projects.deleted_at'] = null;
+        $where['zeapps_project_rights.access'] = 1;
+
+        $ret = $this->database()->select('*,
+                                        zeapps_projects.id as id')
+                                ->join('zeapps_project_rights', 'zeapps_project_rights.id_project = zeapps_projects.id', 'LEFT')
+                                ->where($where)
+                                ->table('zeapps_projects')
+                                ->result();
+
+        if($ret) {
             $ret = $this->_parentChild_sort($ret, $id);
             foreach ($ret as $row) {
                 if ($filter !== 'false') {

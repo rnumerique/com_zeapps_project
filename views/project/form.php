@@ -9,7 +9,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Intitulé du projet</label>
-                        <input class="form-control" type='text' ng-model="form.title">
+                        <input class="form-control" type='text' ng-model="form.title" ng-required="true">
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -37,7 +37,7 @@
                     <div class="form-group">
                         <label>Entreprise</label>
                         <div class="input-group">
-                            <input type="text" ng-model="form.name_company" class="form-control" disabled>
+                            <input type="text" ng-model="form.name_company" class="form-control" disabled  ng-required="!form.id_contact">
 
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button" ng-click="removeCompany()"
@@ -52,7 +52,7 @@
                     <div class="form-group">
                         <label>Contact</label>
                         <div class="input-group">
-                            <input type="text" ng-model="form.name_contact" class="form-control" disabled>
+                            <input type="text" ng-model="form.name_contact" class="form-control" disabled  ng-required="!form.id_company">
 
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button" ng-click="removeContact()"
@@ -67,7 +67,7 @@
                     <div class="form-group">
                         <label>Manager</label>
                         <div class="input-group">
-                            <input type="text" ng-model="form.name_manager" class="form-control" disabled>
+                            <input type="text" ng-model="form.name_manager" class="form-control" disabled ng-required="true">
 
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button" ng-click="removeManager()"
