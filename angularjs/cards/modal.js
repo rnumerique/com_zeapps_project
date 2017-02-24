@@ -34,15 +34,17 @@ app.controller('ZeAppsProjectsModalCardCtrl', function($scope, $uibModalInstance
     loadList() ;
 
     $scope.toggle = function(card){
-        var i = $scope.selectedCards.indexOf(card.id);
-        if(i === -1)
-            $scope.selectedCards.push(card.id);
-        else
+        var i = $scope.selectedCards.indexOf(card);
+        if(i === -1) {
+            $scope.selectedCards.push(card);
+        }
+        else {
             $scope.selectedCards.splice(i, 1);
+        }
     };
 
     $scope.isSelected = function(card){
-        return $scope.selectedCards.indexOf(card.id) > -1;
+        return $scope.selectedCards.indexOf(card) > -1;
     };
 
     $scope.loadCards = function () {

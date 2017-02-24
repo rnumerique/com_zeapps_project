@@ -10,7 +10,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="row">
         <div class="col-md-11">
             <div class="form-group">
-                <select class="form-control" ng-model="options.projectId">
+                <select class="form-control" ng-model="options.projectId" ng-change="filterProjects()">
                     <option value="all">
                         Tous
                     </option>
@@ -27,12 +27,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="col-md-12">
             <div class="sprints clearfix"
                  ng-repeat="project in projects | sprintFilter:options | orderBy:'breadcrumbs'"
-                 ng-if="sprintsByProject[project.id] && (sprintsByProject[project.id] | filter:{ active : 'Y' }).length > 0"
+                 ng-if="(project.sprints | filter:{ active : 'Y' }).length > 0"
             >
                 <div class="sprints_project">
                     <strong>{{ project.breadcrumbs }}</strong>{{ project.name_company ? ' (' + project.name_company + ')' : '' }}
                 </div>
-                <div class="sprint pointer text-center" ng-repeat-start="sprint in sprintsByProject[project.id] | orderBy:['-completed','-active','due_date']" ng-class="sprint.active === 'Y' ? 'active' : ''" ng-click="goTo(sprint)">
+                <div class="sprint pointer text-center" ng-repeat-start="sprint in project.sprints | orderBy:['-completed','-active','due_date']" ng-class="sprint.active === 'Y' ? 'active' : ''" ng-click="goTo(sprint)">
                     <h5>
                         {{ sprint.title }}
                     </h5>

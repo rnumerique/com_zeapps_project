@@ -84,32 +84,6 @@ class Card extends ZeCtrl
         echo json_encode($id);
     }
 
-    public function move_card(){
-        $this->load->model("Zeapps_project_cards", "cards");
-
-        // constitution du tableau
-        $data = array() ;
-
-        if (strcasecmp($_SERVER['REQUEST_METHOD'], 'post') === 0 && stripos($_SERVER['CONTENT_TYPE'], 'application/json') !== FALSE) {
-            // POST is actually in json format, do an internal translation
-            $data = json_decode(file_get_contents('php://input'), true);
-        }
-
-        $newPos = [
-            'id_category' => $data['id_category'],
-            'step' => $data['step'],
-            'sort' => $data['sort'],
-            'completed' => $data['completed']
-        ];
-
-        $this->cards->updateOldSort($data['id_sprint'], $data['oldCategory'], $data['oldStep'], $data['oldSort']);
-        $this->cards->updateNewSort($data['id_sprint'], $data['id_category'], $data['step'], $data['sort']);
-
-        $this->cards->update($newPos, array('id'=>$data['id']));
-
-        echo json_encode('OK');
-    }
-
     public function validate_idea($id){
         $this->load->model("Zeapps_project_cards", "cards");
 

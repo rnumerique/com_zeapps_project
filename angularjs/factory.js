@@ -19,7 +19,6 @@ app.config(['$provide',
                     get_all : getAll_card,
                     get : get_card,
                     post : post_card,
-                    move : move_card,
                     del : delete_card,
                     complete : complete_card,
                     validate : validate_idea,
@@ -111,9 +110,6 @@ app.config(['$provide',
             function post_card(data){
                 return zeHttp.post('/com_zeapps_project/card/save_card/', data);
             }
-            function move_card(data){
-                return zeHttp.post('/com_zeapps_project/card/move_card/', data);
-            }
             function delete_card(id, deadline){
                 deadline = !!deadline;
                 return zeHttp.get('/com_zeapps_project/card/delete_card/' + id + '/' + deadline);
@@ -173,9 +169,8 @@ app.config(['$provide',
             function get_sprint(id){
                 return zeHttp.get('/com_zeapps_project/sprint/get_sprint/' + id);
             }
-            function getAll_sprint(id_project){
-                id_project = id_project || '';
-                return zeHttp.get('/com_zeapps_project/sprint/get_sprints/' + id_project);
+            function getAll_sprint(){
+                return zeHttp.get('/com_zeapps_project/sprint/get_sprints/');
             }
             function post_sprint(data){
                 return zeHttp.post('/com_zeapps_project/sprint/save_sprint/', data);
@@ -183,8 +178,8 @@ app.config(['$provide',
             function delete_sprint(id){
                 return zeHttp.get('/com_zeapps_project/sprint/delete_sprint/' + id);
             }
-            function updateCards_sprint(id, data){
-                return zeHttp.post('/com_zeapps_project/sprint/updateCardsOf/' + id, data);
+            function updateCards_sprint(data){
+                return zeHttp.post('/com_zeapps_project/sprint/updateCards/', data);
             }
             function finalize_sprint(id, next){
                 next = next || false;
