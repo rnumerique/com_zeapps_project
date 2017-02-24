@@ -34,22 +34,77 @@ class Sprint extends ZeCtrl
         echo json_encode($sprint);
     }
 
-    public function get_sprints($id_project = null){
+    public function get_sprints(){
+        $this->load->model("Zeapps_projects", "projects");
         $this->load->model("Zeapps_project_sprints", "sprints");
+        $this->load->model("Zeapps_project_categories", "categories");
+        $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_card_comments", "comments");
+        $this->load->model("Zeapps_project_card_documents", "documents");
         $this->load->model("Zeapps_users", "user");
 
-        if($id_project)
-            $where = array('id_project' => $id_project);
-        else
-            $where = array();
+        $where = array();
 
         if($user = $this->user->getUserByToken($this->session->get('token'))){
             $where['zeapps_project_rights.id_user'] = $user[0]->id;
         }
 
-        $sprints = $this->sprints->order_by('completed', 'ASC')->order_by('active', 'ASC')->all($where);
+        $default_category = new stdClass();
+        $default_category->id = 0;
+        $default_category->title = '';
 
-        echo json_encode($sprints);
+        if($projects = $this->projects->all($where, 'true')){
+            foreach($projects as $project){
+                if($project->categories = $this->categories->all(array('id_project' => $project->id))){
+                    array_unshift($project->categories, $default_category);
+                }
+                else{
+                    $project->categories = [];
+                    $project->categories[] = $default_category;
+                }
+                $where['zeapps_project_sprints.id_project'] = $project->id;
+                if($project->sprints = $this->sprints->all($where)){
+                    foreach($project->sprints as $sprint){
+                        $sprint->cards = [];
+                        foreach($project->categories as $category){
+                            $sprint->cards[$category->id] = [];
+                            for($i = 2; $i < 6; $i++){
+                                $sprint->cards[$category->id][$i] = [];
+                            }
+                        }
+
+                        unset($where['zeapps_project_sprints.id_project']);
+                        $where['zeapps_project_cards.id_sprint'] = $sprint->id;
+
+                        if($cards = $this->cards->all($where)){
+                            foreach($cards as $card){
+                                if(!$card->comments = $this->comments->all(array('id_card' => $card->id)))
+                                    $card->comments = [];
+                                if(!$card->documents = $this->documents->all(array('id_card' => $card->id)))
+                                    $card->documents = [];
+
+                                array_push($sprint->cards[$category->id][$card->step], $card);
+                            }
+                        }
+                        else{
+                            $sprint->cards = [];
+                            foreach($project->categories as $category){
+                                $sprint->cards[$category->id] = [];
+                                for($i = 2; $i < 6; $i++){
+                                    $sprint->cards[$category->id][$i] = [];
+                                }
+                            }
+                        }
+                    }
+                    unset($where['zeapps_project_cards.id_sprint']);
+                }
+                else{
+                    $project->sprints = [];
+                }
+            }
+        }
+
+        echo json_encode($projects);
     }
 
     public function save_sprint(){
@@ -85,7 +140,7 @@ class Sprint extends ZeCtrl
         echo json_encode('OK');
     }
 
-    public function updateCardsOf($id){
+    public function updateCards(){
         $this->load->model("Zeapps_project_cards", "cards");
 
         // constitution du tableau
@@ -96,7 +151,7 @@ class Sprint extends ZeCtrl
             $data = json_decode(file_get_contents('php://input'), true);
         }
 
-        $this->cards->updateStateOf($data, $id);
+        $this->cards->update_batch($data);
 
         echo json_encode('OK');
     }

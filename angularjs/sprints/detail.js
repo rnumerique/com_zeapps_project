@@ -5,7 +5,7 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
 
         $scope.options = {
             'projectId': 'none',
-            'sprintId' : 0,
+            'sprintId' : undefined,
             'sprint' : {}
         };
 
@@ -40,158 +40,94 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                 }
                 data.id_category = category ;
 
-                for(var k = 0; k < $scope.cards[category][step].length; k++){
-                    if($scope.cards[category][step][k].id == data.id){
-                        data.id_sprint = $scope.cards[category][step][k].id_sprint;
-                        data.oldSort = $scope.cards[category][step][k].sort;
-                        data.oldStep = $scope.cards[category][step][k].step;
-                        data.oldCategory = $scope.cards[category][step][k].id_category;
+                for(var k = 0; k < $scope.current.cards[category][step].length; k++){
+                    if($scope.current.cards[category][step][k].id == data.id){
+                        data.oldStep = $scope.current.cards[category][step][k].step;
+                        data.oldCategory = $scope.current.cards[category][step][k].id_category;
 
-                        $scope.cards[category][step][k].category = category;
-                        $scope.cards[category][step][k].step = step;
-                        $scope.cards[category][step][k].sort = k;
-
-                        data.sort = $scope.cards[category][step][k].sort;
-
-                        break;
+                        $scope.current.cards[category][step][k].category = category;
+                        $scope.current.cards[category][step][k].step = step;
                     }
+                    $scope.current.cards[category][step][k].sort = k;
                 }
 
-                for(var i = data.oldSort; i < $scope.cards[data.oldCategory][data.oldStep].length; i++){
-                    $scope.cards[data.oldCategory][data.oldStep][i].sort--;
+                var formatted_data = angular.toJson($scope.current.cards[category][step]);
+                zhttp.project.sprint.updateCards(formatted_data);
+
+                for(var i = 0; i < $scope.current.cards[data.oldCategory][data.oldStep].length; i++){
+                    $scope.current.cards[data.oldCategory][data.oldStep][i].sort = i;
                 }
 
-                for(var j = data.sort + 1; j < $scope.cards[category][step].length; j++){
-                    $scope.cards[category][step][j].sort++;
-                }
-
-                var formatted_data = angular.toJson(data);
-
-                zhttp.project.card.move(formatted_data);
+                var formatted_data = angular.toJson($scope.current.cards[data.oldCategory][data.oldStep]);
+                zhttp.project.sprint.updateCards(formatted_data);
             }
         };
 
-        var defaultCategory = {
-            id: 0,
-            title: ""
-        };
-
-        var cards = [];
-
-        $scope.sprintsByProject = [];
         $scope.current = undefined;
-
-        zhttp.project.project.get_all(0, true).then(function(response){
-            if(response.data && response.data != "false") {
-                $scope.projects = response.data;
-                angular.forEach($scope.projects, function (project) {
-                    if (!$scope.sprintsByProject[project.id])
-                        $scope.sprintsByProject[project.id] = [];
-                });
-            }
-        });
 
         zhttp.project.sprint.get_all().then(function(response){
             if(response.data && response.data != "false") {
-                var sprints = response.data;
-                angular.forEach(sprints, function (sprint) {
-                    if (!$scope.sprintsByProject[sprint.id_project])
-                        $scope.sprintsByProject[sprint.id_project] = [];
-                    $scope.sprintsByProject[sprint.id_project].push(sprint);
-                    if($scope.options.sprintId && sprint.id === $scope.options.sprintId)
-                        $scope.current = sprint;
-                });
+                $scope.projects = response.data;
+
+                if($routeParams.id_project){
+                    for(var i = 0; i < $scope.projects.length; i++){
+                        if($scope.projects[i].id == $routeParams.id_project){
+                            $scope.options.projectId = i;
+                            $scope.sortable.disabled = !$rootScope.project_rights || $rootScope.project_rights[$scope.projects[i].id]['card'] == '0';
+
+                            if($routeParams.id) {
+                                for (var j = 0; j < $scope.projects[i].sprints.length; j++) {
+                                    if ($scope.projects[i].sprints[j].id == $routeParams.id) {
+                                        $scope.options.sprintId = j;
+                                    }
+                                }
+                                $scope.selectSprint();
+                            }
+                            else{
+                                $scope.findActiveSprint();
+                            }
+                        }
+                    }
+                }
             }
         });
 
-        var get_categories = function(id_project) {
-            zhttp.project.category.get_all(id_project).then(function (response) {
-                if (response.data && response.data != "false") {
-                    $scope.categories = response.data;
-                }
-                else{
-                    $scope.categories = [];
-                }
-                $scope.categories.unshift(defaultCategory);
-                initCards();
-            });
-        };
+        $scope.findActiveSprint = function(){
+            $scope.options.sprintId = undefined;
+            if($scope.options.projectId !== 'none') {
+                $scope.sortable.disabled = $rootScope.project_rights[$scope.projects[$scope.options.projectId].id]['card'] == '0';
 
-        var initCards = function(){
-            $scope.cards = [];
-            angular.forEach($scope.categories, function(category){
-                if(!$scope.cards[category.id])
-                    $scope.cards[category.id] = [];
-                angular.forEach($scope.steps, function(step, id){
-                    if(!$scope.cards[category.id][id])
-                        $scope.cards[category.id][id] = [];
-                });
-            });
-            angular.forEach(cards, function(card){
-                if(card.id_sprint === $scope.options.sprintId) {
-                    if (!$scope.cards[card.id_category])
-                        $scope.cards[card.id_category] = [];
-                    if (!$scope.cards[card.id_category][card.step])
-                        $scope.cards[card.id_category][card.step] = [];
-                    $scope.cards[card.id_category][card.step].push(card);
-                }
-            });
-        };
-
-        var get_cards = function(id_project){
-            zhttp.project.card.get_all(id_project).then(function(response){
-                if(response.data && response.data != "false") {
-                    cards = response.data;
-                    initCards();
-                }
-            });
-        };
-
-        if($routeParams.id){
-            $scope.options.sprintId = $routeParams.id;
-        }
-
-        if($routeParams.id_project){
-            $scope.options.projectId = $routeParams.id_project;
-            $scope.sortable.disabled = !$rootScope.project_rights || $rootScope.project_rights[$scope.options.projectId]['card'] == '0';
-            get_categories($routeParams.id_project);
-            get_cards($routeParams.id_project);
-        }
-
-        $scope.$watch("options.projectId", function(id, oldId, scope){
-            if(id != undefined && id != oldId) {
-                scope.options.sprintId = 0;
-                scope.sortable.disabled = $rootScope.project_rights[id]['card'] == '0';
-                get_categories(id);
-                angular.forEach(scope.sprintsByProject[id], function (sprint) {
-                    if(sprint.active === 'Y')
-                        scope.options.sprintId = sprint.id;
-                });
-            }
-        });
-
-        $scope.$watch("options.sprintId", function(id, oldId, scope){
-            if(id != undefined && id != oldId) {
-                scope.current = undefined;
-                for(var i = 0; i < scope.sprintsByProject[scope.options.projectId].length; i++){
-                    if(scope.sprintsByProject[scope.options.projectId][i].id === id) {
-                        scope.current = scope.sprintsByProject[scope.options.projectId][i];
-                        scope.sortable.disabled = (scope.current.completed === 'Y' || $rootScope.project_rights[scope.current.id_project]['card'] == '0');
+                for(var i=0; i < $scope.projects[$scope.options.projectId].sprints.length; i++){
+                    if ($scope.projects[$scope.options.projectId].sprints[i].active === 'Y') {
+                        $scope.options.sprintId = i;
                         break;
                     }
                 }
-                get_cards(scope.options.projectId);
             }
-        });
+
+            $scope.selectSprint();
+        };
+
+        $scope.selectSprint = function(){
+            if($scope.options.sprintId !== undefined){
+                $scope.current = $scope.projects[$scope.options.projectId].sprints[$scope.options.sprintId];
+            }
+            else{
+                $scope.current = undefined;
+            }
+        };
 
         $scope.addCards = function(){
-            zeapps_modal.loadModule("com_zeapps_project", "search_card", {id_project:$scope.options.projectId, id_sprint:$scope.options.sprintId}, function(objReturn) {
+            zeapps_modal.loadModule("com_zeapps_project", "search_card", {id_project:$scope.projects[$scope.options.projectId].id, id_sprint:$scope.current.id}, function(objReturn) {
                 if (objReturn) {
-                    zhttp.project.sprint.updateCards($scope.options.sprintId, objReturn).then(function(response){
-                        if(response.data && response.data != 'false'){
-                            get_cards($scope.options.projectId);
-                        }
-                    })
+                    for(var i=0; i < objReturn.length; i++) {
+                        objReturn[i].id_sprint = $scope.current.id;
+                        objReturn[i].step = 2;
+                        objReturn[i].sort = $scope.current.cards[objReturn[i].id_category][objReturn[i].step].length;
+
+                        $scope.current.cards[objReturn[i].id_category][objReturn[i].step].push(objReturn[i]);
+                    }
+                    zhttp.project.sprint.updateCards(objReturn);
                 }
             });
         };
@@ -207,13 +143,13 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
 
         $scope.new = function(){
             if($scope.options.projectId !== 'none')
-                $location.url('/ng/com_zeapps_project/sprint/create/' + $scope.options.projectId);
+                $location.url('/ng/com_zeapps_project/sprint/create/' + $scope.projects[$scope.options.projectId].id);
             else
                 $location.url('/ng/com_zeapps_project/sprint/create/');
         };
 
         $scope.edit = function(){
-            $location.url('/ng/com_zeapps_project/sprint/edit/' + $scope.options.sprintId);
+            $location.url('/ng/com_zeapps_project/sprint/edit/' + $scope.current.id);
         };
 
         $scope.finalize = function(){
@@ -347,47 +283,47 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
         };
 
         $scope.hasPrev = function(){
-            if($scope.sprintsByProject[$scope.options.projectId] && $scope.sprintsByProject[$scope.options.projectId].length > 0)
-                return $scope.sprintsByProject[$scope.options.projectId][0].id !== $scope.options.sprintId;
+            if($scope.projects && $scope.projects[$scope.options.projectId] && $scope.projects[$scope.options.projectId].sprints && $scope.projects[$scope.options.projectId].sprints.length > 0)
+                return $scope.projects[$scope.options.projectId].sprints[0].id !== $scope.current.id;
             else
                 return false;
         };
 
         $scope.prev = function(){
             var last = $scope.options.sprintId;
-            for(var i = 0; i < $scope.sprintsByProject[$scope.options.projectId].length; i++){
-                if($scope.sprintsByProject[$scope.options.projectId][i].id === $scope.options.sprintId) {
+            for(var i = 0; i < $scope.projects[$scope.options.projectId].sprints.length; i++){
+                if($scope.projects[$scope.options.projectId].sprints[i].id === $scope.current.id) {
                     $scope.options.sprintId = last;
                     break;
                 }
-                last = $scope.sprintsByProject[$scope.options.projectId][i].id;
+                last = $scope.projects[$scope.options.projectId].sprints[i].id;
             }
         };
 
         $scope.hasNext = function(){
-            if($scope.sprintsByProject[$scope.options.projectId] && $scope.sprintsByProject[$scope.options.projectId].length > 0)
-                return $scope.sprintsByProject[$scope.options.projectId][$scope.sprintsByProject[$scope.options.projectId].length - 1].id !== $scope.options.sprintId;
+            if($scope.projects && $scope.projects[$scope.options.projectId] && $scope.projects[$scope.options.projectId].sprints && $scope.projects[$scope.options.projectId].sprints.length > 0)
+                return $scope.projects[$scope.options.projectId].sprints[$scope.projects[$scope.options.projectId].sprints.length - 1].id !== $scope.current.id;
             else
                 return false;
         };
 
         $scope.next = function(){
             var next = false;
-            for(var i = 0; i < $scope.sprintsByProject[$scope.options.projectId].length; i++){
+            for(var i = 0; i < $scope.projects[$scope.options.projectId].sprints.length; i++){
                 if(next) {
-                    $scope.options.sprintId = $scope.sprintsByProject[$scope.options.projectId][i].id;
+                    $scope.options.sprintId = $scope.projects[$scope.options.projectId].sprints[i].id;
                     break;
                 }
-                next = $scope.sprintsByProject[$scope.options.projectId][i].id === $scope.options.sprintId;
+                next = $scope.projects[$scope.options.projectId].sprints[i].id === $scope.current.id;
             }
         };
 
         function hasCardsNotFinished(){
             var hasCards = false;
-            angular.forEach($scope.categories, function(category){
-                if(($scope.cards[category.id][2] && $scope.cards[category.id][2].length > 0) ||
-                    ($scope.cards[category.id][3] && $scope.cards[category.id][3].length > 0) ||
-                    ($scope.cards[category.id][4] && $scope.cards[category.id][4].length > 0)){
+            angular.forEach($scope.projects[$scope.options.projectId].categories, function(category){
+                if(($scope.current.cards[category.id][2] && $scope.current.cards[category.id][2].length > 0) ||
+                    ($scope.current.cards[category.id][3] && $scope.current.cards[category.id][3].length > 0) ||
+                    ($scope.current.cards[category.id][4] && $scope.current.cards[category.id][4].length > 0)){
                     hasCards = true;
                 }
             });

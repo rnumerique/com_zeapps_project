@@ -11,6 +11,8 @@ class Zeapps_project_sprints extends ZeModel {
             ->where($where)
             ->where_not(array('zeapps_project_sprints.id' => null))
             ->group_by('zeapps_project_sprints.id')
+            ->order_by('completed', 'ASC')
+            ->order_by('active', 'ASC')
             ->table('zeapps_project_sprints')
             ->result();
     }

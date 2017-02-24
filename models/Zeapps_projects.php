@@ -43,7 +43,7 @@ class Zeapps_projects extends ZeModel {
                     }
                 }
                 if ($spaces !== 'false') {
-                    $row->title = str_repeat('&nbsp;&nbsp;&nbsp;', intval($row->spaces)) . $row->title;
+                    $row->title = html_entity_decode(str_repeat('&nbsp;&nbsp;&nbsp;', intval($row->spaces)) . $row->title);
                 }
             }
 

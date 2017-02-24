@@ -13,7 +13,7 @@ app.directive('zeAuth', function($rootScope){
     };
 
     function evaluateRight(id_project, right, elm){
-        if(!$rootScope.project_rights[id_project] || $rootScope.project_rights[id_project][right] == '0'){
+        if($rootScope.project_rights[id_project] && $rootScope.project_rights[id_project][right] == '0'){
             elm.remove();
         }
     }
