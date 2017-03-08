@@ -21,46 +21,7 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
             placeholder: "sprint_placeholder",
             disabled: true,
             delay: 200,
-            stop: function( event, ui ) {
-
-                var idObj = $(ui.item[0]).attr("data-id") ;
-                var ligneSelectionnee = $(".card_" + idObj) ;
-                var step = ligneSelectionnee.parent().attr("data-step") ;
-                var category = ligneSelectionnee.parent().attr("data-category") ;
-
-                var data = {} ;
-                data.id = idObj;
-
-                data.step = step ;
-                if(step == 5){
-                    data.completed = 'Y';
-                }
-                else{
-                    data.completed = 'N';
-                }
-                data.id_category = category ;
-
-                for(var k = 0; k < $scope.current.cards[category][step].length; k++){
-                    if($scope.current.cards[category][step][k].id == data.id){
-                        data.oldStep = $scope.current.cards[category][step][k].step;
-                        data.oldCategory = $scope.current.cards[category][step][k].id_category;
-
-                        $scope.current.cards[category][step][k].category = category;
-                        $scope.current.cards[category][step][k].step = step;
-                    }
-                    $scope.current.cards[category][step][k].sort = k;
-                }
-
-                var formatted_data = angular.toJson($scope.current.cards[category][step]);
-                zhttp.project.sprint.updateCards(formatted_data);
-
-                for(var i = 0; i < $scope.current.cards[data.oldCategory][data.oldStep].length; i++){
-                    $scope.current.cards[data.oldCategory][data.oldStep][i].sort = i;
-                }
-
-                var formatted_data = angular.toJson($scope.current.cards[data.oldCategory][data.oldStep]);
-                zhttp.project.sprint.updateCards(formatted_data);
-            }
+            stop: sortableStop
         };
 
         $scope.current = undefined;
@@ -328,5 +289,51 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                 }
             });
             return hasCards;
+        }
+
+        function sortableStop( event, ui ) {
+
+            var idObj = $(ui.item[0]).attr("data-id") ;
+            var ligneSelectionnee = $(".card_" + idObj) ;
+            var step = ligneSelectionnee.parent().attr("data-step") ;
+            var category = ligneSelectionnee.parent().attr("data-category") ;
+
+            var data = {} ;
+            data.id = idObj;
+
+            data.step = step ;
+            if(step == 5){
+                data.completed = 'Y';
+            }
+            else{
+                data.completed = 'N';
+            }
+            data.id_category = category ;
+
+            for(var k = 0; k < $scope.current.cards[category][step].length; k++){
+                if($scope.current.cards[category][step][k].id == data.id){
+                    data.oldStep = $scope.current.cards[category][step][k].step;
+                    data.oldCategory = $scope.current.cards[category][step][k].id_category;
+
+                    if($scope.current.cards[category][step][k].step == 2 && $scope.current.cards[category][step][k].id_assigned_to == 0){
+                        $scope.current.cards[category][step][k].id_assigned_to = $rootScope.user.id;
+                        $scope.current.cards[category][step][k].name_assigned_to = $rootScope.user.firstname ? $rootScope.user.firstname[0]  + '. ' + $rootScope.user.lastname : $rootScope.user.lastname;
+                    }
+
+                    $scope.current.cards[category][step][k].category = category;
+                    $scope.current.cards[category][step][k].step = step;
+                }
+                $scope.current.cards[category][step][k].sort = k;
+            }
+
+            var formatted_data = angular.toJson($scope.current.cards[category][step]);
+            zhttp.project.sprint.updateCards(formatted_data);
+
+            for(var i = 0; i < $scope.current.cards[data.oldCategory][data.oldStep].length; i++){
+                $scope.current.cards[data.oldCategory][data.oldStep][i].sort = i;
+            }
+
+            var formatted_data = angular.toJson($scope.current.cards[data.oldCategory][data.oldStep]);
+            zhttp.project.sprint.updateCards(formatted_data);
         }
     }]);
