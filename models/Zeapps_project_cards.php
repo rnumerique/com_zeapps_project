@@ -44,4 +44,80 @@ class Zeapps_project_cards extends ZeModel {
     public function get_assigned(){
         return $this->database()->select('id_assigned_to, name_assigned_to')->group_by('id_assigned_to')->table('zeapps_project_cards')->result();
     }
+
+    public function get_nbSandboxOf($id_project){
+        $where = array(
+            'id_project' => $id_project,
+            'step' => 0,
+            'deleted_at' => null
+        );
+
+        $res = $this->database()->select('*')->where($where)->table('zeapps_project_cards')->result();
+
+        if($res)
+            return sizeof($res);
+        else
+            return 0;
+    }
+
+    public function get_nbBacklogOf($id_project){
+        $where = array(
+            'id_project' => $id_project,
+            'step' => 1,
+            'deleted_at' => null
+        );
+
+        $res = $this->database()->select('*')->where($where)->table('zeapps_project_cards')->result();
+
+        if($res)
+            return sizeof($res);
+        else
+            return 0;
+    }
+
+    public function get_nbOngoingOf($id_project){
+        $where = array(
+            'id_project' => $id_project,
+            'step >' => 1,
+            'step <' => 4,
+            'deleted_at' => null
+        );
+
+        $res = $this->database()->select('*')->where($where)->table('zeapps_project_cards')->result();
+
+        if($res)
+            return sizeof($res);
+        else
+            return 0;
+    }
+
+    public function get_nbQualityOf($id_project){
+        $where = array(
+            'id_project' => $id_project,
+            'step' => 4,
+            'deleted_at' => null
+        );
+
+        $res = $this->database()->select('*')->where($where)->table('zeapps_project_cards')->result();
+
+        if($res)
+            return sizeof($res);
+        else
+            return 0;
+    }
+
+    public function get_nbInSprintOf($id_sprint, $id_project){
+        $where = array(
+            'id_project' => $id_project,
+            'id_sprint' => $id_sprint,
+            'deleted_at' => null
+        );
+
+        $res = $this->database()->select('*')->where($where)->table('zeapps_project_cards')->result();
+
+        if($res)
+            return sizeof($res);
+        else
+            return 0;
+    }
 }

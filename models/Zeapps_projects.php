@@ -26,8 +26,10 @@ class Zeapps_projects extends ZeModel {
         $where['zeapps_project_rights.access'] = 1;
 
         $ret = $this->database()->select('*,
-                                        zeapps_projects.id as id')
+                                        zeapps_projects.id as id,
+                                        zeapps_project_statuses.label as label_status')
                                 ->join('zeapps_project_rights', 'zeapps_project_rights.id_project = zeapps_projects.id', 'LEFT')
+                                ->join('zeapps_project_statuses', 'zeapps_project_statuses.id = zeapps_projects.id_status', 'LEFT')
                                 ->where($where)
                                 ->order_by('zeapps_projects.title')
                                 ->table('zeapps_projects')

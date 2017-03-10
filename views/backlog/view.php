@@ -85,6 +85,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <table class="table table-stripped table-condensed">
                 <thead>
                 <tr>
+                    <th>#</th>
                     <th>Titre</th>
                     <th>Description</th>
                     <th>Assigné à</th>
@@ -93,7 +94,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </thead>
                 <tbody>
                 <tr class="info" ng-repeat-start="project in projects" ng-if="(cardsByProject[project.id] | backlogFilter:options).length > 0">
-                    <th colspan="4">
+                    <th colspan="5">
                         {{ project.breadcrumbs }}{{ project.name_company ? ' (' + project.name_company + ')' : '' }}
                         <a class="pull-right text-success pointer" ng-href="/ng/com_zeapps_project/backlog/new/{{project.id}}" ze-auth="{id_project : project.id, right : 'card'}">
                             <i class="fa fa-plus"></i>
@@ -102,6 +103,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </th>
                 </tr>
                 <tr ng-repeat-end ng-repeat="card in cardsByProject[project.id] | backlogFilter:options | orderBy:'title'">
+                    <td>{{ card.id }}</td>
                     <td><i class="fa fa-lg fa-check text-success" ng-if="task.completed === 'Y'"></i> {{ card.title }}</td>
                     <td ng-class="'text-' + compareDates(task.due_date)">{{ card.description }}</td>
                     <td>{{ card.name_assigned_to }}</td>

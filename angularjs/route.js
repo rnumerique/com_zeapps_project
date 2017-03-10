@@ -112,8 +112,8 @@ app.config(['$routeProvider',
             })
 
             .when('/ng/com_zeapps_project/project/', {
-                templateUrl: '/com_zeapps_project/project/',
-                controller: 'ComZeappsProjectViewCtrl'
+                templateUrl: '/com_zeapps_project/project/overview',
+                controller: 'ComZeappsProjectOverviewCtrl'
             })
 
             .when('/ng/com_zeapps_project/project/:id', {
@@ -139,6 +139,12 @@ app.config(['$routeProvider',
             .when('/ng/com_zeapps_project/project/categories/edit/:id', {
                 templateUrl: '/com_zeapps_project/category/form/',
                 controller: 'ComZeappsProjectFormCategoriesCtrl'
+            })
+
+            // STATUSES
+            .when('/ng/com_zeapps/status', {
+                templateUrl: '/com_zeapps_project/status/config/',
+                controller: 'ComZeappsProjectStatusConfigCtrl'
             })
         ;
     }]);

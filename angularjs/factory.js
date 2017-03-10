@@ -6,10 +6,17 @@ app.config(['$provide',
             var tday = new Date();
             
             zeHttp.project = {
+                status : {
+                    get_all : getAll_statuses,
+                    save : save_statuses,
+                    del : delete_statuses,
+                    save_all : saveAll_statuses
+                },
                 project : {
                     tree : get_projects_tree,
                     get : get_project,
                     get_all : getAll_project,
+                    get_overview : getOverview_project,
                     get_childs : getChilds_project,
                     post : post_project,
                     archive : archive_project,
@@ -70,6 +77,20 @@ app.config(['$provide',
 
             return zeHttp;
 
+            // STATUS
+            function getAll_statuses(){
+                return zeHttp.get('/com_zeapps_project/status/get_all/');
+            }
+            function save_statuses(data){
+                return zeHttp.post('/com_zeapps_project/status/save/', data);
+            }
+            function saveAll_statuses(data){
+                return zeHttp.post('/com_zeapps_project/status/save_all/', data);
+            }
+            function delete_statuses(id){
+                return zeHttp.delete('/com_zeapps_project/status/delete/' + id);
+            }
+
             // PROJECT
             function get_project (id){
                 return zeHttp.get('/com_zeapps_project/project/get_project/' + id);
@@ -80,6 +101,9 @@ app.config(['$provide',
                 if(!spaces) spaces = 'false';
                 if(!filter) filter = 'false';
                 return zeHttp.get('/com_zeapps_project/project/get_projects/' + id + '/' + spaces + '/' + filter);
+            }
+            function getOverview_project(){
+                return zeHttp.get('/com_zeapps_project/project/get_overview/');
             }
             function getChilds_project(id){
                 return zeHttp.get('/com_zeapps_project/project/get_childs/' + id);

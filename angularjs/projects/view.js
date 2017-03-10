@@ -3,44 +3,23 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
 
         $scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_management");
 
+        var project_users_ids = [];
+
         $scope.tree = {
             branches: []
         };
-
         $scope.options = {
             'step' : 1,
             'completed' : false
         };
-
-        $scope.activeCategory = {
-            data: ''
-        };
+        $scope.project = {};
 
         $scope.view = '/com_zeapps_project/planning/table';
+        $scope.showPlanning     = function(){ $scope.view = '/com_zeapps_project/planning/table'; };
+        $scope.showCategories   = function(){ $scope.view = '/com_zeapps_project/project/categories'; };
+        $scope.showRights       = function(){ $scope.view = '/com_zeapps_project/project/rights'; };
 
-        var project_users_ids = [];
-
-        $scope.compareDates = function(date){
-            return zhttp.project.compareDate(date);
-        };
-
-        zhttp.project.filter.get_all('project').then(function(response){
-            if(response.data && response.data != 'false'){
-                $scope.dates = response.data;
-            }
-        });
-
-        var getTree = function() {
-            zhttp.project.project.tree().then(function (response) {
-                if (response.status == 200) {
-                    $scope.tree.branches = response.data;
-                    var id = $routeParams.id || 0;
-                    if (id)
-                        $scope.activeCategory.data = zhttp.project.openTree($scope.tree, id);
-                }
-            });
-        };
-        getTree();
+        $scope.compareDates = function(date){ return zhttp.project.compareDate(date); };
 
         $scope.isActive = function(tab){
             if(tab === 'planning' && $scope.view === '/com_zeapps_project/planning/table')
@@ -53,64 +32,37 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                 return false;
         };
 
-        $scope.showPlanning = function(){
-            console.log('test');
-            $scope.view = '/com_zeapps_project/planning/table';
-        };
-
-        $scope.showCategories = function(){
-            $scope.view = '/com_zeapps_project/project/categories';
-        };
-
-        $scope.showRights = function(){
-            $scope.view = '/com_zeapps_project/project/rights';
-        };
-
-        zhttp.project.card.get_all().then(function(response){
-            if(response.data && response.data != "false") {
-                var cards = response.data;
-                if(!$scope.cardsByDate)
-                    $scope.cardsByDate = [];
-                angular.forEach(cards, function (card) {
-                    if(card.due_date != 0) {
-                        if (!$scope.cardsByDate[card.due_date])
-                            $scope.cardsByDate[card.due_date] = [];
-                        $scope.cardsByDate[card.due_date].push(card);
-                    }
-                });
-                if(!$scope.cardsByProject)
-                    $scope.cardsByProject = [];
-                angular.forEach(cards, function (card) {
-                    if (!$scope.cardsByProject[card.id_project])
-                        $scope.cardsByProject[card.id_project] = [];
-                    $scope.cardsByProject[card.id_project].push(card);
-                });
-            }
-        });
-
-        zhttp.project.deadline.get_all().then(function(response){
-            if(response.data && response.data != "false"){
-                var deadlines = response.data;
-                if(!$scope.cardsByDate)
-                    $scope.cardsByDate = [];
-                angular.forEach(deadlines, function (deadline) {
-                    if (!$scope.cardsByDate[deadline.due_date])
-                        $scope.cardsByDate[deadline.due_date] = [];
-                    deadline.deadline = true;
-                    $scope.cardsByDate[deadline.due_date].push(deadline);
-                });
-            }
-        });
-
-        var getCategories = function(id_project){
-            zhttp.project.category.get_all(id_project).then(function(response){
+        if($routeParams.id){
+            zhttp.project.project.get($routeParams.id).then(function(response){
                 if(response.data && response.data != 'false'){
-                    $scope.categories = response.data;
+                    $scope.project = response.data.project;
+                    $scope.dates = response.data.dates;
+                    $scope.categories = response.data.categories;
+
+                    var cards = response.data.cards;
+                    $scope.cardsByDate = [];
+                    angular.forEach(cards, function (card) {
+                        if(card.due_date != 0) {
+                            if (!$scope.cardsByDate[card.due_date])
+                                $scope.cardsByDate[card.due_date] = [];
+                            $scope.cardsByDate[card.due_date].push(card);
+                        }
+                    });
+
+
+                    $scope.project_users = response.data.project_users;
+                    project_users_ids = [];
+                    angular.forEach($scope.project_users, function(user){
+                        project_users_ids.push(user.id_user);
+                        user.access = !!parseInt(user.access);
+                        user.sandbox = !!parseInt(user.sandbox);
+                        user.card = !!parseInt(user.card);
+                        user.sprint = !!parseInt(user.sprint);
+                        user.project = !!parseInt(user.project);
+                    });
                 }
-                else
-                    $scope.categories = [];
-            })
-        };
+            });
+        }
 
         $scope.editCategory = function(category){
             $location.url('/ng/com_zeapps_project/project/categories/edit/' + category.id);
@@ -124,32 +76,13 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
             });
         };
 
-        var getRightsFor = function(id_project){
-            zhttp.project.right.get_all(id_project).then(function(response){
-                if(response.data && response.data != 'false'){
-                    $scope.project_users = response.data;
-                    project_users_ids = [];
-                    angular.forEach($scope.project_users, function(user){
-                        project_users_ids.push(user.id_user);
-                        user.access = !!parseInt(user.access);
-                        user.sandbox = !!parseInt(user.sandbox);
-                        user.card = !!parseInt(user.card);
-                        user.sprint = !!parseInt(user.sprint);
-                        user.project = !!parseInt(user.project);
-                    });
-                }
-                else
-                    $scope.project_users = [];
-            });
-        };
-
         $scope.addProjectUser = function(){
             zeapps_modal.loadModule("com_zeapps_core", "search_user", {banned_ids : project_users_ids}, function(objReturn) {
                 if (objReturn) {
                     var user = {};
 
                     user.id_user = objReturn.id;
-                    user.id_project = $scope.activeCategory.data.id;
+                    user.id_project = $scope.project.id;
                     user.name = objReturn.firstname ? objReturn.firstname[0]  + '. ' + objReturn.lastname : objReturn.lastname;
                     user.access = 1;
 
@@ -209,23 +142,6 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
             saveRightsOf(user);
         };
 
-        $scope.$watch('activeCategory.data', function(value, old, scope){
-            if(typeof(value.id) !== 'undefined' && value.id != old.id){
-                scope.options.id_project = [];
-                scope.options.id_project.push(value.id);
-                zhttp.project.project.get_childs(value.id).then(function (response) {
-                    if (response.data && response.data != "false") {
-                        var subProjects = response.data;
-                        angular.forEach(subProjects, function (subProject) {
-                            scope.options.id_project.push(subProject.id);
-                        });
-                    }
-                });
-                getCategories(value.id);
-                getRightsFor(value.id);
-            }
-        });
-
         $scope.archive_project = function (id) {
             var modalInstance = $uibModal.open({
                 animation: true,
@@ -255,12 +171,7 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                 if (selectedItem.action == 'danger') {
 
                 } else if (selectedItem.action == 'success') {
-                    zhttp.project.project.archive(id).then(function (response) {
-                        if (response.data && response.data != 'false') {
-                            $scope.activeCategory.data = '';
-                            getTree();
-                        }
-                    });
+                    zhttp.project.project.archive(id);
                 }
 
             }, function () {
@@ -304,8 +215,7 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                                 $scope.force_delete_project(id);
                             }
                             else {
-                                $scope.activeCategory.data = '';
-                                getTree();
+                                $location.url('/ng/com_zeapps_project/project');
                             }
                         }
                     });
@@ -348,8 +258,7 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                 } else if (selectedItem.action == 'success') {
                     zhttp.project.project.del(id, true).then(function (response) {
                         if (response.status == 200) {
-                            $scope.activeCategory.data = response.data;
-                            getTree();
+                            $location.url('/ng/com_zeapps_project/project');
                         }
                     });
                 }

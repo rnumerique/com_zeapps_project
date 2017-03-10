@@ -5,6 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <table class="table table-striped table-condensed">
         <thead>
         <tr>
+            <th>#</th>
             <th>Projet</th>
             <th>Catégorie</th>
             <th>To-Do</th>
@@ -20,7 +21,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             ng-if="cardsByDate[date.due_date] && (cardsByDate[date.due_date] | planningFilter:options).length != 0"
             ng-click="showDate[date.due_date] = !showDate[date.due_date]"
         >
-            <th colspan="7">
+            <th colspan="8">
                 {{ (date.due_date != '0000-00-00' ? date.due_date : 'Sans date attribuée') | date:'dd MMMM yyyy' }} ({{(cardsByDate[date.due_date] | planningFilter:options).length}})
                 <i class="fa fa-fw" ng-class="showDate[date.due_date] ? 'fa-caret-down' : 'fa-caret-up'"></i>
             </th>
@@ -29,6 +30,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             ng-class="{'text-danger':card.deadline}"
             ng-if="!showDate[date.due_date]"
         >
+            <td>
+                {{ card.deadline ? '' : card.id }}
+            </td>
             <td>
                 {{ card.breadcrumbs }}
             </td>

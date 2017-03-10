@@ -8,14 +8,12 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
             'sprintId' : undefined,
             'sprint' : {}
         };
-
         $scope.steps = {
             '2': 'A faire',
             '3': 'En cours',
             '4': 'Qualité',
             '5': 'Terminé'
         };
-
         $scope.sortable = {
             connectWith: ".sortableContainer",
             placeholder: "sprint_placeholder",
@@ -23,8 +21,21 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
             delay: 200,
             stop: sortableStop
         };
-
         $scope.current = undefined;
+
+        $scope.findActiveSprint = findActiveSprint;
+        $scope.selectSprint = selectSprint;
+        $scope.addCards = addCards;
+        $scope.detailCard = detailCard;
+        $scope.editCard = editCard;
+        $scope.new = newSprint;
+        $scope.edit = edit;
+        $scope.finalize = finalize;
+        $scope.delete = del;
+        $scope.hasPrev = hasPrev;
+        $scope.prev = prev;
+        $scope.hasNext = hasNext;
+        $scope.next = next;
 
         zhttp.project.sprint.get_all().then(function(response){
             if(response.data && response.data != "false") {
@@ -53,7 +64,11 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
             }
         });
 
-        $scope.findActiveSprint = function(){
+
+
+
+
+        function findActiveSprint(){
             $scope.options.sprintId = undefined;
             if($scope.options.projectId !== 'none') {
                 $scope.sortable.disabled = $rootScope.project_rights[$scope.projects[$scope.options.projectId].id]['card'] == '0';
@@ -67,18 +82,18 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
             }
 
             $scope.selectSprint();
-        };
+        }
 
-        $scope.selectSprint = function(){
+        function selectSprint(){
             if($scope.options.sprintId !== undefined){
                 $scope.current = $scope.projects[$scope.options.projectId].sprints[$scope.options.sprintId];
             }
             else{
                 $scope.current = undefined;
             }
-        };
+        }
 
-        $scope.addCards = function(){
+        function addCards(){
             zeapps_modal.loadModule("com_zeapps_project", "search_card", {id_project:$scope.projects[$scope.options.projectId].id, id_sprint:$scope.current.id}, function(objReturn) {
                 if (objReturn) {
                     for(var i=0; i < objReturn.length; i++) {
@@ -91,29 +106,29 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                     zhttp.project.sprint.updateCards(objReturn);
                 }
             });
-        };
+        }
 
-        $scope.detailCard = function(card){
+        function detailCard(card){
             zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card});
-        };
+        }
 
-        $scope.editCard = function(card, event){
+        function editCard(card, event){
             event.stopPropagation();
             $location.url('/ng/com_zeapps_project/sprint/edit/card/' + card.id_project + '/' + card.id_sprint + '/' + card.id);
-        };
+        }
 
-        $scope.new = function(){
+        function newSprint(){
             if($scope.options.projectId !== 'none')
                 $location.url('/ng/com_zeapps_project/sprint/create/' + $scope.projects[$scope.options.projectId].id);
             else
                 $location.url('/ng/com_zeapps_project/sprint/create/');
-        };
+        }
 
-        $scope.edit = function(){
+        function edit(){
             $location.url('/ng/com_zeapps_project/sprint/edit/' + $scope.current.id);
-        };
+        }
 
-        $scope.finalize = function(){
+        function finalize(){
             if(hasCardsNotFinished()) {
                 var modalInstance = $uibModal.open({
                     animation: true,
@@ -200,9 +215,9 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                     //console.log("rien");
                 });
             }
-        };
+        }
 
-        $scope.delete = function(){
+        function del(){
             var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: '/assets/angular/popupModalDeBase.html',
@@ -241,16 +256,16 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
             }, function () {
                 //console.log("rien");
             });
-        };
+        }
 
-        $scope.hasPrev = function(){
+        function hasPrev(){
             if($scope.projects && $scope.projects[$scope.options.projectId] && $scope.projects[$scope.options.projectId].sprints && $scope.projects[$scope.options.projectId].sprints.length > 0)
                 return $scope.projects[$scope.options.projectId].sprints[0].id !== $scope.current.id;
             else
                 return false;
-        };
+        }
 
-        $scope.prev = function(){
+        function prev(){
             var last = $scope.options.sprintId;
             for(var i = 0; i < $scope.projects[$scope.options.projectId].sprints.length; i++){
                 if($scope.projects[$scope.options.projectId].sprints[i].id === $scope.current.id) {
@@ -259,16 +274,16 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                 }
                 last = $scope.projects[$scope.options.projectId].sprints[i].id;
             }
-        };
+        }
 
-        $scope.hasNext = function(){
+        function hasNext(){
             if($scope.projects && $scope.projects[$scope.options.projectId] && $scope.projects[$scope.options.projectId].sprints && $scope.projects[$scope.options.projectId].sprints.length > 0)
                 return $scope.projects[$scope.options.projectId].sprints[$scope.projects[$scope.options.projectId].sprints.length - 1].id !== $scope.current.id;
             else
                 return false;
-        };
+        }
 
-        $scope.next = function(){
+        function next(){
             var next = false;
             for(var i = 0; i < $scope.projects[$scope.options.projectId].sprints.length; i++){
                 if(next) {
@@ -277,7 +292,7 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                 }
                 next = $scope.projects[$scope.options.projectId].sprints[i].id === $scope.current.id;
             }
-        };
+        }
 
         function hasCardsNotFinished(){
             var hasCards = false;
@@ -315,7 +330,7 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                     data.oldStep = $scope.current.cards[category][step][k].step;
                     data.oldCategory = $scope.current.cards[category][step][k].id_category;
 
-                    if($scope.current.cards[category][step][k].step == 2 && $scope.current.cards[category][step][k].id_assigned_to == 0){
+                    if($scope.current.cards[category][step][k].step == 2 && step != 2 && $scope.current.cards[category][step][k].id_assigned_to == 0){
                         $scope.current.cards[category][step][k].id_assigned_to = $rootScope.user.id;
                         $scope.current.cards[category][step][k].name_assigned_to = $rootScope.user.firstname ? $rootScope.user.firstname[0]  + '. ' + $rootScope.user.lastname : $rootScope.user.lastname;
                     }
