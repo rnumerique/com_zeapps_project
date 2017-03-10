@@ -27,6 +27,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <table class="table table-stripped table-condensed">
                 <thead>
                 <tr>
+                    <th>#</th>
                     <th>Idée</th>
                     <th>Description</th>
                     <th>Auteur</th>
@@ -44,6 +45,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     </th>
                 </tr>
                 <tr ng-repeat-end ng-repeat="sandbox in sandboxesByProject[project.id] | filter:{step : 0} | orderBy:['title']">
+                    <td>{{ sandbox.id }}</td>
                     <td><i class="fa fa-lg fa-check text-success" ng-if="task.completed === 'Y'"></i> {{ sandbox.title }}</td>
                     <td ng-class="'text-' + compareDates(task.due_date)">{{ sandbox.description }}</td>
                     <td>{{ sandbox.name_author }}</td>

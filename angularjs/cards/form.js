@@ -22,7 +22,7 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                         $scope.form.due_date = new Date($scope.form.due_date);
                         zhttp.project.project.get($scope.form.id_project).then(function (response) {
                             if (response.data && response.data != 'false') {
-                                $scope.form.title_project = response.data.breadcrumbs;
+                                $scope.form.title_project = response.data.project.breadcrumbs;
                             }
                         });
                         getContext($scope.form.id_project);
@@ -39,9 +39,9 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                             $scope.form.estimated_time = parseFloat($scope.form.estimated_time);
                         zhttp.project.project.get($scope.form.id_project).then(function (response) {
                             if (response.data && response.data != 'false') {
-                                $scope.form.title_project = response.data.breadcrumbs;
+                                $scope.form.title_project = response.data.project.breadcrumbs;
                                 whitelist_ids = [];
-                                angular.forEach(response.data.users, function(user){
+                                angular.forEach(response.data.project.users, function(user){
                                      whitelist_ids.push(user.id_user);
                                 });
                             }
@@ -70,10 +70,10 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
         if($routeParams.id_project){ // Project
             zhttp.project.project.get($routeParams.id_project).then(function(response){
                 if(response.data && response.data != 'false'){
-                    $scope.form.id_project = response.data.id;
-                    $scope.form.title_project = response.data.breadcrumbs;
+                    $scope.form.id_project = response.data.project.id;
+                    $scope.form.title_project = response.data.project.breadcrumbs;
                     whitelist_ids = [];
-                    angular.forEach(response.data.users, function(user){
+                    angular.forEach(response.data.project.users, function(user){
                         whitelist_ids.push(user.id_user);
                     });
                     getContext($scope.form.id_project);

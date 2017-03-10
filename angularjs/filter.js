@@ -111,4 +111,28 @@ app.filter('planningFilter', function($filter){
         }
         return list;
     };
+})
+    .filter('projectFilter', function($filter){
+    return function(list, filters){
+        if(filters){
+            return $filter("filter")(list, function(listItem){
+                if(filters.search != undefined && filters.search != '') {
+                    var regex = new RegExp(filters.search, 'i');
+                    if(listItem.name_company.search(regex) == -1
+                        && listItem.name_contact.search(regex) == -1
+                        && listItem.breadcrumbs.search(regex) == -1
+                        && listItem.name_manager.search(regex) == -1 )
+                        return false;
+                }
+                if(filters.id_status != undefined){
+                    if(listItem.id_status != filters.id_status)
+                        return false;
+                }
+                return true;
+            });
+        }
+        return list;
+    };
+
+
 });

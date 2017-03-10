@@ -8,14 +8,17 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
         if($routeParams.id){ // Edit
             zhttp.project.project.get($routeParams.id).then(function(response){
                 if(response.data && response.data != 'false'){
-                    $scope.form = response.data;
+                    $scope.form = response.data.project;
                     $scope.form.start_date = new Date($scope.form.start_date);
                     $scope.form.due_date = new Date($scope.form.due_date);
                     $scope.form.estimated_time = parseFloat($scope.form.estimated_time);
                     $scope.form.time_spent = parseFloat($scope.form.time_spent);
+                    $scope.form.due = parseFloat($scope.form.due);
+                    $scope.form.commission = parseFloat($scope.form.commission);
+                    $scope.form.payed = parseFloat($scope.form.payed);
                     zhttp.project.project.get($scope.form.id_parent).then(function(response){
                         if(response.data && response.data != 'false'){
-                            $scope.form.title_parent = response.data.breadcrumbs;
+                            $scope.form.title_parent = response.data.project.breadcrumbs;
                         }
                     })
                 }
@@ -24,18 +27,20 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
         else if($routeParams.id_parent){ // Sub Project
             zhttp.project.project.get($routeParams.id_parent).then(function(response){
                 if(response.data && response.data != 'false'){
-                    $scope.form.id_parent = response.data.id;
-                    $scope.form.title_parent = response.data.breadcrumbs;
-                    $scope.form.id_company = response.data.id_company;
-                    $scope.form.name_company = response.data.name_company;
-                    $scope.form.id_contact = response.data.id_contact;
-                    $scope.form.name_contact = response.data.name_contact;
-                    $scope.form.id_manager = response.data.id_manager;
-                    $scope.form.name_manager = response.data.name_manager;
+                    $scope.form.id_status = '0';
+                    $scope.form.id_parent = response.data.project.id;
+                    $scope.form.title_parent = response.data.project.breadcrumbs;
+                    $scope.form.id_company = response.data.project.id_company;
+                    $scope.form.name_company = response.data.project.name_company;
+                    $scope.form.id_contact = response.data.project.id_contact;
+                    $scope.form.name_contact = response.data.project.name_contact;
+                    $scope.form.id_manager = response.data.project.id_manager;
+                    $scope.form.name_manager = response.data.project.name_manager;
                 }
             })
         }
         else{ // New Project
+            $scope.form.id_status = '0';
             $scope.form.id_manager = $rootScope.user.id;
             $scope.form.name_manager = $rootScope.user.firstname ? $rootScope.user.firstname[0] + '. ' + $rootScope.user.lastname : $rootScope.user.lastname;
         }

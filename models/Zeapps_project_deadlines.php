@@ -22,4 +22,14 @@ class Zeapps_project_deadlines extends ZeModel {
     public function get_dates(){
         return $this->database()->select('due_date')->group_by('due_date')->table('zeapps_project_deadlines')->result();
     }
+
+    public function get_nextOf($id_project){
+        $where = array(
+            'id_project' => $id_project,
+            'completed' => 'N',
+            'deleted_at' => null
+        );
+
+        return $this->database()->select('*')->limit(1)->where($where)->table('zeapps_project_deadlines')->result();
+    }
 }
