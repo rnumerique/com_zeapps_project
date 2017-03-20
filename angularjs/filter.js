@@ -68,6 +68,9 @@ app.filter('planningFilter', function($filter){
                     if(listItem.step !== filters.step)
                         return false;
                 }
+                if(!filters.completed && listItem.completed === 'Y'){
+                    return false;
+                }
                 if(filters.id_assigned_to != undefined && filters.id_assigned_to != 'all') {
                     if(listItem.id_assigned_to != filters.id_assigned_to && listItem.id_assigned_to !== undefined)
                         return false;

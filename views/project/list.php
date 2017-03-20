@@ -22,21 +22,6 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" ng-click="goToTab()" ng-class="tab === '' ? 'active' : ''">
-                    <a href="#">Tous ({{ projects.length }})</a>
-                </li>
-                <li role="presentation" ng-repeat="status in statuses | orderBy:'sort'" ng-click="goToTab(status.id)" ng-class="tab == status.id ? 'active' : ''">
-                    <a href="#">{{ status.label }} ({{ (projects | filter:{id_status:status.id}).length }})</a>
-                </li>
-                <li role="presentation" ng-click="goToTab(0)" ng-class="tab === 0 ? 'active' : ''">
-                    <a href="#">Sans statut ({{ (projects | filter:{id_status:0}).length }})</a>
-                </li>
-            </ul>
-        </div>
-    </div>
 
     <div class="row">
         <table class="col-xs-12 text-center postits">
@@ -125,6 +110,22 @@
                 </td>
             </tr>
         </table>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" ng-click="goToTab()" ng-class="projectTab === '' ? 'active' : ''">
+                    <a href="#">Tous ({{ (projects | projectFilter:{search:filters.search}).length }})</a>
+                </li>
+                <li role="presentation" ng-repeat="status in statuses | orderBy:'sort'" ng-click="goToTab(status.id)" ng-class="projectTab == status.id ? 'active' : ''">
+                    <a href="#">{{ status.label }} ({{ (projects | projectFilter:{id_status:status.id,search:filters.search}).length }})</a>
+                </li>
+                <li role="presentation" ng-click="goToTab(0)" ng-class="projectTab === 0 ? 'active' : ''">
+                    <a href="#">Sans statut ({{ (projects | projectFilter:{id_status:0,search:filters.search}).length }})</a>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <div class="row">

@@ -113,6 +113,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <i class="fa fa-fw fa-eye" ></i>
                             </button>
                             <span ze-auth="{id_project : project.id, right : 'card'}">
+                                <button type="button" class="btn btn-success btn-xs" ng-click="complete(card)" ng-if="card.completed === 'N'">
+                                    <i class="fa fa-fw fa-check" ></i>
+                                </button>
                                 <button type="button" class="btn btn-info btn-xs" ng-click="edit(card)">
                                     <i class="fa fa-pencil" ></i>
                                 </button>

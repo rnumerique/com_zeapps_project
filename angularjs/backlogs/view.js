@@ -83,6 +83,14 @@ app.controller('ComZeappsBacklogViewCtrl', ['$scope', '$route', '$routeParams', 
             zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card});
         };
 
+        $scope.complete = function(card){
+            zhttp.project.card.complete(card.id, 'card').then(function(response){
+                if (response.status == 200) {
+                    card.completed = 'Y';
+                }
+            });
+        };
+
         $scope.delete = function (card) {
             var modalInstance = $uibModal.open({
                 animation: true,
