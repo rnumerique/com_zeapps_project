@@ -4,8 +4,14 @@ app.controller('ComZeappsProjectOverviewCtrl', ['$scope', '$route', '$routeParam
         $scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_management");
 
         $scope.projects = [];
-        $scope.tab = '';
-        $scope.filters = {};
+        if($rootScope.projectTab){
+            $scope.filters = {id_status : $rootScope.projectTab};
+        }
+        else
+        {
+            $rootScope.projectTab = '';
+            $scope.filters = {};
+        }
         $scope.totals = {};
         $scope.view = '0';
 
@@ -30,12 +36,12 @@ app.controller('ComZeappsProjectOverviewCtrl', ['$scope', '$route', '$routeParam
 
         function goToTab(id_status){
             if(id_status !== undefined){
-                $scope.tab =  id_status;
-                $scope.filters = {id_status : id_status};
+                $rootScope.projectTab =  id_status;
+                $scope.filters.id_status = id_status;
             }
             else{
-                $scope.tab = '';
-                $scope.filters = {};
+                $rootScope.projectTab = '';
+                delete $scope.filters.id_status;
             }
             calcTotals();
         }
