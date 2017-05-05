@@ -113,3 +113,19 @@
     display: table-cell;
     border-right: 1px solid #fff;
 }
+
+timer{
+    position: fixed;
+    top: 0;
+    left: 50%;
+    z-index: 901;
+    color: #fff;
+}
+.timer-title{
+    white-space: nowrap;
+}
+.timer-hook{
+    margin-left: -150px;
+    width: 300px;
+    overflow-x: hidden;
+}

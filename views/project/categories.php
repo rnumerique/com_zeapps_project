@@ -6,7 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <tr>
         <th>Catégorie</th>
         <th class="text-right">
-            <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/categories/create/{{ activeCategory.data.id }}'><span class='fa fa-plus' aria-hidden='true'></span> Categorie</a>
+            <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/categories/create/{{ project.id }}'><span class='fa fa-plus' aria-hidden='true'></span> Categorie</a>
         </th>
     </tr>
     </thead>

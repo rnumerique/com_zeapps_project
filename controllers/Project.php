@@ -15,6 +15,10 @@ class Project extends ZeCtrl
         $this->load->view('project/categories');
     }
 
+    public function timers(){
+        $this->load->view('project/timers');
+    }
+
     public function rights(){
         $this->load->view('project/rights');
     }
@@ -65,6 +69,7 @@ class Project extends ZeCtrl
         $this->load->model("Zeapps_project_cards", "cards");
         $this->load->model("Zeapps_project_deadlines", "deadlines");
         $this->load->model("Zeapps_project_rights", "rights");
+        $this->load->model("Zeapps_project_timers", "timers");
         $this->load->model("Zeapps_users", "user");
 
         if($id) {
@@ -81,6 +86,20 @@ class Project extends ZeCtrl
 
         if($project = $this->projects->get($id)) {
             $project->users = $this->rights->all(array('id_project' => $id));
+            if($total_time = $this->timers->getTimeOf($project->id)){
+                $project->time_spent = $this->_formatDuration($total_time);
+            }
+            else{
+                $project->time_spent = '00h 00';
+            }
+            if($project->timers = $this->timers->all(array('id_project' => $project->id))) {
+                foreach ($project->timers as $timer) {
+                    $timer->duration = $this->_formatDuration($timer->duration);
+                }
+            }
+            else{
+                $project->timers = array();
+            }
         }
 
         if(!$categories = $this->categories->all(array('id_project' => $id))){
@@ -315,5 +334,21 @@ class Project extends ZeCtrl
 
         return $arr;
 
+    }
+
+    private function _formatDuration($total_time){
+        $h = intval($total_time / 60);
+        if(strlen($h) < 2) $h = '0'.$h;
+        $m = $total_time % 60;
+        if(strlen($m) < 2) $m = '0'.$m;
+        if($h > 7){
+            $d = intval($h / 7);
+            $h = $h % 7;
+            if(strlen($h) < 2) $h = '0'.$h;
+            return $d . 'j ' . $h . 'h ' . $m . 'm';
+        }
+        else {
+            return $h . 'h ' . $m . 'm';
+        }
     }
 }

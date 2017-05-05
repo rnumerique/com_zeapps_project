@@ -141,6 +141,11 @@ app.config(['$routeProvider',
                 controller: 'ComZeappsProjectFormCategoriesCtrl'
             })
 
+            .when('/ng/com_zeapps_project/project/timer/edit/:id', {
+                templateUrl: '/com_zeapps_project/timer/form/',
+                controller: 'ComZeappsProjectFormTimersCtrl'
+            })
+
             // STATUSES
             .when('/ng/com_zeapps/status', {
                 templateUrl: '/com_zeapps_project/status/config/',

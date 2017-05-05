@@ -337,6 +337,13 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
 
                     $scope.current.cards[category][step][k].category = category;
                     $scope.current.cards[category][step][k].step = step;
+
+                    if(step == 3 && data.oldStep != 3){
+                        zhttp.project.timer.start($scope.current.cards[category][step][k]);
+                    }
+                    if(data.oldStep == 3 && step != 3){
+                        zhttp.project.timer.stop($scope.current.cards[category][step][k]);
+                    }
                 }
                 $scope.current.cards[category][step][k].sort = k;
             }

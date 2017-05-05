@@ -13,4 +13,10 @@ app.run(function(zeHttp, $rootScope){
             })
         }
     });
+    zeHttp.project.timer.get_ongoing().then(function(response){
+        if(response.data && response.data != 'false'){
+            $rootScope.currentTask = response.data;
+            zeHttp.project.timer.start();
+        }
+    });
 });
