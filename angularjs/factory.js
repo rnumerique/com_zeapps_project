@@ -1,6 +1,6 @@
 app.config(['$provide',
     function ($provide) {
-        $provide.decorator('zeHttp', function($delegate){
+        $provide.decorator('zeHttp', function($delegate, $rootScope, $interval, zeapps_modal){
             var zeHttp = $delegate;
 
             var tday = new Date();
@@ -70,6 +70,15 @@ app.config(['$provide',
                     del : delete_sprint,
                     updateCards : updateCards_sprint,
                     finalize : finalize_sprint
+                },
+                timer : {
+                    get : get_timer,
+                    get_ongoing : getOngoing_timer,
+                    post : post_timer,
+                    del : delete_timer,
+                    start : timer_start,
+                    stop : timer_stop,
+                    get_interval : getInterval_timer
                 },
                 openTree : recursiveOpening,
                 compareDate : compareDate
@@ -239,6 +248,91 @@ app.config(['$provide',
             }
             function delete_category(id){
                 return zeHttp.get('/com_zeapps_project/category/delete_category/' + id);
+            }
+
+            // TIMER
+            function get_timer(id){
+                return zeHttp.get('/com_zeapps_project/timer/get/' + id);
+            }
+            function getOngoing_timer(){
+                return zeHttp.get('/com_zeapps_project/timer/get_ongoing/');
+            }
+            function post_timer(data){
+                return zeHttp.post('/com_zeapps_project/timer/save/', data);
+            }
+            function delete_timer(id){
+                return zeHttp.get('/com_zeapps_project/timer/delete/' + id);
+            }
+            function timer_start(card){
+                if(card){
+                    if($rootScope.currentTask && $rootScope.project_timer)
+                        timer_stop();
+                    $rootScope.currentTask = {
+                        id_project : card.id_project,
+                        id_category : card.id_category,
+                        id_sprint : card.id_sprint,
+                        id_card : card.id,
+                        id_user : $rootScope.user.id,
+                        name_user : $rootScope.user.firstname + ' ' + $rootScope.user.lastname,
+                        label : card.title,
+                        start_time : moment().format('YYYY-MM-DD HH:mm:ss')
+                    };
+
+                    var formatted_data = angular.toJson($rootScope.currentTask);
+                    post_timer(formatted_data).then(function(response){
+                        if(response && response.data != 'false'){
+                            $rootScope.currentTask.id = response.data;
+                            $rootScope.project_timer = getInterval_timer();
+                        }
+                    });
+                }
+                else{
+                    $rootScope.project_timer = getInterval_timer();
+                }
+            }
+            function timer_stop(card){
+                if($rootScope.currentTask && $rootScope.project_timer) {
+                    $interval.cancel($rootScope.project_timer);
+                    $rootScope.currentTask.stop_time = moment().format('YYYY-MM-DD HH:mm:ss');
+                    zeapps_modal.loadModule("com_zeapps_project", "timer_end", {}, function (objReturn) {
+                        if (objReturn) {
+                            $rootScope.project_timer = null;
+                            if (card) {
+                                if ($rootScope.currentTask && $rootScope.currentTask.id_card == card.id) {
+                                    var formatted_data = angular.toJson($rootScope.currentTask);
+                                    post_timer(formatted_data).then(function (response) {
+                                        if (response && response.data != 'false') {
+                                            $rootScope.currentTask = false;
+                                        }
+                                    });
+                                }
+                                else {
+                                    delete $rootScope.currentTask.stop_time;
+                                }
+                            }
+                            else if ($rootScope.currentTask) {
+                                var formatted_data = angular.toJson($rootScope.currentTask);
+                                post_timer(formatted_data).then(function (response) {
+                                    if (response && response.data != 'false') {
+                                        delete $rootScope.currentTask.interval;
+                                    }
+                                });
+                            }
+                            else {
+                                delete $rootScope.currentTask.stop_time;
+                            }
+                        } else {
+                            $rootScope.project_timer = getInterval_timer();
+                            delete $rootScope.currentTask.stop_time;
+                        }
+                    });
+                }
+            }
+            function getInterval_timer(){
+                return $interval(function () {
+                    $rootScope.currentTask.seconds = moment().diff(moment($rootScope.currentTask.start_time));
+                    $rootScope.currentTask.interval = moment.utc($rootScope.currentTask.seconds).format("HH:mm:ss");
+                }, 500);
             }
 
             // FILTER

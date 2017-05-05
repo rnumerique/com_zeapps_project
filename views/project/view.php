@@ -84,11 +84,21 @@
                             <h5>Reste dû</h5>
                         </div>
                     </td>
+                    <td>
+                        <div class="postit">
+                            <h3>
+                                {{ project.time_spent }}
+                            </h3>
+                            <h5>Temps passé</h5>
+                        </div>
+                    </td>
                 </tr>
             </table>
 
             <div class="text-right" ze-auth="{id_project : project.id, right : 'project'}">
                 <span ng-click="showPlanning()" ng-class="isActive('planning') ? 'text-muted' : 'text-primary'">Planning</span>
+                /
+                <span ng-click="showTimers()" ng-class="isActive('timers') ? 'text-muted' : 'text-primary'">Temps</span>
                 /
                 <span ng-click="showCategories()" ng-class="isActive('categories') ? 'text-muted' : 'text-primary'">Gestion des catégories</span>
                 /

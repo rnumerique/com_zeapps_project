@@ -16,6 +16,7 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
 
         $scope.view = '/com_zeapps_project/planning/table';
         $scope.showPlanning     = function(){ $scope.view = '/com_zeapps_project/planning/table'; };
+        $scope.showTimers     = function(){ $scope.view = '/com_zeapps_project/project/timers'; };
         $scope.showCategories   = function(){ $scope.view = '/com_zeapps_project/project/categories'; };
         $scope.showRights       = function(){ $scope.view = '/com_zeapps_project/project/rights'; };
 
@@ -23,6 +24,8 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
 
         $scope.isActive = function(tab){
             if(tab === 'planning' && $scope.view === '/com_zeapps_project/planning/table')
+                return true;
+            else if(tab === 'timers' && $scope.view === '/com_zeapps_project/project/timers')
                 return true;
             else if(tab === 'categories' && $scope.view === '/com_zeapps_project/project/categories')
                 return true;
@@ -49,6 +52,10 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                         }
                     });
 
+                    angular.forEach($scope.project.timers, function (timer) {
+                        timer.start_time = new Date(timer.start_time);
+                        timer.stop_time = new Date(timer.stop_time);
+                    });
 
                     $scope.project_users = response.data.project_users;
                     project_users_ids = [];
@@ -63,6 +70,14 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                 }
             });
         }
+
+        $scope.deleteTimer = function(timer){
+            zhttp.project.timer.del(timer.id).then(function(response){
+                if(response.data && response.data != 'false'){
+                    $scope.project.timers.splice($scope.project.timers.indexOf(timer), 1);
+                }
+            });
+        };
 
         $scope.editCategory = function(category){
             $location.url('/ng/com_zeapps_project/project/categories/edit/' + category.id);
