@@ -5,6 +5,11 @@ app.controller('ComZeappsProjectFormCategoriesCtrl', ['$scope', '$route', '$rout
 
         $scope.form = {};
 
+        $scope.loadProject = loadProject;
+        $scope.removeProject = removeProject;
+        $scope.success = success;
+        $scope.cancel = cancel;
+
         if($routeParams.id){ // Edit
             zhttp.project.category.get($routeParams.id).then(function(response){
                 if(response.data && response.data != 'false'){
@@ -26,7 +31,7 @@ app.controller('ComZeappsProjectFormCategoriesCtrl', ['$scope', '$route', '$rout
             })
         }
 
-        $scope.loadProject = function () {
+        function loadProject() {
             zeapps_modal.loadModule("com_zeapps_project", "search_project", {}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_project = objReturn.id;
@@ -36,14 +41,14 @@ app.controller('ComZeappsProjectFormCategoriesCtrl', ['$scope', '$route', '$rout
                     $scope.form.title_project = '';
                 }
             });
-        };
+        }
 
-        $scope.removeProject = function() {
+        function removeProject() {
             $scope.form.id_project = 0;
             $scope.form.title_project = '';
-        };
+        }
 
-        $scope.success = function(){
+        function success(){
 
             delete $scope.form.title_project;
 
@@ -54,11 +59,11 @@ app.controller('ComZeappsProjectFormCategoriesCtrl', ['$scope', '$route', '$rout
                     $location.url('/ng/com_zeapps_project/project/' + $scope.form.id_project);
                 }
             })
-        };
+        }
 
-        $scope.cancel = function(){
+        function cancel(){
             var id = $scope.form.id_project || '';
             $location.url('/ng/com_zeapps_project/project/' + id)
-        };
+        }
 
     }]);

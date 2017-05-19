@@ -31,11 +31,14 @@ app.controller('ZeAppsProjectsModalTimerCtrl', function($scope, $rootScope, $uib
         y : moment($rootScope.currentTask.stop_time).year()
     };
 
-    $scope.cancel = function () {
-        $uibModalInstance.close(false);
-    };
+    $scope.cancel = cancel;
+    $scope.save = save;
 
-    $scope.save = function () {
+    function cancel() {
+        $uibModalInstance.close(false);
+    }
+
+    function save() {
         $rootScope.currentTask.start_time = $scope.start.y + '-' + (parseInt($scope.start.M)+1) + '-' + $scope.start.d + ' ' + $scope.start.h + ':' + $scope.start.m + ':00';
         $rootScope.currentTask.stop_time = $scope.end.y + '-' + (parseInt($scope.end.M)+1) + '-' + $scope.end.d + ' ' + $scope.end.h + ':' + $scope.end.m + ':00';
 

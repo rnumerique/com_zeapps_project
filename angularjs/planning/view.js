@@ -11,14 +11,12 @@ app.controller('ComZeappsPlanningViewCtrl', ['$scope', '$route', '$routeParams',
             'step' : 1,
             'completed': false
         };
+        $scope.tab = "planning";
+        $scope.tabTemplate = '/com_zeapps_project/scrum/planning';
 
-        $scope.select = function(project){
-            $scope.options.projectId = project.id;
-        };
-
-        $scope.compareDates = function(date){
-            return zhttp.project.compareDate(date);
-        };
+        $scope.select = select;
+        $scope.compareDates = compareDates;
+        $scope.display = display;
 
         zhttp.project.project.get_all(0, true).then(function(response){
             if(response.data && response.data != "false")
@@ -70,14 +68,6 @@ app.controller('ComZeappsPlanningViewCtrl', ['$scope', '$route', '$routeParams',
            }
         });
 
-        $scope.tab = "planning";
-        $scope.tabTemplate = '/com_zeapps_project/scrum/planning';
-
-        $scope.display = function(tab){
-            $scope.tab = tab;
-            $scope.tabTemplate = '/com_zeapps_project/scrum/' + tab;
-        };
-
         $scope.$watch("options.projectId", function(id, oldId, scope){
             if(id != undefined && id != oldId) {
                 if(id === 'all'){
@@ -98,4 +88,15 @@ app.controller('ComZeappsPlanningViewCtrl', ['$scope', '$route', '$routeParams',
             }
         });
 
+        function select(project){
+            $scope.options.projectId = project.id;
+        }
+        function compareDates(date){
+            return zhttp.project.compareDate(date);
+        }
+
+        function display(tab){
+            $scope.tab = tab;
+            $scope.tabTemplate = '/com_zeapps_project/scrum/' + tab;
+        }
     }]);

@@ -5,6 +5,17 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
 
         $scope.form = {};
 
+        $scope.loadProject = loadProject;
+        $scope.removeProject = removeProject;
+        $scope.loadCompany = loadCompany;
+        $scope.removeCompany = removeCompany;
+        $scope.loadContact = loadContact;
+        $scope.removeContact = removeContact;
+        $scope.loadManager = loadManager;
+        $scope.removeManager = removeManager;
+        $scope.success = success;
+        $scope.cancel = cancel;
+
         if($routeParams.id){ // Edit
             zhttp.project.project.get($routeParams.id).then(function(response){
                 if(response.data && response.data != 'false'){
@@ -45,7 +56,7 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
             $scope.form.name_manager = $rootScope.user.firstname ? $rootScope.user.firstname[0] + '. ' + $rootScope.user.lastname : $rootScope.user.lastname;
         }
 
-        $scope.loadProject = function () {
+        function loadProject() {
             zeapps_modal.loadModule("com_zeapps_project", "search_project", {id:$scope.form.id}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_parent = objReturn.id;
@@ -55,14 +66,14 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
                     $scope.form.title_parent = '';
                 }
             });
-        };
+        }
 
-        $scope.removeProject = function() {
+        function removeProject() {
             $scope.form.id_parent = 0;
             $scope.form.title_parent = '';
-        };
+        }
 
-        $scope.loadCompany = function () {
+        function loadCompany() {
             zeapps_modal.loadModule("com_zeapps_contact", "search_company", {}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_company = objReturn.id;
@@ -72,14 +83,14 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
                     $scope.form.name_company = '';
                 }
             });
-        };
+        }
 
-        $scope.removeCompany = function() {
+        function removeCompany() {
             $scope.form.id_company = 0;
             $scope.form.name_company = '';
-        };
+        }
 
-        $scope.loadContact = function () {
+        function loadContact() {
             zeapps_modal.loadModule("com_zeapps_contact", "search_contact", {}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_contact = objReturn.id;
@@ -89,14 +100,14 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
                     $scope.form.name_contact = '';
                 }
             });
-        };
+        }
 
-        $scope.removeContact = function() {
+        function removeContact() {
             $scope.form.id_contact = 0;
             $scope.form.name_contact = '';
-        };
+        }
 
-        $scope.loadManager = function () {
+        function loadManager() {
             zeapps_modal.loadModule("com_zeapps_core", "search_user", {}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_manager = objReturn.id;
@@ -106,14 +117,14 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
                     $scope.form.name_manager = '';
                 }
             });
-        };
+        }
 
-        $scope.removeManager = function() {
+        function removeManager() {
             $scope.form.id_manager = 0;
             $scope.form.name_manager = '';
-        };
+        }
 
-        $scope.success = function(){
+        function success(){
 
             delete $scope.form.title_parent;
 
@@ -153,11 +164,11 @@ app.controller('ComZeappsProjectFormCtrl', ['$scope', '$route', '$routeParams', 
                     $location.url('/ng/com_zeapps_project/project/' + response.data);
                 }
             })
-        };
+        }
 
-        $scope.cancel = function(){
+        function cancel(){
             var id = $scope.form.id || '';
             $location.url('/ng/com_zeapps_project/project/' + id)
-        };
+        }
 
     }]);

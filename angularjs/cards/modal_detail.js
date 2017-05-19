@@ -17,7 +17,12 @@ app.controller('ZeAppsProjectsModalDetailCardCtrl', function($scope, $rootScope,
         id_card : $scope.card.id
     };
 
-    $scope.upload = function (files) {
+    $scope.upload = upload;
+    $scope.saveComment = saveComment;
+    $scope.edit = edit;
+    $scope.close = close;
+
+    function upload(files) {
 
         $scope.files = files;
         $scope.progress = true;
@@ -43,9 +48,9 @@ app.controller('ZeAppsProjectsModalDetailCardCtrl', function($scope, $rootScope,
                 }
             );
         }
-    };
+    }
 
-    $scope.saveComment = function(){
+    function saveComment(){
 
         var formatted_data = angular.toJson($scope.form);
 
@@ -58,15 +63,15 @@ app.controller('ZeAppsProjectsModalDetailCardCtrl', function($scope, $rootScope,
                 $scope.card.comments.push(response.data);
             }
         });
-    };
+    }
 
-    $scope.edit = function(){
+    function edit(){
         $location.url('/ng/com_zeapps_project/sprint/edit/card/' + $scope.card.id_project + '/' + $scope.card.id_sprint + '/' + $scope.card.id);
         $uibModalInstance.dismiss();
-    };
+    }
 
-    $scope.close = function () {
+    function close() {
         $uibModalInstance.dismiss();
-    };
+    }
 
 }) ;

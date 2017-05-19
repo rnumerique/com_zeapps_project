@@ -4,7 +4,11 @@ app.directive('timer', function($rootScope, $interval, zeHttp){
         templateUrl: '/com_zeapps_project/timer/directive',
         link: function(scope, element){
             var card = {};
-            scope.play = function(){
+
+            scope.play = play;
+            scope.stop = stop;
+
+            function play(){
                 card = {
                     id_project : $rootScope.currentTask.id_project,
                     id_category : $rootScope.currentTask.id_category,
@@ -15,11 +19,11 @@ app.directive('timer', function($rootScope, $interval, zeHttp){
                     title : $rootScope.currentTask.label
                 };
                 zeHttp.project.timer.start(card);
-            };
+            }
 
-            scope.stop = function(){
+            function stop(){
                 zeHttp.project.timer.stop();
-            };
+            }
         }
     }
 });

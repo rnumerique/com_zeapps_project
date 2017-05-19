@@ -22,18 +22,16 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
 
         $scope.compareDates = function(date){ return zhttp.project.compareDate(date); };
 
-        $scope.isActive = function(tab){
-            if(tab === 'planning' && $scope.view === '/com_zeapps_project/planning/table')
-                return true;
-            else if(tab === 'timers' && $scope.view === '/com_zeapps_project/project/timers')
-                return true;
-            else if(tab === 'categories' && $scope.view === '/com_zeapps_project/project/categories')
-                return true;
-            else if(tab === 'rights' && $scope.view === '/com_zeapps_project/project/rights')
-                return true;
-            else
-                return false;
-        };
+        $scope.isActive = isActive;
+        $scope.deleteTimer = deleteTimer;
+        $scope.editCategory = editCategory;
+        $scope.deleteCategory = deleteCategory;
+        $scope.addProjectUser = addProjectUser;
+        $scope.deleteRightsOf = deleteRightsOf;
+        $scope.changeRights = changeRights;
+        $scope.archive_project = archive_project;
+        $scope.delete_project = delete_project;
+        $scope.force_delete_project = force_delete_project;
 
         if($routeParams.id){
             zhttp.project.project.get($routeParams.id).then(function(response){
@@ -71,27 +69,40 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
             });
         }
 
-        $scope.deleteTimer = function(timer){
+        function isActive(tab){
+            if(tab === 'planning' && $scope.view === '/com_zeapps_project/planning/table')
+                return true;
+            else if(tab === 'timers' && $scope.view === '/com_zeapps_project/project/timers')
+                return true;
+            else if(tab === 'categories' && $scope.view === '/com_zeapps_project/project/categories')
+                return true;
+            else if(tab === 'rights' && $scope.view === '/com_zeapps_project/project/rights')
+                return true;
+            else
+                return false;
+        }
+
+        function deleteTimer(timer){
             zhttp.project.timer.del(timer.id).then(function(response){
                 if(response.data && response.data != 'false'){
                     $scope.project.timers.splice($scope.project.timers.indexOf(timer), 1);
                 }
             });
-        };
+        }
 
-        $scope.editCategory = function(category){
+        function editCategory(category){
             $location.url('/ng/com_zeapps_project/project/categories/edit/' + category.id);
-        };
+        }
 
-        $scope.deleteCategory = function(category){
+        function deleteCategory(category){
             zhttp.project.category.del(category.id).then(function(response){
                 if(response.data && response.data != 'false'){
                     $scope.categories.splice($scope.categories.indexOf(category), 1);
                 }
             });
-        };
+        }
 
-        $scope.addProjectUser = function(){
+        function addProjectUser(){
             zeapps_modal.loadModule("com_zeapps_core", "search_user", {banned_ids : project_users_ids}, function(objReturn) {
                 if (objReturn) {
                     var user = {};
@@ -113,18 +124,18 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                 } else {
                 }
             });
-        };
+        }
 
-        $scope.deleteRightsOf = function(user){
+        function deleteRightsOf(user){
             zhttp.project.right.del(user.id).then(function(response){
                 if(response.data && response.data != 'false'){
                     $scope.project_users.splice($scope.project_users.indexOf(user), 1);
                     project_users_ids.splice(project_users_ids.indexOf(user.id_user), 1);
                 }
             })
-        };
+        }
 
-        $scope.changeRights = function(user, right){
+        function changeRights(user, right){
             if(!user[right]) {
                 switch(right){
                     case 'access' :
@@ -153,11 +164,10 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                         break;
                 }
             }
-            console.log(user);
             saveRightsOf(user);
-        };
+        }
 
-        $scope.archive_project = function (id) {
+        function archive_project(id) {
             var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: '/assets/angular/popupModalDeBase.html',
@@ -193,9 +203,9 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                 //console.log("rien");
             });
 
-        };
+        }
 
-        $scope.delete_project = function (id) {
+        function delete_project(id) {
             var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: '/assets/angular/popupModalDeBase.html',
@@ -240,9 +250,9 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                 //console.log("rien");
             });
 
-        };
+        }
 
-        $scope.force_delete_project = function (id) {
+        function force_delete_project(id) {
             var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: '/assets/angular/popupModalDeBase.html',
@@ -282,7 +292,7 @@ app.controller('ComZeappsProjectViewCtrl', ['$scope', '$route', '$routeParams', 
                 //console.log("rien");
             });
 
-        };
+        }
 
         function saveRightsOf(user){
 

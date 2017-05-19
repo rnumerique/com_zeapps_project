@@ -9,6 +9,11 @@ app.controller('ComZeappsSandboxViewCtrl', ['$scope', '$route', '$routeParams', 
             'step' : '0'
         };
 
+        $scope.validate = validate;
+        $scope.edit = edit;
+        $scope.detailCard = detailCard;
+        $scope.delete = del;
+
         if($routeParams.id)
             $scope.options.projectId = $routeParams.id;
 
@@ -35,7 +40,6 @@ app.controller('ComZeappsSandboxViewCtrl', ['$scope', '$route', '$routeParams', 
                         $scope.sandboxesByProject[sandbox.id_project] = [];
                     $scope.sandboxesByProject[sandbox.id_project].push(sandbox);
                 });
-                console.log($scope.sandboxesByProject);
             }
         });
 
@@ -59,23 +63,23 @@ app.controller('ComZeappsSandboxViewCtrl', ['$scope', '$route', '$routeParams', 
             }
         });
 
-        $scope.validate = function(sandbox){
+        function validate(sandbox){
             zhttp.project.card.validate(sandbox.id).then(function(response){
                 if(response.data && response.data != 'false'){
                     $scope.sandboxesByProject[sandbox.id_project].splice($scope.sandboxesByProject[sandbox.id_project].indexOf(sandbox), 1);
                 }
             })
-        };
+        }
 
-        $scope.edit = function(sandbox){
+        function edit(sandbox){
             $location.url('/ng/com_zeapps_project/sandbox/edit/'+sandbox.id);
-        };
+        }
 
-        $scope.detailCard = function(card){
+        function detailCard(card){
             zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card});
-        };
+        }
 
-        $scope.delete = function (sandbox) {
+        function del(sandbox) {
             var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: '/assets/angular/popupModalDeBase.html',
@@ -115,6 +119,6 @@ app.controller('ComZeappsSandboxViewCtrl', ['$scope', '$route', '$routeParams', 
                 //console.log("rien");
             });
 
-        };
+        }
 
     }]);
