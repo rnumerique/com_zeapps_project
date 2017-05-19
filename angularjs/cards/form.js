@@ -1,18 +1,27 @@
 app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParams', '$location', '$rootScope', 'zeHttp', 'zeapps_modal', '$uibModal', '$timeout',
     function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, $timeout) {
 
-        $scope.form = {};
-        $scope.categories = [];
         var step;
         var url;
         var whitelist_ids = [];
+
+        $scope.form = {};
+        $scope.categories = [];
+        $scope.type = $routeParams.type || 'card';
+
+        $scope.loadProject = loadProject;
+        $scope.removeProject = removeProject;
+        $scope.loadSprint = loadSprint;
+        $scope.removeSprint = removeSprint;
+        $scope.loadAssigned = loadAssigned;
+        $scope.removeAssigned = removeAssigned;
+        $scope.success = success;
+        $scope.cancel = cancel;
 
         $scope.$on('dataFormCard', function(event, data){
             step = data.step;
             url = data.url;
         });
-
-        $scope.type = $routeParams.type || 'card';
 
         if($routeParams.id){ // Edit
             if($routeParams.type == 'deadline'){
@@ -82,7 +91,7 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
             });
         }
 
-        $scope.loadProject = function () {
+        function loadProject() {
             zeapps_modal.loadModule("com_zeapps_project", "search_project", {}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_project = objReturn.id;
@@ -100,14 +109,14 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                     $scope.form.title_project = '';
                 }
             });
-        };
+        }
 
-        $scope.removeProject = function() {
+        function removeProject() {
             $scope.form.id_project = 0;
             $scope.form.title_project = '';
-        };
+        }
 
-        $scope.loadSprint = function () {
+        function loadSprint() {
             zeapps_modal.loadModule("com_zeapps_project", "search_sprint", {id_project:$scope.form.id_project}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_sprint = objReturn.id;
@@ -119,15 +128,15 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                     $scope.form.step = 1;
                 }
             });
-        };
+        }
 
-        $scope.removeSprint = function() {
+        function removeSprint() {
             $scope.form.id_sprint = 0;
             $scope.form.title_sprint = '';
             $scope.form.step = 1;
-        };
+        }
 
-        $scope.loadAssigned = function () {
+        function loadAssigned() {
             zeapps_modal.loadModule("com_zeapps_core", "search_user", {whitelist_ids : whitelist_ids}, function(objReturn) {
                 if (objReturn) {
                     $scope.form.id_assigned_to = objReturn.id;
@@ -137,14 +146,14 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                     $scope.form.name_assigned_to = '';
                 }
             });
-        };
+        }
 
-        $scope.removeAssigned = function() {
+        function removeAssigned() {
             $scope.form.id_assigned_to = 0;
             $scope.form.name_assigned_to = '';
-        };
+        }
 
-        $scope.success = function(){
+        function success(){
             var formatted_data;
 
             delete $scope.form.title_project;
@@ -196,11 +205,11 @@ app.controller('ComZeappsProjectCardFormCtrl', ['$scope', '$route', '$routeParam
                     }
                 })
             }
-        };
+        }
 
-        $scope.cancel = function(){
+        function cancel(){
             $location.url(url)
-        };
+        }
 
         function getContext(id_project, id_sprint){
             $scope.$emit('triggerFormCard', {id_project : id_project, id_sprint: id_sprint});

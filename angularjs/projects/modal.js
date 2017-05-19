@@ -14,26 +14,27 @@ listModuleModalFunction.push({
 
 
 app.controller('ZeAppsProjectsModalProjectCtrl', function($scope, $uibModalInstance, zeHttp, titre, option) {
+
     $scope.titre = titre ;
 
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss('cancel');
-    };
+    loadList() ;
 
+    $scope.cancel = cancel;
+    $scope.loadProject = loadProject;
 
-
-    var loadList = function () {
+    function loadList() {
         zeHttp.project.project.get_all(0, true, option.id).then(function (response) {
             if (response.status == 200) {
                 $scope.projects = response.data ;
             }
         });
-    };
-    loadList() ;
+    }
 
+    function cancel() {
+        $uibModalInstance.dismiss('cancel');
+    }
 
-
-    $scope.loadProject = function (id) {
+    function loadProject(id) {
 
 
         // search the company

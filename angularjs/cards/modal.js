@@ -14,26 +14,31 @@ listModuleModalFunction.push({
 
 
 app.controller('ZeAppsProjectsModalCardCtrl', function($scope, $uibModalInstance, zeHttp, titre, option) {
+
     $scope.titre = titre ;
-
     $scope.option = option;
-
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss('cancel');
-    };
-
     $scope.selectedCards = [];
 
-    var loadList = function () {
+    $scope.cancel = cancel;
+    $scope.toggle = toggle;
+    $scope.isSelected = isSelected;
+    $scope.loadCards = loadCards;
+
+    loadList() ;
+
+    function cancel() {
+        $uibModalInstance.dismiss('cancel');
+    }
+
+    function loadList() {
         zeHttp.project.card.get_all(option.id_project).then(function (response) {
             if (response.status == 200) {
                 $scope.cards = response.data ;
             }
         });
-    };
-    loadList() ;
+    }
 
-    $scope.toggle = function(card){
+    function toggle(card){
         var i = $scope.selectedCards.indexOf(card);
         if(i === -1) {
             $scope.selectedCards.push(card);
@@ -41,13 +46,13 @@ app.controller('ZeAppsProjectsModalCardCtrl', function($scope, $uibModalInstance
         else {
             $scope.selectedCards.splice(i, 1);
         }
-    };
+    }
 
-    $scope.isSelected = function(card){
+    function isSelected(card){
         return $scope.selectedCards.indexOf(card) > -1;
-    };
+    }
 
-    $scope.loadCards = function () {
+    function loadCards() {
         $uibModalInstance.close($scope.selectedCards);
     }
 

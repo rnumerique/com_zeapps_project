@@ -7,6 +7,9 @@ app.controller('ComZeappsSprintViewCtrl', ['$scope', '$route', '$routeParams', '
             'projectId': 'all'
         };
 
+        $scope.filterProjects = filterProjects;
+        $scope.goTo = goTo;
+
         zhttp.project.filter.get_all('sprint').then(function(response){
             if(response.data && response.data != 'false'){
                 $scope.companies = response.data.companies;
@@ -22,7 +25,7 @@ app.controller('ComZeappsSprintViewCtrl', ['$scope', '$route', '$routeParams', '
             }
         });
 
-        $scope.filterProjects = function(){
+        function filterProjects(){
             if($scope.options.projectId === 'all'){
                 delete $scope.options.id;
             }
@@ -41,9 +44,9 @@ app.controller('ComZeappsSprintViewCtrl', ['$scope', '$route', '$routeParams', '
                     }
                 })
             }
-        };
+        }
 
-        $scope.goTo = function(sprint){
+        function goTo(sprint){
             $location.url('/ng/com_zeapps_project/sprint/' + sprint.id_project + '/' + sprint.id);
         }
     }]);

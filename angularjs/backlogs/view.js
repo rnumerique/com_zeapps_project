@@ -12,6 +12,11 @@ app.controller('ComZeappsBacklogViewCtrl', ['$scope', '$route', '$routeParams', 
             'step' : '1'
         };
 
+        $scope.edit = edit;
+        $scope.detailCard = detailCard;
+        $scope.complete = complete;
+        $scope.delete = del;
+
         zhttp.project.project.get_all(0, true).then(function(response){
             if(response.data && response.data != "false")
                 $scope.projects = response.data;
@@ -75,23 +80,23 @@ app.controller('ComZeappsBacklogViewCtrl', ['$scope', '$route', '$routeParams', 
             }
         });
 
-        $scope.edit = function(card){
+        function edit(card){
             $location.url('/ng/com_zeapps_project/backlog/edit/'+card.id);
-        };
+        }
 
-        $scope.detailCard = function(card){
+        function detailCard(card){
             zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card});
-        };
+        }
 
-        $scope.complete = function(card){
+        function complete(card){
             zhttp.project.card.complete(card.id, 'card').then(function(response){
                 if (response.status == 200) {
                     card.completed = 'Y';
                 }
             });
-        };
+        }
 
-        $scope.delete = function (card) {
+        function del(card) {
             var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: '/assets/angular/popupModalDeBase.html',
@@ -130,6 +135,5 @@ app.controller('ComZeappsBacklogViewCtrl', ['$scope', '$route', '$routeParams', 
             }, function () {
                 //console.log("rien");
             });
-
-        };
+        }
     }]);

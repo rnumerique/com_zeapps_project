@@ -4,7 +4,13 @@ app.controller('ComZeAppsPlanningTableCtrl', ['$scope', '$route', '$routeParams'
         $scope.showDate = [];
         $scope.showDate['0000-00-00'] = true;
 
-        $scope.stepOf = function(card){
+        $scope.stepOf = stepOf;
+        $scope.complete = complete;
+        $scope.detailCard = detailCard;
+        $scope.edit = edit;
+        $scope.delete = del;
+
+        function stepOf(card){
             if(card.step === '2')
                 return 'fa-calendar-o text-muted';
             if(card.step === '3')
@@ -13,26 +19,26 @@ app.controller('ComZeAppsPlanningTableCtrl', ['$scope', '$route', '$routeParams'
                 return 'fa-calendar-o text-warning';
             if(card.step === '5')
                 return 'fa-calendar-check-o text-success';
-        };
+        }
 
-        $scope.complete = function(card){
+        function complete(card){
             zhttp.project.card.complete(card.id, card.deadline).then(function(response){
                 if (response.status == 200) {
                     card.completed = 'Y';
                 }
             });
-        };
+        }
 
-        $scope.detailCard = function(card){
+        function detailCard(card){
             zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card});
-        };
+        }
 
-        $scope.edit = function(card){
+        function edit(card){
             var type = card.deadline ? 'deadline' : 'card';
             $location.url('/ng/com_zeapps_project/project/card/edit/'+type+'/'+card.id);
-        };
+        }
 
-        $scope.delete = function (card) {
+        function del(card) {
             var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: '/assets/angular/popupModalDeBase.html',
@@ -75,6 +81,6 @@ app.controller('ComZeAppsPlanningTableCtrl', ['$scope', '$route', '$routeParams'
                 //console.log("rien");
             });
 
-        };
+        }
 
     }]);

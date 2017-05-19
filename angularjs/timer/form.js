@@ -5,6 +5,9 @@ app.controller('ComZeappsProjectFormTimersCtrl', ['$scope', '$route', '$routePar
 
         $scope.form = {};
 
+        $scope.success = success;
+        $scope.cancel = cancel;
+
         if($routeParams.id){ // Edit
             zhttp.project.timer.get($routeParams.id).then(function(response){
                 if(response.data && response.data != 'false'){
@@ -27,7 +30,7 @@ app.controller('ComZeappsProjectFormTimersCtrl', ['$scope', '$route', '$routePar
             })
         }
 
-        $scope.success = function(){
+        function success(){
             $scope.form.start_time = $scope.start.y + '-' + (parseInt($scope.start.M)+1) + '-' + $scope.start.d + ' ' + $scope.start.h + ':' + $scope.start.m + ':00';
             $scope.form.stop_time = $scope.end.y + '-' + (parseInt($scope.end.M)+1) + '-' + $scope.end.d + ' ' + $scope.end.h + ':' + $scope.end.m + ':00';
 
@@ -38,11 +41,11 @@ app.controller('ComZeappsProjectFormTimersCtrl', ['$scope', '$route', '$routePar
                     $location.url('/ng/com_zeapps_project/project/' + $scope.form.id_project);
                 }
             })
-        };
+        }
 
-        $scope.cancel = function(){
+        function cancel(){
             var id = $scope.form.id_project || '';
             $location.url('/ng/com_zeapps_project/project/' + id)
-        };
+        }
 
     }]);
