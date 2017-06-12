@@ -116,7 +116,6 @@ app.controller('ComZeappsSandboxViewCtrl', ['$scope', '$route', '$routeParams', 
                 }
 
             }, function () {
-                //console.log("rien");
             });
 
         }

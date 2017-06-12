@@ -166,7 +166,6 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                     }
 
                 }, function () {
-                    //console.log("rien");
                 });
             }
             else{
@@ -212,7 +211,6 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                     }
 
                 }, function () {
-                    //console.log("rien");
                 });
             }
         }
@@ -254,7 +252,6 @@ app.controller('ComZeappsSprintDetailCtrl', ['$scope', '$route', '$routeParams',
                 }
 
             }, function () {
-                //console.log("rien");
             });
         }
 

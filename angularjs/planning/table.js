@@ -78,7 +78,6 @@ app.controller('ComZeAppsPlanningTableCtrl', ['$scope', '$route', '$routeParams'
                 }
 
             }, function () {
-                //console.log("rien");
             });
 
         }
