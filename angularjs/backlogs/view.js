@@ -133,7 +133,6 @@ app.controller('ComZeappsBacklogViewCtrl', ['$scope', '$route', '$routeParams', 
                 }
 
             }, function () {
-                //console.log("rien");
             });
         }
     }]);
