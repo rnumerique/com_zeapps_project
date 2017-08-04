@@ -6,6 +6,9 @@ app.config(["$provide",
 			var tday = new Date();
             
 			zeHttp.project = {
+				planning : {
+					get_context : getContext_planning
+				},
 				status : {
 					get_all : getAll_statuses,
 					save : save_statuses,
@@ -20,7 +23,11 @@ app.config(["$provide",
 					get_childs : getChilds_project,
 					post : post_project,
 					archive : archive_project,
-					del : delete_project
+					del : delete_project,
+					document : documentUrl_project,
+                    del_document : delDocument_project,
+                    comment : comment_project,
+					del_comment : delComment_project
 				},
 				card : {
 					get_all : getAll_card,
@@ -29,23 +36,20 @@ app.config(["$provide",
 					del : delete_card,
 					complete : complete_card,
 					validate : validate_idea,
-					comment : comment,
-					document : document_url
+					comment : comment_card,
+                    del_comment : delComment_card,
+					document : documentUrl_card,
+                    del_document : delDocument_card
 				},
 				deadline : {
 					get_all : getAll_deadline,
 					get : get_deadline,
-					post : post_deadline
+					post : post_deadline,
+					del : delete_deadline
 				},
 				task : {
 					get : get_task,
 					get_all : getAll_task
-				},
-				sandbox : {
-					get_all : getAll_sandbox,
-					get : get_sandbox,
-					post : post_sandbox,
-					del : delete_sandbox
 				},
 				category : {
 					get_all : getAll_category,
@@ -63,14 +67,6 @@ app.config(["$provide",
 				filter : {
 					get_all : getAll_filter
 				},
-				sprint : {
-					get_all : getAll_sprint,
-					get : get_sprint,
-					post : post_sprint,
-					del : delete_sprint,
-					updateCards : updateCards_sprint,
-					finalize : finalize_sprint
-				},
 				timer : {
 					get : get_timer,
 					get_ongoing : getOngoing_timer,
@@ -78,13 +74,35 @@ app.config(["$provide",
 					del : delete_timer,
 					start : timer_start,
 					stop : timer_stop,
-					get_interval : getInterval_timer
+					get_interval : getInterval_timer,
+                    calcSpentTimeRatio : calcSpentTimeRatio
+				},
+				mywork : {
+					get_work : getWork_mywork
+				},
+				journal : {
+					get_journal : getJournal_journal
+				},
+				todos : {
+					all : getAll_Todos,
+					get_todos : getTodos_Todos,
+					post : post_Todos,
+					validate : validate_Todos,
+					cancel : cancel_Todos,
+					del : del_Todos,
+					postCategory : postCategory_Todos
 				},
 				openTree : recursiveOpening,
 				compareDate : compareDate
 			};
 
 			return zeHttp;
+
+			// PLANNING
+			function getContext_planning(id){
+				id = id || 0;
+				return zeHttp.get("/com_zeapps_project/planning/get_context/" + id)
+			}
 
 			// STATUS
 			function getAll_statuses(){
@@ -130,6 +148,18 @@ app.config(["$provide",
 				force = !!force;
 				return zeHttp.get("/com_zeapps_project/project/delete_project/" + id + "/" + force);
 			}
+            function comment_project(data){
+                return zeHttp.post("/com_zeapps_project/project/comment/", data);
+            }
+            function delComment_project(id){
+                return zeHttp.delete("/com_zeapps_project/project/del_comment/" + id);
+            }
+			function documentUrl_project(){
+				return "/com_zeapps_project/project/uploadDocuments/";
+			}
+			function delDocument_project(id){
+                return zeHttp.delete("/com_zeapps_project/project/del_document/" + id);
+			}
 
 
 			// CARD
@@ -143,9 +173,8 @@ app.config(["$provide",
 			function post_card(data){
 				return zeHttp.post("/com_zeapps_project/card/save_card/", data);
 			}
-			function delete_card(id, deadline){
-				deadline = !!deadline;
-				return zeHttp.get("/com_zeapps_project/card/delete_card/" + id + "/" + deadline);
+			function delete_card(id){
+				return zeHttp.get("/com_zeapps_project/card/delete_card/" + id);
 			}
 			function complete_card(id, deadline){
 				deadline = !!deadline;
@@ -154,11 +183,17 @@ app.config(["$provide",
 			function validate_idea(id){
 				return zeHttp.get("/com_zeapps_project/card/validate_idea/" + id);
 			}
-			function comment(data){
+			function comment_card(data){
 				return zeHttp.post("/com_zeapps_project/card/comment/", data);
 			}
-			function document_url(){
-				return "/com_zeapps_project/card/uploadDocuments/";
+			function delComment_card(id){
+                return zeHttp.delete("/com_zeapps_project/card/del_comment/" + id);
+			}
+            function documentUrl_card(){
+                return "/com_zeapps_project/card/uploadDocuments/";
+            }
+			function delDocument_card(id){
+				return zeHttp.delete("/com_zeapps_project/card/del_document/" + id);
 			}
 
 
@@ -173,6 +208,9 @@ app.config(["$provide",
 			function post_deadline(data){
 				return zeHttp.post("/com_zeapps_project/deadline/save_deadline/", data);
 			}
+			function delete_deadline(id){
+				return zeHttp.get("/com_zeapps_project/deadline/delete_deadline/" + id);
+			}
 
 			// TASK
 			function get_task(id){
@@ -181,42 +219,6 @@ app.config(["$provide",
 			function getAll_task(id){
 				if(!id) id = 0;
 				return zeHttp.get("/com_zeapps_project/task/get_tasks/" + id);
-			}
-
-
-			// SANDBOX
-			function getAll_sandbox(){
-				return zeHttp.get("/com_zeapps_project/sandbox/get_sandboxes/");
-			}
-			function get_sandbox(id){
-				return zeHttp.get("/com_zeapps_project/sandbox/get_sandbox/" + id);
-			}
-			function post_sandbox(data){
-				return zeHttp.post("/com_zeapps_project/sandbox/save_sandbox/", data);
-			}
-			function delete_sandbox(id){
-				return zeHttp.get("/com_zeapps_project/sandbox/delete_sandbox/" + id);
-			}
-
-			// SPRINT
-			function get_sprint(id){
-				return zeHttp.get("/com_zeapps_project/sprint/get_sprint/" + id);
-			}
-			function getAll_sprint(){
-				return zeHttp.get("/com_zeapps_project/sprint/get_sprints/");
-			}
-			function post_sprint(data){
-				return zeHttp.post("/com_zeapps_project/sprint/save_sprint/", data);
-			}
-			function delete_sprint(id){
-				return zeHttp.get("/com_zeapps_project/sprint/delete_sprint/" + id);
-			}
-			function updateCards_sprint(data){
-				return zeHttp.post("/com_zeapps_project/sprint/updateCards/", data);
-			}
-			function finalize_sprint(id, next){
-				next = next || false;
-				return zeHttp.get("/com_zeapps_project/sprint/finalize_sprint/" + id + "/" + next);
 			}
 
 			// RIGHT
@@ -249,6 +251,39 @@ app.config(["$provide",
 			function delete_category(id){
 				return zeHttp.get("/com_zeapps_project/category/delete_category/" + id);
 			}
+
+			// MY WORK
+			function getWork_mywork(){
+				return zeHttp.get("/com_zeapps_project/mywork/get_work");
+			}
+
+			// JOURNAL
+			function getJournal_journal(){
+				return zeHttp.get("/com_zeapps_project/journal/get_journal");
+			}
+
+			// TO-DOs
+			function getAll_Todos(){
+				return zeHttp.get("/com_zeapps_project/todos/all/");
+			}
+			function getTodos_Todos(id){
+				return zeHttp.get("/com_zeapps_project/todos/get_todos/" + id);
+			}
+			function post_Todos(data){
+				return zeHttp.post("/com_zeapps_project/todos/save/", data);
+			}
+			function validate_Todos(id){
+				return zeHttp.get("/com_zeapps_project/todos/validate/" + id);
+			}
+			function cancel_Todos(id){
+				return zeHttp.get("/com_zeapps_project/todos/cancel/" + id);
+			}
+			function del_Todos(id){
+				return zeHttp.delete("/com_zeapps_project/todos/delete/" + id);
+			}
+            function postCategory_Todos(data){
+                return zeHttp.post("/com_zeapps_project/todos/save_category/", data);
+            }
 
 			// TIMER
 			function get_timer(id){
@@ -333,6 +368,36 @@ app.config(["$provide",
 					$rootScope.currentTask.seconds = moment().diff(moment($rootScope.currentTask.start_time));
 					$rootScope.currentTask.interval = moment.utc($rootScope.currentTask.seconds).format("HH:mm:ss");
 				}, 500);
+			}
+
+			function calcSpentTimeRatio(src){
+				if(src.time_spent && src.estimated_time) {
+                    var time_spent = moment.duration(parseInt(src.time_spent), 'minutes');
+                    var time_spent_formatted = parseInt(time_spent.asHours()) + 'h' + (time_spent.minutes() || '');
+                    var timer_color;
+                    var timer_ratio;
+					var estimated_time = moment.duration(parseInt(src.estimated_time), 'hours');
+
+					var ratio = time_spent.asSeconds() / estimated_time.asSeconds();
+					if (ratio > 1) ratio = 1;
+					var g = ratio < 0.5 ? 200 : parseInt(((0.5 - (ratio - 0.5)) * 2) * 200);
+					var r = ratio >= 0.5 ? 200 : parseInt(((ratio) * 2) * 200);
+					timer_color = '#' + ('00' + r.toString(16)).substr(-2) + ('00' + g.toString(16)).substr(-2) + '00';
+					timer_ratio = (ratio * 100).toFixed(2);
+
+                    return {
+                    	time_spent_formatted : time_spent_formatted,
+						timer_color : timer_color,
+						timer_ratio : timer_ratio
+					}
+                }
+                else{
+                    return {
+                        time_spent_formatted : "0h",
+                        timer_color : '#00c800',
+                        timer_ratio : 0
+                    }
+				}
 			}
 
 			// FILTER

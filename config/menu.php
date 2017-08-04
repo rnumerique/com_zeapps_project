@@ -48,32 +48,33 @@ $tabMenu["url"] = "/ng/com_zeapps_project/planning" ;
 $tabMenu["order"] = 20 ;
 $menuLeft[] = $tabMenu ;
 
+
 $tabMenu = array () ;
-$tabMenu["id"] = "com_zeapps_projects_sandbox" ;
+$tabMenu["id"] = "com_zeapps_projects_mywork" ;
 $tabMenu["space"] = "com_ze_apps_project" ;
-$tabMenu["label"] = "Bac à sable" ;
-$tabMenu["fa-icon"] = "lightbulb-o" ;
-$tabMenu["url"] = "/ng/com_zeapps_project/sandbox" ;
+$tabMenu["label"] = "Mon travail" ;
+$tabMenu["fa-icon"] = "briefcase" ;
+$tabMenu["url"] = "/ng/com_zeapps_project/mywork" ;
 $tabMenu["order"] = 30 ;
 $menuLeft[] = $tabMenu ;
 
 
 $tabMenu = array () ;
-$tabMenu["id"] = "com_zeapps_projects_backlog" ;
+$tabMenu["id"] = "com_zeapps_projects_journal" ;
 $tabMenu["space"] = "com_ze_apps_project" ;
-$tabMenu["label"] = "Backlog" ;
-$tabMenu["fa-icon"] = "list-alt" ;
-$tabMenu["url"] = "/ng/com_zeapps_project/backlog" ;
+$tabMenu["label"] = "Journal" ;
+$tabMenu["fa-icon"] = "clock-o" ;
+$tabMenu["url"] = "/ng/com_zeapps_project/journal" ;
 $tabMenu["order"] = 40 ;
 $menuLeft[] = $tabMenu ;
 
 
 $tabMenu = array () ;
-$tabMenu["id"] = "com_zeapps_projects_sprint" ;
+$tabMenu["id"] = "com_zeapps_projects_todos" ;
 $tabMenu["space"] = "com_ze_apps_project" ;
-$tabMenu["label"] = "Sprint" ;
-$tabMenu["fa-icon"] = "trello" ;
-$tabMenu["url"] = "/ng/com_zeapps_project/sprint" ;
+$tabMenu["label"] = "To-Dos" ;
+$tabMenu["fa-icon"] = "list-ul" ;
+$tabMenu["url"] = "/ng/com_zeapps_project/todos" ;
 $tabMenu["order"] = 50 ;
 $menuLeft[] = $tabMenu ;
 
@@ -86,7 +87,7 @@ $tabMenu["id"] = "com_zeapps_projects_management" ;
 $tabMenu["space"] = "com_ze_apps_project" ;
 $tabMenu["label"] = "Gestion des projets" ;
 $tabMenu["url"] = "/ng/com_zeapps_project/project" ;
-$tabMenu["order"] = 20 ;
+$tabMenu["order"] = 10 ;
 $menuHeader[] = $tabMenu ;
 
 $tabMenu = array () ;
@@ -94,13 +95,29 @@ $tabMenu["id"] = "com_zeapps_projects_planning" ;
 $tabMenu["space"] = "com_ze_apps_project" ;
 $tabMenu["label"] = "Planning" ;
 $tabMenu["url"] = "/ng/com_zeapps_project/planning" ;
+$tabMenu["order"] = 20 ;
+$menuHeader[] = $tabMenu ;
+
+$tabMenu = array () ;
+$tabMenu["id"] = "com_zeapps_projects_mywork" ;
+$tabMenu["space"] = "com_ze_apps_project" ;
+$tabMenu["label"] = "Mon travail" ;
+$tabMenu["url"] = "/ng/com_zeapps_project/mywork" ;
 $tabMenu["order"] = 30 ;
 $menuHeader[] = $tabMenu ;
 
 $tabMenu = array () ;
-$tabMenu["id"] = "com_zeapps_projects_sprint" ;
+$tabMenu["id"] = "com_zeapps_projects_journal" ;
 $tabMenu["space"] = "com_ze_apps_project" ;
-$tabMenu["label"] = "Sprint" ;
-$tabMenu["url"] = "/ng/com_zeapps_project/sprint" ;
+$tabMenu["label"] = "Journal" ;
+$tabMenu["url"] = "/ng/com_zeapps_project/journal" ;
 $tabMenu["order"] = 40 ;
+$menuHeader[] = $tabMenu ;
+
+$tabMenu = array () ;
+$tabMenu["id"] = "com_zeapps_projects_todos" ;
+$tabMenu["space"] = "com_ze_apps_project" ;
+$tabMenu["label"] = "To-Dos" ;
+$tabMenu["url"] = "/ng/com_zeapps_project/todos" ;
+$tabMenu["order"] = 50 ;
 $menuHeader[] = $tabMenu ;

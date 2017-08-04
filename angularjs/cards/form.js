@@ -1,101 +1,87 @@
 app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "$timeout",
 	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, $timeout) {
 
+        $scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_management");
+
 		var step;
-		var url;
 		var whitelist_ids = [];
 
-		$scope.form = {};
+		$scope.form = {
+			priority: "Normal"
+		};
 		$scope.categories = [];
+		$scope.priorities = [];
 		$scope.type = $routeParams.type || "card";
 
 		$scope.loadProject = loadProject;
 		$scope.removeProject = removeProject;
-		$scope.loadSprint = loadSprint;
-		$scope.removeSprint = removeSprint;
 		$scope.loadAssigned = loadAssigned;
 		$scope.removeAssigned = removeAssigned;
 		$scope.success = success;
 		$scope.cancel = cancel;
 
-		$scope.$on("dataFormCard", function(event, data){
-			step = data.step;
-			url = data.url;
-		});
-
 		if($routeParams.id){ // Edit
 			if($routeParams.type == "deadline"){
 				zhttp.project.deadline.get($routeParams.id).then(function (response) {
 					if (response.data && response.data != "false") {
-						$scope.form = response.data;
+						$scope.form = response.data.deadline;
 						$scope.form.due_date = new Date($scope.form.due_date);
-						zhttp.project.project.get($scope.form.id_project).then(function (response) {
-							if (response.data && response.data != "false") {
-								$scope.form.title_project = response.data.project.breadcrumbs;
-							}
-						});
-						getContext($scope.form.id_project);
-						getCategoriesOf($scope.form.id_project);
+
+                        whitelist_ids = [];
+                        angular.forEach(response.data.project_users, function(user){
+                            whitelist_ids.push(user.id_user);
+                        });
+
+                        $scope.priorities = response.data.priorities;
+                        $scope.categories = response.data.categories;
 					}
 				});
 			}
 			else {
 				zhttp.project.card.get($routeParams.id).then(function (response) {
 					if (response.data && response.data != "false") {
-						$scope.form = response.data;
+						$scope.form = response.data.card;
 						$scope.form.due_date = new Date($scope.form.due_date);
+
 						if ($scope.form.estimated_time)
 							$scope.form.estimated_time = parseFloat($scope.form.estimated_time);
-						zhttp.project.project.get($scope.form.id_project).then(function (response) {
-							if (response.data && response.data != "false") {
-								$scope.form.title_project = response.data.project.breadcrumbs;
-								whitelist_ids = [];
-								angular.forEach(response.data.project.users, function(user){
-									whitelist_ids.push(user.id_user);
-								});
-							}
-						});
-						if($scope.form.id_sprint && $scope.form.id_sprint > 0) {
-							zhttp.project.sprint.get($scope.form.id_sprint).then(function (response) {
-								if (response.data && response.data != "false") {
-									$scope.form.title_sprint = response.data.title;
-								}
-							});
-						}
-						getContext($scope.form.id_project);
-						getCategoriesOf($scope.form.id_project);
+
+                        whitelist_ids = [];
+                        angular.forEach(response.data.project_users, function(user){
+                            whitelist_ids.push(user.id_user);
+                        });
+
+                        $scope.priorities = response.data.priorities;
+                        $scope.categories = response.data.categories;
 					}
 				});
 			}
 		}
-		if($routeParams.id_sprint){ // Sprint
-			zhttp.project.sprint.get($routeParams.id_sprint).then(function(response){
-				if(response.data && response.data != "false"){
-					$scope.form.id_sprint = response.data.id;
-					$scope.form.title_sprint = response.data.title;
-				}
-			});
-		}
-		if($routeParams.id_project){ // Project
+		else if($routeParams.id_project){ // Project
 			zhttp.project.project.get($routeParams.id_project).then(function(response){
 				if(response.data && response.data != "false"){
 					$scope.form.id_project = response.data.project.id;
-					$scope.form.title_project = response.data.project.breadcrumbs;
+					$scope.form.project_title = response.data.project.title;
+
 					whitelist_ids = [];
 					angular.forEach(response.data.project.users, function(user){
 						whitelist_ids.push(user.id_user);
 					});
-					getContext($scope.form.id_project);
-					getCategoriesOf($scope.form.id_project);
+
+                    $scope.categories = response.data.categories;
+                    $scope.priorities = response.data.priorities;
 				}
 			});
+		}
+		else{
+
 		}
 
 		function loadProject() {
 			zeapps_modal.loadModule("com_zeapps_project", "search_project", {}, function(objReturn) {
 				if (objReturn) {
 					$scope.form.id_project = objReturn.id;
-					$scope.form.title_project = objReturn.breadcrumbs;
+					$scope.form.project_title = objReturn.breadcrumbs;
 					whitelist_ids = [];
 					angular.forEach(response.data.users, function(user){
 						whitelist_ids.push(user.id_user);
@@ -103,37 +89,17 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 					$scope.form.id_sprint = 0;
 					$scope.form.title_sprint = "";
 					$scope.form.step = 1;
-					getCategoriesOf($scope.form.id_project);
+					$scope.categories = objReturn.categories;
 				} else {
 					$scope.form.id_project = 0;
-					$scope.form.title_project = "";
+					$scope.form.project_title = "";
 				}
 			});
 		}
 
 		function removeProject() {
 			$scope.form.id_project = 0;
-			$scope.form.title_project = "";
-		}
-
-		function loadSprint() {
-			zeapps_modal.loadModule("com_zeapps_project", "search_sprint", {id_project:$scope.form.id_project}, function(objReturn) {
-				if (objReturn) {
-					$scope.form.id_sprint = objReturn.id;
-					$scope.form.title_sprint = objReturn.title || ("Sprint n° " + objReturn.numerotation);
-					$scope.form.step = 2;
-				} else {
-					$scope.form.id_sprint = 0;
-					$scope.form.title_sprint = "";
-					$scope.form.step = 1;
-				}
-			});
-		}
-
-		function removeSprint() {
-			$scope.form.id_sprint = 0;
-			$scope.form.title_sprint = "";
-			$scope.form.step = 1;
+			$scope.form.project_title = "";
 		}
 
 		function loadAssigned() {
@@ -156,16 +122,8 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 		function success(){
 			var formatted_data;
 
-			delete $scope.form.title_project;
+			delete $scope.form.project_title;
 			delete $scope.form.title_sprint;
-
-			if($scope.form.start_date) {
-				var y = $scope.form.start_date.getFullYear();
-				var M = $scope.form.start_date.getMonth();
-				var d = $scope.form.start_date.getDate();
-
-				$scope.form.start_date = new Date(Date.UTC(y, M, d));
-			}
 
 			if($scope.form.due_date) {
 				var y2 = $scope.form.due_date.getFullYear();
@@ -183,7 +141,7 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 
 				zhttp.project.card.post(formatted_data).then(function (response) {
 					if (response.data && response.data != "false") {
-						$location.url(url);
+						$location.url("/ng/com_zeapps_project/project/" + ($scope.form.id_project || ''));
 					}
 				});
 			}
@@ -201,26 +159,13 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 
 				zhttp.project.deadline.post(formatted_data).then(function (response) {
 					if (response.data && response.data != "false") {
-						$location.url(url);
+						$location.url("/ng/com_zeapps_project/project/" + ($scope.form.id_project || ''));
 					}
 				});
 			}
 		}
 
 		function cancel(){
-			$location.url(url);
+			$location.url("/ng/com_zeapps_project/project/" + ($scope.form.id_project || ''));
 		}
-
-		function getContext(id_project, id_sprint){
-			$scope.$emit("triggerFormCard", {id_project : id_project, id_sprint: id_sprint});
-		}
-
-		function getCategoriesOf(id_project){
-			zhttp.project.category.get_all(id_project).then(function(response){
-				if(response.data && response.data != "false"){
-					$scope.categories = response.data;
-				}
-			});
-		}
-
 	}]);

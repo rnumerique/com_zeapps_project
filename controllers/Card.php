@@ -11,6 +11,10 @@ class Card extends ZeCtrl
         $this->load->view('card/modal');
     }
 
+    public function modal_select(){
+        $this->load->view('card/modal_select');
+    }
+
     public function modal_detail(){
         $this->load->view('card/modal_detail');
     }
@@ -21,16 +25,11 @@ class Card extends ZeCtrl
         $this->load->model("Zeapps_project_cards", "cards");
         $this->load->model("Zeapps_project_card_comments", "comments");
         $this->load->model("Zeapps_project_card_documents", "documents");
-        $this->load->model("Zeapps_users", "user");
 
         if($id)
             $where = array('zeapps_project_cards.id_project' => $id);
         else
             $where = array();
-
-        if($user = $this->user->getUserByToken($this->session->get('token'))){
-            $where['zeapps_project_rights.id_user'] = $user[0]->id;
-        }
 
         if($cards = $this->cards->order_by('sort')->all($where)) {
             foreach ($cards as $card){
@@ -48,19 +47,50 @@ class Card extends ZeCtrl
 
     public function get_card($id){
         $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_rights", "rights");
+        $this->load->model("Zeapps_project_categories", "categories");
         $this->load->model("Zeapps_project_card_comments", "comments");
         $this->load->model("Zeapps_project_card_documents", "documents");
+        $this->load->model("Zeapps_project_card_priorities", "priorities");
+        $this->load->model("Zeapps_project_timers", "timers");
 
         if($card = $this->cards->get($id)) {
-            $card->comments = $this->comments->all(array('id_card' => $card->id));
-            if(!$card->comments)
-                $card->comments = [];
-            $card->documents = $this->documents->all(array('id_card' => $card->id));
-            if(!$card->documents)
-                $card->documents = [];
+            $card = $card[0];
+
+            if(!$project_users = $this->rights->all(array('id_project' => $card->id_project))){
+                $project_users = [];
+            }
+
+            if(!$categories = $this->categories->all(array('id_project' => $card->id_project))){
+                $categories = [];
+            }
+
+            $card->time_spent = $this->timers->getTimeOfCard($card->id);
+        }
+        else{
+            $project_users = [];
         }
 
-        echo json_encode($card);
+        if(!$comments = $this->comments->all(array('id_card' => $id)))
+            $comments = [];
+        if(!$documents = $this->documents->all(array('id_card' => $id)))
+            $documents = [];
+        if(!$timers = $this->timers->all(array('id_card' => $id)))
+            $timers = [];
+
+        if(!$priorities = $this->priorities->all()){
+            $priorities = [];
+        }
+
+        echo json_encode(array(
+            'card' => $card,
+            'priorities' => $priorities,
+            'project_users' => $project_users,
+            'categories' => $categories,
+            'comments' => $comments,
+            'documents' => $documents,
+            'timers' => $timers,
+        ));
     }
 
     public function save_card(){
@@ -93,36 +123,21 @@ class Card extends ZeCtrl
     }
 
     public function complete_card($id = null, $deadline = 'false'){
+        $this->load->model("Zeapps_project_cards", "cards");
 
         if($id){
-            if($deadline == 'true'){
-                $this->load->model("Zeapps_project_deadlines", "deadlines");
-
-                $this->deadlines->update(array('completed' => 'Y'), $id);
-            }
-            else{
-                $this->load->model("Zeapps_project_cards", "cards");
-
-                $this->cards->update(array('completed' => 'Y'), $id);
-            }
+            $this->cards->update(array('completed' => 'Y'), $id);
         }
 
         echo json_encode('OK');
     }
 
-    public function delete_card($id = null, $deadline = 'false'){
+    public function delete_card($id = null){
 
         if($id){
-            if($deadline == 'true'){
-                $this->load->model("Zeapps_project_deadlines", "deadlines");
+            $this->load->model("Zeapps_project_cards", "cards");
 
-                $this->deadlines->delete(array('id' => $id));
-            }
-            else{
-                $this->load->model("Zeapps_project_cards", "cards");
-
-                $this->cards->delete(array('id' => $id));
-            }
+            $this->cards->delete(array('id' => $id));
         }
 
         echo json_encode('OK');
@@ -139,62 +154,87 @@ class Card extends ZeCtrl
             $data = json_decode(file_get_contents('php://input'), true);
         }
 
-        $id = $this->comments->insert($data);
+        if($data['id']){
+            $this->comments->update($data, $data['id']);
+            $id = $data['id'];
+        }
+        else{
+            $id = $this->comments->insert($data);
+        }
 
         $comment = $this->comments->get($id);
 
         echo json_encode($comment);
     }
 
+    public function del_comment($id){
+        $this->load->model("Zeapps_project_card_comments", "comments");
+
+        echo json_encode($this->comments->delete($id));
+    }
+
     public function uploadDocuments($id_card = null){
         if($id_card) {
             $this->load->model("Zeapps_project_card_documents", "documents");
 
-            $data = [];
-            $res = [];
-
-            $data['id_card'] = $id_card;
-
+            $data = $_POST;
             $files = $_FILES['files'];
+            if($files) {
+                if($data['path']){
+                    unlink($data['path']);
+                }
 
-            $path = '/assets/upload/project/cards/';
+                $data['id_card'] = $id_card;
 
-            $time = time();
+                $path = '/assets/upload/project/cards/';
 
-            $year = date('Y', $time);
-            $month = date('m', $time);
-            $day = date('d', $time);
-            $hour = date('H', $time);
+                $time = time();
 
-            $data['created_at'] = $year . '-' . $month . '-' . $day;
+                $year = date('Y', $time);
+                $month = date('m', $time);
+                $day = date('d', $time);
+                $hour = date('H', $time);
 
-            $path .= $year . '/' . $month . '/' . $day . '/' . $hour . '/';
+                $data['created_at'] = $year . '-' . $month . '-' . $day;
 
-            recursive_mkdir(FCPATH . $path);
+                $path .= $year . '/' . $month . '/' . $day . '/' . $hour . '/';
 
-            for ($i = 0; $i < sizeof($files['name']); $i++) {
-                $arr = explode(".", $files["name"][$i]);
+                recursive_mkdir(FCPATH . $path);
+
+                $arr = explode(".", $files["name"][0]);
                 $extension = end($arr);
-
-                $data['name'] = implode('.', array_slice($arr, 0, -1)); // entire name except the extension
 
                 $data['path'] = $path . ltrim(str_replace(' ', '', microtime()), '0.') . "." . $extension;
 
-                move_uploaded_file($files["tmp_name"][$i], FCPATH . $data['path']);
+                move_uploaded_file($files["tmp_name"][0], FCPATH . $data['path']);
 
-                $data['id'] = $this->documents->insert($data);
+                if ($data['id']) {
+                    $this->documents->update($data, $data['id']);
+                } else {
+                    $data['id'] = $this->documents->insert($data);
+                }
+                $data['date'] = date('Y-m-d H:i:s');
 
-                $data['date'] = date('Y-m-d');
-
-                array_push($res, $data);
-
-                unset($data['id']);
+                echo json_encode($data);
             }
-
-            echo json_encode($res);
+            else{
+                echo json_encode(false);
+            }
         }
         else {
-            echo json_encode('false');
+            echo json_encode(false);
         }
+    }
+
+    public function del_document($id){
+        $this->load->model("Zeapps_project_card_documents", "documents");
+
+        if($document = $this->documents->get($id)){
+            unlink($document->path);
+
+            $this->documents->delete($id);
+        }
+
+        echo 'OK';
     }
 }

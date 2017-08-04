@@ -12,11 +12,14 @@ app.controller("ComZeappsProjectOverviewCtrl", ["$scope", "$route", "$routeParam
 			$rootScope.projectTab = "";
 			$scope.filters = {};
 		}
-		$scope.totals = {};
-		$scope.view = "0";
+		$scope.postits = {};
+		$scope.details = 0;
 
 		$scope.goTo = goTo;
 		$scope.goToTab = goToTab;
+		$scope.edit = edit;
+		$scope.delete_project = delete_project;
+		$scope.force_delete_project = force_delete_project;
 
 		zhttp.project.project.get_overview().then(function(response){
 			if(response.data && response.data != "false"){
@@ -25,6 +28,11 @@ app.controller("ComZeappsProjectOverviewCtrl", ["$scope", "$route", "$routeParam
 					project.due = parseFloat(project.due);
 					project.commission = parseFloat(project.commission);
 					project.payed = parseFloat(project.payed);
+
+                    var ret = zhttp.project.timer.calcSpentTimeRatio(project);
+					project.time_spent_formatted = ret.time_spent_formatted;
+					project.timer_color = ret.timer_color;
+					project.timer_ratio = ret.timer_ratio;
 				});
 				calcTotals();
 			}
@@ -32,6 +40,11 @@ app.controller("ComZeappsProjectOverviewCtrl", ["$scope", "$route", "$routeParam
 
 		function goTo(id_project){
 			$location.url("/ng/com_zeapps_project/project/" + id_project);
+		}
+
+		function edit(id_project, $event){
+			$event.stopPropagation();
+			$location.url("/ng/com_zeapps_project/project/edit/" + id_project);
 		}
 
 		function goToTab(id_status){
@@ -47,33 +60,141 @@ app.controller("ComZeappsProjectOverviewCtrl", ["$scope", "$route", "$routeParam
 		}
 
 		function calcTotals(){
-			$scope.totals = {
+			var totals = {
 				due : 0,
 				commission : 0,
 				benefit : 0,
 				payed : 0,
-				leftToPay : 0,
-				nbSandbox : 0,
-				nbBacklog : 0,
-				nbOngoing : 0,
-				nbQuality : 0,
-				nbNext : 0
+				leftToPay : 0
 			};
 
 			var projects = $filter("filter")($scope.projects, $scope.filters);
 
 			angular.forEach(projects, function(project){
-				$scope.totals.due += parseFloat(project.due);
-				$scope.totals.commission += parseFloat(project.commission);
-				$scope.totals.payed += parseFloat(project.payed);
-				$scope.totals.nbSandbox += parseInt(project.nbSandbox);
-				$scope.totals.nbBacklog += parseInt(project.nbBacklog);
-				$scope.totals.nbOngoing += parseInt(project.nbOngoing);
-				$scope.totals.nbQuality += parseInt(project.nbQuality);
-				$scope.totals.nbNext += parseInt(project.nbNext);
+				totals.due += parseFloat(project.due);
+				totals.commission += parseFloat(project.commission);
+				totals.payed += parseFloat(project.payed);
 			});
 
-			$scope.totals.benefit = $scope.totals.due - $scope.totals.commission;
-			$scope.totals.leftToPay = $scope.totals.due - $scope.totals.payed;
+			totals.benefit = totals.due - totals.commission;
+			totals.leftToPay = totals.due - totals.payed;
+
+			$scope.postits = [
+				{
+					value: totals.due,
+					legend: 'Total montant',
+					filter: 'currency'
+				},
+				{
+					value: totals.commission,
+					legend: 'Total commission',
+                    filter: 'currency'
+				},
+				{
+					value: totals.benefit,
+					legend: 'Total marge',
+                    filter: 'currency'
+				},
+				{
+					value: totals.payed,
+					legend: 'Total deja facturé',
+                    filter: 'currency'
+				},
+				{
+					value: totals.leftToPay,
+					legend: 'Total reste dû',
+                    filter: 'currency'
+				}
+			]
+		}
+
+		function delete_project(id, $event) {
+			$event.stopPropagation();
+			var modalInstance = $uibModal.open({
+				animation: true,
+				templateUrl: "/assets/angular/popupModalDeBase.html",
+				controller: "ZeAppsPopupModalDeBaseCtrl",
+				size: "lg",
+				resolve: {
+					titre: function () {
+						return "Attention";
+					},
+					msg: function () {
+						return "Souhaitez-vous supprimer définitivement ce projet ?";
+					},
+					action_danger: function () {
+						return "Annuler";
+					},
+					action_primary: function () {
+						return false;
+					},
+					action_success: function () {
+						return "Confirmer";
+					}
+				}
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+				if (selectedItem.action == "danger") {
+
+				} else if (selectedItem.action == "success") {
+					zhttp.project.project.del(id).then(function (response) {
+						if (response.data && response.data != "false") {
+							if (response.data.hasDependencies) {
+								$scope.force_delete_project(id);
+							}
+							else {
+								$location.url("/ng/com_zeapps_project/project");
+							}
+						}
+					});
+				}
+
+			}, function () {
+				//console.log("rien");
+			});
+
+		}
+
+		function force_delete_project(id) {
+			var modalInstance = $uibModal.open({
+				animation: true,
+				templateUrl: "/assets/angular/popupModalDeBase.html",
+				controller: "ZeAppsPopupModalDeBaseCtrl",
+				size: "lg",
+				resolve: {
+					titre: function () {
+						return "Attention";
+					},
+					msg: function () {
+						return "Ce projet contient des sous-projets ou cartes/deadlines, ceux-ci seront également supprimés.";
+					},
+					action_danger: function () {
+						return "Annuler";
+					},
+					action_primary: function () {
+						return false;
+					},
+					action_success: function () {
+						return "Confirmer la suppression";
+					}
+				}
+			});
+
+			modalInstance.result.then(function (selectedItem) {
+				if (selectedItem.action == "danger") {
+
+				} else if (selectedItem.action == "success") {
+					zhttp.project.project.del(id, true).then(function (response) {
+						if (response.status == 200) {
+							$location.url("/ng/com_zeapps_project/project");
+						}
+					});
+				}
+
+			}, function () {
+				//console.log("rien");
+			});
+
 		}
 	}]);

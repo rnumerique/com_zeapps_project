@@ -27,9 +27,21 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <form-buttons></form-buttons>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Couleur de la catégorie</label>
+                        <div class="input-group">
+                            <span class="input-group-addon" ng-style="{'background-color':form.color}"></span>
+                            <input class="form-control" type='text' ng-model="form.color">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <form-buttons></form-buttons>
     </form>
 </div>

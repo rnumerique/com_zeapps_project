@@ -2,116 +2,32 @@
     background-color: #dd0000 !important;
     color: #fff;
 }
-
-.card_description,
-.card_comment{
-    white-space: pre-line;
+.text-outdated{
+    color: #dd0000 !important;
 }
+
 .card_comment,
 .card_document{
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
-
-.sprints{
-    margin-bottom: 1em;
-    background: #333;
-    padding-bottom: .5em;
-    box-sizing: border-box;
-    overflow-x: auto;
-    white-space: nowrap;
+.card_comment-head,
+.card_document-head,
+.card_comment-footer,
+.card_document-footer{
+    padding: 5px 15px;
 }
-.sprints_project{
-    padding: 0 10px;
-    line-height: 2em;
-    color: #fff;
+.card_comment-head,
+.card_document-head,
+.card_comment-body,
+.card_document-body{
+    border-bottom: 1px dotted #d7d7d7;
 }
-
-.sprint,
-.sprint_separator{
-    display: inline-block;
-}
-.sprint{
-    background: #ccc;
-    border-radius: 5px;
-    margin: .25em .75em;
-    width: 12em;
-}
-.sprint.active{
-    background: #fff;
-}
-.sprint_separator{
-    margin-top: 2.75em;
-    color: #ccc;
-}
-.sprint_content{
-    margin: 1em;
-}
-
-.scrum{
-    padding-bottom: 1em;
-    background: #333;
-}
-.scrum_step,
-.scrum_category{
-    color: #fff;
-}
-
-.scrum_step{
-    width: 25%;
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-.scrum_category{
-    overflow: hidden;
-    vertical-align: middle;
-}
-.scrum_category_inner{
-    display: inline-block;
-    min-height: 70px;
-
-    padding-top: 100%;
-
-    -ms-transform: rotate(-90deg);
-    -webkit-transform: rotate(-90deg);
-    transform: rotate(-90deg);
-}
-.scrum_category_inner:after{
-    content: "";
-    float: left;
-    margin-top: 100%;
-}
-
-.scrum_card{
-    background: #ccc;
-    border-radius: 5px;
-    color: initial;
-    margin: .5em 0;
-    padding: 8px 10px;
-}
-
-.sprint_placeholder{
-    background: #777;
-    border-radius: 5px;
-    color: initial;
-    margin: .5em 0;
-    padding: 8px 10px;
-    height : 5em;
-}
-
-.scrum.table{
-    display: table;
-    border-collapse: collapse;
-}
-
-.scrum .table-row{
-    display: table-row;
-    border-bottom: 1px solid #fff;
-}
-
-.scrum .table-cell{
-    display: table-cell;
-    border-right: 1px solid #fff;
+.card_description,
+.card_comment-body,
+.card_document-body{
+    padding: 10px 15px;
+    white-space: pre-line;
 }
 
 timer{
@@ -128,4 +44,79 @@ timer{
     margin-left: -150px;
     width: 300px;
     overflow-x: hidden;
+}
+
+.todo_categories{
+    padding: 5px;
+}
+.todo_categories .todo_category{
+    padding: 5px 10px;
+}
+.todo_categories .todo_category:hover,
+.todo_categories .todo_category.active{
+    background-color: #393939;
+    color: #fff;
+}
+
+.project_todos .table{
+    margin: 0 !important;
+    border-collapse: separate;
+    border-spacing: 0 5px;
+}
+.project_todos .table-cell{
+    padding: 10px 15px;
+}
+.project_todos .todos .table-cell {
+    vertical-align: middle;
+    height: 48px;
+    border: 1px solid #4cae4c;
+    border-left: 0;
+}
+.project_todos .todos .table-cell:first-child{
+    border: 1px solid #4cae4c;
+    width: 50px;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+}
+.project_todos .todos .table-cell:first-child:hover{
+    color: #4cae4c;
+}
+.project_todos .todos .table-cell:first-child i.onhover{
+    display: none;
+}
+.project_todos .todos .table-cell:first-child:hover i{
+    display: none;
+}
+.project_todos .todos .table-cell:first-child:hover i.onhover{
+    display: initial;
+}
+.project_todos .todos .table-cell:last-child{
+    border: 1px solid #4cae4c;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    border-left: 0;
+}
+
+.project_todos .history .table-cell {
+    vertical-align: middle;
+    height: 48px;
+    border: 1px solid #eea236;
+    border-left: 0;
+}
+.project_todos .history .table-cell:first-child{
+    color: #eea236;
+    border: 1px solid #eea236;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+}
+.project_todos .history .table-cell:first-child:hover i{
+    transform: rotate(-360deg);
+    transition: transform .8s;
+}
+.project_todos .history .table-cell:last-child{
+    border: 1px solid #eea236;
+    border-left: 0;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    border-left: 0;
 }

@@ -12,9 +12,6 @@ class Timer extends ZeCtrl
     public function modal(){
         $this->load->view('timer/modal');
     }
-    public function form(){
-        $this->load->view('timer/form');
-    }
 
     public function get($id){
         $this->load->model("Zeapps_project_timers", "timer");
@@ -22,6 +19,14 @@ class Timer extends ZeCtrl
         $timer = $this->timer->get($id);
 
         echo json_encode($timer);
+    }
+
+    public function get_all(){
+        $this->load->model("Zeapps_project_timers", "timer");
+
+        $timers = $this->timer->all();
+
+        echo json_encode($timers);
     }
 
     public function get_ongoing(){

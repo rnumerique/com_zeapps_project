@@ -1,102 +1,160 @@
-app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal) {
+app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$filter",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $filter) {
 
 		$scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_planning");
 
-		$scope.options = {
-			"projectId": "all",
-			"id_company": "all",
-			"id_manager": "all",
-			"id_assigned_to": $rootScope.user.id,
-			"step" : 1,
-			"completed": false
-		};
-		$scope.tab = "planning";
-		$scope.tabTemplate = "/com_zeapps_project/scrum/planning";
+		var cards = [];
+		var deadlines = [];
+		var projects = [];
+		var planningFilter = $filter('planningFilter');
 
-		$scope.select = select;
-		$scope.compareDates = compareDates;
-		$scope.display = display;
-
-		zhttp.project.project.get_all(0, true).then(function(response){
-			if(response.data && response.data != "false")
-				$scope.projects = response.data;
-		});
-
-		zhttp.project.filter.get_all("planning").then(function(response){
-			if(response.data && response.data != "false"){
-				$scope.companies = response.data.companies;
-				$scope.managers = response.data.managers;
-				$scope.dates = response.data.dates;
-				$scope.assigned = response.data.assigned;
+		$scope.filter = {
+			model: {},
+			options: {
+				main: [
+					{
+						format: 'checkbox',
+						field: 'displayCards',
+						label: 'Afficher les tâches',
+						options: []
+					},
+					{
+						format: 'select',
+						field: 'id_project',
+						label: 'Projet',
+						options: []
+					},
+					{
+						format: 'select',
+						field: 'id_company',
+						label: 'Demandeur',
+						options: []
+					},
+					{
+						format: 'select',
+						field: 'id_manager',
+						label: 'Responsable',
+						options: []
+					},
+					{
+						format: 'select',
+						field: 'id_assigned_to',
+						label: 'Assigné à',
+						options: []
+					}
+				],
+				secondaries: []
 			}
-		});
+		};
+		$scope.calendarModel = {
+			eventLimit: 6,
+			eventLimitClick: "day",
+			views: {
+				basic: {
+					"eventLimit": false
+				}
+			},
+			step: 1,
+			completed: false,
+			events: []
+		};
 
-		zhttp.project.card.get_all().then(function(response){
-			if(response.data && response.data != "false") {
-				var cards = response.data;
-				if(!$scope.cardsByDate)
-					$scope.cardsByDate = [];
-				angular.forEach(cards, function (card) {
+		zhttp.project.planning.get_context().then(function(response){
+			if(response.data && response.data != "false"){
+				$scope.filter.options.main[2].options = response.data.filters.companies;
+				$scope.filter.options.main[3].options = response.data.filters.managers;
+				$scope.filter.options.main[4].options = response.data.filters.assigned;
+
+                $scope.filter.options.main[1].options = response.data.projects;
+
+				projects = response.data.projects;
+				angular.forEach(projects, function (card) {
 					if(card.due_date != 0) {
-						if (!$scope.cardsByDate[card.due_date])
-							$scope.cardsByDate[card.due_date] = [];
-						$scope.cardsByDate[card.due_date].push(card);
+						var event = {
+							allDay: true,
+                            title: card.name_company + " ( " + card.label + " ) ",
+							start: card.due_date,
+							color: "#760692",
+							order: 1,
+							url: "/ng/com_zeapps_project/project/" + card.id_project
+						};
+
+						$scope.calendarModel.events.push(event);
 					}
 				});
-				if(!$scope.cardsByProject)
-					$scope.cardsByProject = [];
-				angular.forEach(cards, function (card) {
-					if (!$scope.cardsByProject[card.id_project])
-						$scope.cardsByProject[card.id_project] = [];
-					$scope.cardsByProject[card.id_project].push(card);
+
+				deadlines = response.data.deadlines;
+				angular.forEach(deadlines, function (card) {
+					if(card.due_date != 0) {
+						var event = {
+							allDay: true,
+							title: card.name_company + " ( " + card.project_title + " ) : " + card.title,
+							start: card.due_date,
+							color: "#a94442",
+							order: 2,
+                            url: "/ng/com_zeapps_project/project/" + card.id_project
+						};
+
+						$scope.calendarModel.events.push(event);
+					}
 				});
+
+                cards = response.data.cards;
 			}
 		});
 
-		zhttp.project.deadline.get_all().then(function(response){
-			if(response.data && response.data != "false"){
-				var deadlines = response.data;
-				if(!$scope.cardsByDate)
-					$scope.cardsByDate = [];
-				angular.forEach(deadlines, function (deadline) {
-					if (!$scope.cardsByDate[deadline.due_date])
-						$scope.cardsByDate[deadline.due_date] = [];
-					deadline.deadline = true;
-					$scope.cardsByDate[deadline.due_date].push(deadline);
+		$scope.$watch("filter", function(filter, oldFilter){
+			if(filter && filter != oldFilter){
+				var events = [];
+				angular.forEach(planningFilter(projects, $scope.filter.model), function (card) {
+					if(card.due_date != 0) {
+						var event = {
+							allDay: true,
+							title: card.name_company + " ( " + card.label + " ) ",
+							start: card.due_date,
+							color: "#760692",
+							order: 1,
+                            url: "/ng/com_zeapps_project/project/" + card.id_project
+						};
+
+						events.push(event);
+					}
 				});
+
+				angular.forEach(planningFilter(deadlines, $scope.filter.model), function (card) {
+					if(card.due_date != 0) {
+						var event = {
+							allDay: true,
+                            title: card.name_company + " ( " + card.project_title + " ) : " + card.title,
+							start: card.due_date,
+							color: "#a94442",
+							order: 2,
+                            url: "/ng/com_zeapps_project/project/" + card.id_project
+						};
+
+						events.push(event);
+					}
+				});
+
+				if($scope.filter.model.displayCards) {
+                    angular.forEach(planningFilter(cards, $scope.filter.model), function (card) {
+                        if (card.due_date != 0) {
+                            var event = {
+                                allDay: true,
+                                title: card.name_company + " ( " + card.project_title + " ) : " + (card.name_assigned_to ? " - assigné à " + card.name_assigned_to : ''),
+                                start: card.due_date,
+                                textColor: card.color ? "#333" : "#fff",
+                                color: card.color || "#393939",
+                                order: 3,
+                                url: "/ng/com_zeapps_project/project/" + card.id_project
+                            };
+
+                            events.push(event);
+                        }
+                    });
+                }
+
+				$scope.calendarModel.events = events;
 			}
-		});
-
-		$scope.$watch("options.projectId", function(id, oldId, scope){
-			if(id != undefined && id != oldId) {
-				if(id === "all"){
-					delete scope.options.id_project;
-				}
-				else {
-					scope.options.id_project = [];
-					scope.options.id_project.push(id);
-					zhttp.project.project.get_childs(id).then(function (response) {
-						if (response.data && response.data != "false") {
-							var subProjects = response.data;
-							angular.forEach(subProjects, function (subProject) {
-								scope.options.id_project.push(subProject.id);
-							});
-						}
-					});
-				}
-			}
-		});
-
-		function select(project){
-			$scope.options.projectId = project.id;
-		}
-		function compareDates(date){
-			return zhttp.project.compareDate(date);
-		}
-
-		function display(tab){
-			$scope.tab = tab;
-			$scope.tabTemplate = "/com_zeapps_project/scrum/" + tab;
-		}
+		}, true)
 	}]);

@@ -9,9 +9,15 @@ class Zeapps_project_card_comments extends ZeModel {
             $objData['name_user'] = $user[0]->firstname[0] . '. ' . $user[0]->lastname;
         }
 
-        $objData['date'] = date('Y-m-d');
+        $objData['date'] = date('Y-m-d H:i:s');
 
         return parent::insert($objData);
+    }
+
+    public function update($objData = null, $where = null){
+        $objData['date'] = date('Y-m-d H:i:s');
+
+        return parent::update($objData, $where);
     }
 
 }

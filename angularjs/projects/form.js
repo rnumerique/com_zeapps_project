@@ -5,8 +5,6 @@ app.controller("ComZeappsProjectFormCtrl", ["$scope", "$route", "$routeParams", 
 
 		$scope.form = {};
 
-		$scope.loadProject = loadProject;
-		$scope.removeProject = removeProject;
 		$scope.loadCompany = loadCompany;
 		$scope.removeCompany = removeCompany;
 		$scope.loadContact = loadContact;
@@ -23,7 +21,6 @@ app.controller("ComZeappsProjectFormCtrl", ["$scope", "$route", "$routeParams", 
 					$scope.form.start_date = new Date($scope.form.start_date);
 					$scope.form.due_date = new Date($scope.form.due_date);
 					$scope.form.estimated_time = parseFloat($scope.form.estimated_time);
-					$scope.form.time_spent = parseFloat($scope.form.time_spent);
 					$scope.form.due = parseFloat($scope.form.due);
 					$scope.form.commission = parseFloat($scope.form.commission);
 					$scope.form.payed = parseFloat($scope.form.payed);
@@ -35,42 +32,10 @@ app.controller("ComZeappsProjectFormCtrl", ["$scope", "$route", "$routeParams", 
 				}
 			});
 		}
-		else if($routeParams.id_parent){ // Sub Project
-			zhttp.project.project.get($routeParams.id_parent).then(function(response){
-				if(response.data && response.data != "false"){
-					$scope.form.id_status = "0";
-					$scope.form.id_parent = response.data.project.id;
-					$scope.form.title_parent = response.data.project.breadcrumbs;
-					$scope.form.id_company = response.data.project.id_company;
-					$scope.form.name_company = response.data.project.name_company;
-					$scope.form.id_contact = response.data.project.id_contact;
-					$scope.form.name_contact = response.data.project.name_contact;
-					$scope.form.id_manager = response.data.project.id_manager;
-					$scope.form.name_manager = response.data.project.name_manager;
-				}
-			});
-		}
 		else{ // New Project
 			$scope.form.id_status = "0";
 			$scope.form.id_manager = $rootScope.user.id;
 			$scope.form.name_manager = $rootScope.user.firstname ? $rootScope.user.firstname[0] + ". " + $rootScope.user.lastname : $rootScope.user.lastname;
-		}
-
-		function loadProject() {
-			zeapps_modal.loadModule("com_zeapps_project", "search_project", {id:$scope.form.id}, function(objReturn) {
-				if (objReturn) {
-					$scope.form.id_parent = objReturn.id;
-					$scope.form.title_parent = objReturn.breadcrumbs;
-				} else {
-					$scope.form.id_parent = 0;
-					$scope.form.title_parent = "";
-				}
-			});
-		}
-
-		function removeProject() {
-			$scope.form.id_parent = 0;
-			$scope.form.title_parent = "";
 		}
 
 		function loadCompany() {

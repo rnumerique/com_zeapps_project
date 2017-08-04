@@ -2,14 +2,19 @@
 class Zeapps_projects extends ZeModel {
 
     public function get_companies(){
-        return $this->database()->select('id_company, name_company')->group_by('id_company')->table('zeapps_projects')->result();
+        return $this->database()->select('id_company as id, name_company as label')->group_by('id_company')->where_not(array('id_company'=>0))->table('zeapps_projects')->result();
     }
 
     public function get_managers(){
-        return $this->database()->select('id_manager, name_manager')->group_by('id_manager')->table('zeapps_projects')->result();
+        return $this->database()->select('id_manager as id, name_manager as label')->group_by('id_manager')->where_not(array('id_manager'=>0))->table('zeapps_projects')->result();
     }
 
     public function all($where = array(), $spaces = 'false', $filter = 'false'){
+        $this->_pLoad->model('Zeapps_users', 'users');
+
+        if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
+            $where['zeapps_project_rights.id_user'] = $user[0]->id;
+        }
 
         if(isset($where['id_parent']))
             $id = $where['id_parent'];
@@ -27,6 +32,8 @@ class Zeapps_projects extends ZeModel {
 
         $ret = $this->database()->select('*,
                                         zeapps_projects.id as id,
+                                        zeapps_projects.breadcrumbs as label,
+                                        zeapps_projects.breadcrumbs as breadcrumbs,
                                         zeapps_project_statuses.label as label_status')
                                 ->join('zeapps_project_rights', 'zeapps_project_rights.id_project = zeapps_projects.id', 'LEFT')
                                 ->join('zeapps_project_statuses', 'zeapps_project_statuses.id = zeapps_projects.id_status', 'LEFT')
@@ -83,10 +90,10 @@ class Zeapps_projects extends ZeModel {
 
         if($data['id_manager']){
             if($manager = $this->_pLoad->ctrl->rights->get(array('id_project' => $id, 'id_user' => $data['id_manager']))){
-                $this->_pLoad->ctrl->rights->update(array('access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1), $manager->id);
+                $this->_pLoad->ctrl->rights->update(array('access' => 1, 'card' => 1, 'accounting' => 1, 'project' => 1), $manager->id);
             }
             else{
-                $this->_pLoad->ctrl->rights->insert(array('id_project' => $id, 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1));
+                $this->_pLoad->ctrl->rights->insert(array('id_project' => $id, 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'card' => 1, 'accounting' => 1, 'project' => 1));
             }
         }
 
@@ -109,10 +116,10 @@ class Zeapps_projects extends ZeModel {
 
         if($data['id_manager']){
             if($manager = $this->_pLoad->ctrl->rights->get(array('id_project' => $data['id'], 'id_user' => $data['id_manager']))){
-                $this->_pLoad->ctrl->rights->update(array('access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1), $manager->id);
+                $this->_pLoad->ctrl->rights->update(array('access' => 1, 'card' => 1, 'accounting' => 1, 'project' => 1), $manager->id);
             }
             else{
-                $this->_pLoad->ctrl->rights->insert(array('id_project' => $data['id'], 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'sandbox' => 1, 'card' => 1, 'sprint' => 1, 'project' => 1));
+                $this->_pLoad->ctrl->rights->insert(array('id_project' => $data['id'], 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'card' => 1, 'accounting' => 1, 'project' => 1));
             }
         }
 

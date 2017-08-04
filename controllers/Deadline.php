@@ -7,16 +7,11 @@ class Deadline extends ZeCtrl
 
     public function get_deadlines($id = 0){
         $this->load->model("Zeapps_project_deadlines", "deadlines");
-        $this->load->model("Zeapps_users", "user");
 
         if($id)
             $where = array('id_project' => $id);
         else
             $where = array();
-
-        if($user = $this->user->getUserByToken($this->session->get('token'))){
-            $where['zeapps_project_rights.id_user'] = $user[0]->id;
-        }
 
         $deadlines = $this->deadlines->all($where);
 
@@ -25,10 +20,19 @@ class Deadline extends ZeCtrl
 
     public function get_deadline($id){
         $this->load->model("Zeapps_project_deadlines", "deadlines");
+        $this->load->model("Zeapps_project_categories", "categories");
 
-        $deadlines = $this->deadlines->get($id);
+        if($deadline = $this->deadlines->get($id)){
+            $deadline = $deadline[0];
+            if(!$categories = $this->categories->all(array('id_project' => $deadline->id_project))){
+                $categories = [];
+            }
+        }
 
-        echo json_encode($deadlines);
+        echo json_encode(array(
+            'deadline' => $deadline,
+            'categories' => $categories
+        ));
     }
 
     public function save_deadline(){
@@ -50,5 +54,16 @@ class Deadline extends ZeCtrl
         }
 
         echo json_encode($id);
+    }
+
+    public function delete_deadline($id = null){
+
+        if($id){
+            $this->load->model("Zeapps_project_deadlines", "deadlines");
+
+            $this->deadlines->delete(array('id' => $id));
+        }
+
+        echo json_encode('OK');
     }
 }

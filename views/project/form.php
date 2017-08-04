@@ -6,19 +6,19 @@
     <form>
         <div class="well">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Intitulé du projet</label>
                         <input class="form-control" type='text' ng-model="form.title" ng-required="true">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Contexte</label>
                         <input class="form-control" type='text' ng-model="form.context">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Statut</label>
                         <select class="form-control" ng-model="form.id_status">
@@ -29,21 +29,6 @@
                                 {{ status.label }}
                             </option>
                         </select>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Projet parent</label>
-                        <div class="input-group">
-                            <input type="text" ng-model="form.title_parent" class="form-control" disabled>
-
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" ng-click="removeProject()"
-                                        ng-show="form.id_parent != 0 && form.id_parent != undefined">x
-                                </button>
-                                <button class="btn btn-default" type="button" ng-click="loadProject()">...</button>
-                            </span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -113,12 +98,6 @@
                     <div class="form-group">
                         <label>Temps estimé (h)</label>
                         <input class="form-control" type='number' ng-model="form.estimated_time">
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Temps passé (h)</label>
-                        <input class="form-control" type='number' ng-model="form.time_spent">
                     </div>
                 </div>
             </div>

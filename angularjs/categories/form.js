@@ -16,17 +16,23 @@ app.controller("ComZeappsProjectFormCategoriesCtrl", ["$scope", "$route", "$rout
 					$scope.form = response.data;
 					zhttp.project.project.get($scope.form.id_project).then(function(response){
 						if(response.data && response.data != "false"){
-							$scope.form.title_project = response.data.breadcrumbs;
+							$scope.form.title_project = response.data.project.breadcrumbs;
 						}
 					});
 				}
 			});
 		}
-		else if($routeParams.id_project){ // Sub Project
+		else if($routeParams.id_project){ // Project
 			zhttp.project.project.get($routeParams.id_project).then(function(response){
 				if(response.data && response.data != "false"){
-					$scope.form.id_project = response.data.id;
-					$scope.form.title_project = response.data.breadcrumbs;
+					$scope.form.id_project = response.data.project.id;
+					$scope.form.title_project = response.data.project.breadcrumbs;
+
+					var r = (Math.round(Math.random()* 127) + 127).toString(16);
+					var g = (Math.round(Math.random()* 127) + 127).toString(16);
+					var b = (Math.round(Math.random()* 127) + 127).toString(16);
+
+					$scope.form.color = "#" + r + g + b;
 				}
 			});
 		}

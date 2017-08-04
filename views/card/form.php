@@ -1,21 +1,23 @@
-<div ng-controller="ComZeappsProjectCardFormCtrl">
+<div id="breadcrumb">
+    Gestion des projets
+</div>
+
+<div id="content">
     <form>
         <div class="well">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-8">
                     <div class="form-group">
                         <label>Intitulé</label>
                         <input class="form-control" type='text' ng-model="form.title" ng-required="true">
                     </div>
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Projet</label>
                         <div class="input-group">
-                            <input type="text" ng-model="form.title_project" class="form-control" disabled ng-required="true">
+                            <input type="text" ng-model="form.project_title" class="form-control" disabled ng-required="true">
 
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button" ng-click="removeProject()"
@@ -26,8 +28,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Catégorie</label>
                         <select ng-model="form.id_category" class="form-control">
@@ -40,26 +44,8 @@
                         </select>
                     </div>
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6" ng-if="type == 'card' && form.id_project">
-                    <div class="form-group">
-                        <label>Sprint</label>
-                        <div class="input-group">
-                            <input type="text" ng-model="form.title_sprint" class="form-control" disabled>
-
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" ng-click="removeSprint()"
-                                        ng-show="form.id_sprint != 0 && form.id_sprint != undefined">x
-                                </button>
-                                <button class="btn btn-default" type="button" ng-click="loadSprint()">...</button>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6" ng-if="type == 'card'">
+                <div class="col-md-4" ng-if="type == 'card'">
                     <div class="form-group">
                         <label>Assigné à</label>
                         <div class="input-group">
@@ -72,6 +58,17 @@
                                 <button class="btn btn-default" type="button" ng-click="loadAssigned()">...</button>
                             </span>
                         </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4" ng-if="type == 'card'">
+                    <div class="form-group">
+                        <label>Priorité</label>
+                        <select class="form-control" ng-model="form.id_priority">
+                            <option ng-repeat="priority in priorities | orderBy:'order'" value="{{priority.id}}">
+                                {{ priority.label }}
+                            </option>
+                        </select>
                     </div>
                 </div>
             </div>

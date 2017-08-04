@@ -5,10 +5,6 @@
 <div id="content">
     <div class="row">
         <div class="col-md-4 col-md-push-8 form-inline text-right">
-            <select class="form-control input-sm" ng-model="view">
-                <option value="0">Affichage Commercial</option>
-                <option value="1">Affichage Scrum</option>
-            </select>
             <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/create/'>
                 <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Projet
             </a>
@@ -23,94 +19,7 @@
         </div>
     </div>
 
-    <div class="row">
-        <table class="col-xs-12 text-center postits">
-            <tr ng-if="view === '0'">
-                <td>
-                    <div class="postit">
-                        <h3>
-                            {{ totals.due | currency }}
-                        </h3>
-                        <h5>Total montant</h5>
-                    </div>
-                </td>
-                <td>
-                    <div class="postit">
-                        <h3>
-                            {{ totals.commission | currency }}
-                        </h3>
-                        <h5>Total commission</h5>
-                    </div>
-                </td>
-                <td>
-                    <div class="postit">
-                        <h3>
-                            {{ totals.benefit | currency }}
-                        </h3>
-                        <h5>Total marge</h5>
-                    </div>
-                </td>
-                <td>
-                    <div class="postit">
-                        <h3>
-                            {{ totals.payed | currency }}
-                        </h3>
-                        <h5>Total deja facturé</h5>
-                    </div>
-                </td>
-                <td>
-                    <div class="postit">
-                        <h3>
-                            {{ totals.leftToPay | currency }}
-                        </h3>
-                        <h5>Total reste dû</h5>
-                    </div>
-                </td>
-            </tr>
-            <tr ng-if="view === '1'">
-                <td>
-                    <div class="postit">
-                        <h3>
-                            {{ totals.nbSandbox }}
-                        </h3>
-                        <h5>Total bac à sable</h5>
-                    </div>
-                </td>
-                <td>
-                    <div class="postit">
-                        <h3>
-                            {{ totals.nbBacklog }}
-                        </h3>
-                        <h5>Total backlog</h5>
-                    </div>
-                </td>
-                <td>
-                    <div class="postit">
-                        <h3>
-                            {{ totals.nbOngoing }}
-                        </h3>
-                        <h5>Total actives</h5>
-                    </div>
-                </td>
-                <td>
-                    <div class="postit">
-                        <h3>
-                            {{ totals.nbQuality }}
-                        </h3>
-                        <h5>Total qualité</h5>
-                    </div>
-                </td>
-                <td>
-                    <div class="postit">
-                        <h3>
-                            {{ totals.nbNext }}
-                        </h3>
-                        <h5>Total futurs sprints</h5>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
+    <ze-postits postits="postits"></ze-postits>
 
     <div class="row">
         <div class="col-md-12">
@@ -130,50 +39,58 @@
 
     <div class="row">
         <div class="col-md-12">
+            <div class="text-right">
+                <div class="form-group">
+                    <label for="details">
+                        <input type="checkbox" id="details" name="details" ng-model="details" value="1">
+                        Afficher le détail
+                    </label>
+                </div>
+            </div>
             <table class="table table-striped table-hover table-condensed">
                 <thead>
                 <tr>
+                    <th>#</th>
                     <th>Client</th>
                     <th>Projet</th>
                     <th>Responsable</th>
                     <th>Statut</th>
-                    <th class="text-center">Montant</th>
-                    <th ng-if="view === '0'" class="text-center">Commission</th>
-                    <th ng-if="view === '0'" class="text-center">Marge</th>
-                    <th ng-if="view === '0'" class="text-center">Déjà facturé</th>
-                    <th ng-if="view === '0'" class="text-center">Reste dû</th>
-                    <th ng-if="view === '1'" class="text-center">Bac à sable</th>
-                    <th ng-if="view === '1'" class="text-center">Backlog</th>
-                    <th ng-if="view === '1'" class="text-center">Actives</th>
-                    <th ng-if="view === '1'" class="text-center">Qualité</th>
-                    <th ng-if="view === '1'" class="text-center">Futurs sprints</th>
+                    <th ng-if="details== 1" class="text-center">Montant</th>
+                    <th ng-if="details== 1" class="text-center">Commission</th>
+                    <th ng-if="details== 1" class="text-center">Marge</th>
+                    <th ng-if="details== 1" class="text-center">Déjà facturé</th>
+                    <th ng-if="details== 1" class="text-center">Reste dû</th>
+                    <th class="text-center">Temps passé</th>
                     <th class="text-right">Deadline</th>
                     <th class="text-right"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="project in projects | orderBy:['name_company','breadcrumbs'] | projectFilter:filters" ng-click="goTo(project.id)">
+                    <td>{{ project.id }}</td>
                     <td>{{ project.name_company ? project.name_company : project.name_contact }}</td>
                     <td>{{ project.breadcrumbs }}</td>
                     <td>{{ project.name_manager }}</td>
                     <td>{{ project.label_status }}</td>
-                    <td class="text-center">{{ project.due || '-' | currency }}</td>
-                    <td ng-if="view === '0'" class="text-center">{{ project.commission || '-' | currency }}</td>
-                    <td ng-if="view === '0'" class="text-center">{{ (project.due - project.commission) || '-' | currency }}</td>
-                    <td ng-if="view === '0'" class="text-center">{{ project.payed || '-' | currency }}</td>
-                    <td ng-if="view === '0'" class="text-center">{{ (project.due - project.payed) || '-' | currency }}</td>
-                    <td ng-if="view === '1'" class="text-center">{{ project.nbSandbox || '' }}</td>
-                    <td ng-if="view === '1'" class="text-center">{{ project.nbBacklog || '' }}</td>
-                    <td ng-if="view === '1'" class="text-center">{{ project.nbOngoing || '' }}</td>
-                    <td ng-if="view === '1'" class="text-center">{{ project.nbQuality || '' }}</td>
-                    <td ng-if="view === '1'" class="text-center">{{ project.nbNext || '' }}</td>
+                    <td ng-if="details== 1" class="text-center"><span ze-auth="{id_project : project.id, right : 'accounting'}">{{ project.due || '-' | currency }}</span></td>
+                    <td ng-if="details== 1" class="text-center"><span ze-auth="{id_project : project.id, right : 'accounting'}">{{ project.commission || '-' | currency }}</span></td>
+                    <td ng-if="details== 1" class="text-center"><span ze-auth="{id_project : project.id, right : 'accounting'}">{{ (project.due - project.commission) || '-' | currency }}</span></td>
+                    <td ng-if="details== 1" class="text-center"><span ze-auth="{id_project : project.id, right : 'accounting'}">{{ project.payed || '-' | currency }}</span></td>
+                    <td ng-if="details== 1" class="text-center"><span ze-auth="{id_project : project.id, right : 'accounting'}">{{ (project.due - project.payed) || '-' | currency }}</span></td>
+                    <td class="text-center"><span ze-auth="{id_project : project.id, right : 'project'}">
+                            {{ project.time_spent_formatted || "0h" }}
+                            (<span ng-style="{color: project.timer_color}">{{(project.timer_ratio || "0")+ "%" }}</span>)
+                    </span></td>
                     <td class="text-right">
                         {{ project.nextDeadline || '-' | date:'dd/MM/yyyy' }}
                     </td>
                     <td class="text-right">
-                        <a type="button" class="btn btn-info btn-xs" ng-href="/ng/com_zeapps_project/project/edit/{{ project.id }}">
+                        <button type="button" class="btn btn-info btn-xs" ng-click="edit(project.id, $event)">
                             <i class="fa fa-fw fa-pencil" ></i>
-                        </a>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-xs" ng-click="delete_project(project.id, $event)">
+                            <i class="fa fa-fw fa-trash" ></i>
+                        </button>
                     </td>
                 </tr>
                 </tbody>
