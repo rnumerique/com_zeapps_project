@@ -119,4 +119,40 @@ class Todos extends ZeCtrl
 
         echo $this->todos->delete($id);
     }
+
+    public function todos_position(){
+        $this->load->model("Zeapps_project_todos", "todos");
+
+        // constitution du tableau
+        $data = array() ;
+
+        if (strcasecmp($_SERVER['REQUEST_METHOD'], 'post') === 0 && stripos($_SERVER['CONTENT_TYPE'], 'application/json') !== FALSE) {
+            // POST is actually in json format, do an internal translation
+            $data = json_decode(file_get_contents('php://input'), true);
+        }
+
+        foreach($data as $todo){
+            $this->todos->update(array('sort' => $todo['sort']), $todo['id']);
+        }
+
+        echo 'OK';
+    }
+
+    public function categories_position(){
+        $this->load->model("Zeapps_project_todo_categories", "categories");
+
+        // constitution du tableau
+        $data = array() ;
+
+        if (strcasecmp($_SERVER['REQUEST_METHOD'], 'post') === 0 && stripos($_SERVER['CONTENT_TYPE'], 'application/json') !== FALSE) {
+            // POST is actually in json format, do an internal translation
+            $data = json_decode(file_get_contents('php://input'), true);
+        }
+
+        foreach($data as $category){
+            $this->categories->update(array('sort' => $category['sort']), $category['id']);
+        }
+
+        echo 'OK';
+    }
 }

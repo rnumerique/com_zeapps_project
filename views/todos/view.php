@@ -18,8 +18,10 @@
                 </div>
             </div>
 
-            <div class="todo_category" ng-repeat="category in categories" ng-class="isSelected(category.id) ? 'active' : ''" ng-click="loadCategory(category.id)">
-                {{ category.label }}
+            <div ui-sortable="sortableCategories" class="sortableContainerCategories" ng-model="categories">
+                <div class="todo_category" ng-repeat="category in categories" ng-class="isSelected(category.id) ? 'active' : ''" ng-click="loadCategory(category.id)">
+                    {{ category.label }}
+                </div>
             </div>
             <div class="todo_category" ng-class="isSelected(0) ? 'active' : ''" ng-click="loadCategory(0)">
                 Sans catégorie
@@ -42,13 +44,13 @@
                 </div>
             </div>
 
-            <div class="table todos">
+            <div class="table todos" ui-sortable="sortableTodos" class="sortableContainerTodos" ng-model="todos">
                 <div class="table-row" ng-repeat="todo in todos">
                     <div class="text-center table-cell table-min" ng-click="validate(todo)">
                         <i class="fa fa-fw fa-circle-o"></i>
                         <i class="fa fa-fw fa-check onhover"></i>
                     </div>
-                    <div class="table-cell">
+                    <div class="table-cell" ng-class="todo.edit ? '' : 'handleTodos'">
                         <div ng-if="!todo.edit">
                             {{ todo.label }}
                         </div>

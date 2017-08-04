@@ -33,8 +33,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <td>{{ timer.name_user }}</td>
         <td>{{ timer.time_spent_formatted }}</td>
         <td>{{ timer.comment }}</td>
-        <td>{{ timer.start_time | date:'dd/MM/yyyy hh:mm' }}</td>
-        <td>{{ timer.stop_time | date:'dd/MM/yyyy hh:mm' }}</td>
+        <td>{{ timer.start_time | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ timer.stop_time | date:'dd/MM/yyyy HH:mm' }}</td>
         <td class="text-right">
             <button type="button" class="btn btn-xs btn-info" ng-click="editTimer(timer)">
                 <i class="fa fa-fw fa-pencil"></i>

@@ -90,7 +90,9 @@ app.config(["$provide",
 					validate : validate_Todos,
 					cancel : cancel_Todos,
 					del : del_Todos,
-					postCategory : postCategory_Todos
+					postCategory : postCategory_Todos,
+					todos_position : todosPosition_Todos,
+					categories_position : categoriesPosition_Todos
 				},
 				openTree : recursiveOpening,
 				compareDate : compareDate
@@ -283,6 +285,12 @@ app.config(["$provide",
 			}
             function postCategory_Todos(data){
                 return zeHttp.post("/com_zeapps_project/todos/save_category/", data);
+            }
+            function todosPosition_Todos(data){
+                return zeHttp.post("/com_zeapps_project/todos/todos_position/", data);
+            }
+            function categoriesPosition_Todos(data){
+                return zeHttp.post("/com_zeapps_project/todos/categories_position/", data);
             }
 
 			// TIMER

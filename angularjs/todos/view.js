@@ -15,6 +15,23 @@ app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams",
         $scope.categories = [];
         $scope.showHistory = false;
 
+        $scope.sortableTodos = {
+            connectWith: ".sortableContainerTodos",
+            disabled: false,
+            axis: "y",
+			handle: '.handleTodos',
+            opacity: 1,
+            stop: sortableStopTodos
+        };
+
+        $scope.sortableCategories = {
+            connectWith: ".sortableContainerCategories",
+            disabled: false,
+            axis: "y",
+            opacity: 1,
+            stop: sortableStopCategories
+        };
+
         var currentCategory = 0;
 
         $scope.createTodo = createTodo;
@@ -147,6 +164,26 @@ app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams",
 
         function isSelected(id){
             return currentCategory === id;
+        }
+
+
+
+        function sortableStopTodos() {
+            angular.forEach($scope.todos, function(todo, pos){
+				todo.sort = pos;
+			});
+
+            var formatted_data = angular.toJson($scope.todos);
+            zhttp.project.todos.todos_position(formatted_data);
+        }
+
+        function sortableStopCategories() {
+            angular.forEach($scope.categories, function(category, pos){
+                category.sort = pos;
+            });
+
+            var formatted_data = angular.toJson($scope.categories);
+            zhttp.project.todos.categories_position(formatted_data);
         }
 
 	}]);

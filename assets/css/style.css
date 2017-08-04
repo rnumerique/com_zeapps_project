@@ -58,12 +58,17 @@ timer{
     color: #fff;
 }
 
+.project_todos .handleTodos{
+    cursor: move;
+}
+
 .project_todos .table{
     margin: 0 !important;
     border-collapse: separate;
     border-spacing: 0 5px;
 }
 .project_todos .table-cell{
+    background-color: #fff;
     padding: 10px 15px;
 }
 .project_todos .todos .table-cell {
