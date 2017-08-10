@@ -26,7 +26,7 @@ class Right extends ZeCtrl
         $this->load->model("Zeapps_users", "user");
 
         $user = $this->user->getUserByToken($this->session->get('token'));
-        $rows = $this->rights->all(array('id_user' => $user[0]->id));
+        $rows = $this->rights->all(array('id_user' => $user->id));
 
         $rights = array();
 

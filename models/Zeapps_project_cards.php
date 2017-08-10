@@ -5,7 +5,7 @@ class Zeapps_project_cards extends ZeModel {
         $this->_pLoad->model('Zeapps_users', 'users');
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_rights.id_user'] = $user[0]->id;
+            $where['zeapps_project_rights.id_user'] = $user->id;
         }
 
         $where['zeapps_project_cards.deleted_at'] = null;
@@ -51,7 +51,7 @@ class Zeapps_project_cards extends ZeModel {
         $this->_pLoad->model('Zeapps_users', 'users');
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_rights.id_user'] = $user[0]->id;
+            $where['zeapps_project_rights.id_user'] = $user->id;
         }
 
         return $this->database()->select('*, 
@@ -114,7 +114,7 @@ class Zeapps_project_cards extends ZeModel {
         $where['zeapps_project_cards.deleted_at'] = null;
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_cards.id_assigned_to'] = $user[0]->id;
+            $where['zeapps_project_cards.id_assigned_to'] = $user->id;
         }
 
         $where['zeapps_project_rights.access'] = 1;
@@ -153,7 +153,7 @@ class Zeapps_project_cards extends ZeModel {
         $where['zeapps_project_cards.deleted_at'] = null;
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_cards.id_assigned_to'] = $user[0]->id;
+            $where['zeapps_project_cards.id_assigned_to'] = $user->id;
         }
 
         $where['zeapps_project_rights.access'] = 1;
@@ -192,7 +192,7 @@ class Zeapps_project_cards extends ZeModel {
         $where['zeapps_project_cards.deleted_at'] = null;
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_cards.id_assigned_to'] = $user[0]->id;
+            $where['zeapps_project_cards.id_assigned_to'] = $user->id;
         }
 
         $where['zeapps_project_rights.access'] = 1;
@@ -231,7 +231,7 @@ class Zeapps_project_cards extends ZeModel {
         $where['zeapps_project_cards.deleted_at'] = null;
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_cards.id_assigned_to'] = $user[0]->id;
+            $where['zeapps_project_cards.id_assigned_to'] = $user->id;
         }
 
         $where['zeapps_project_rights.access'] = 1;

@@ -6,8 +6,8 @@ class Zeapps_project_timers extends ZeModel {
             $this->_pLoad->model('zeapps_users', 'users');
 
             if ($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))) {
-                $objData['id_user'] = $user[0]->id;
-                $objData['name_user'] = $user[0]->firstname . ' ' . $user[0]->lastname;
+                $objData['id_user'] = $user->id;
+                $objData['name_user'] = $user->firstname . ' ' . $user->lastname;
             }
         }
 
@@ -22,7 +22,7 @@ class Zeapps_project_timers extends ZeModel {
         $where['zeapps_project_timers.time_stop'] = null;
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_timers.id_user'] = $user[0]->id;
+            $where['zeapps_project_timers.id_user'] = $user->id;
         }
 
         return parent::get($where);
@@ -37,8 +37,8 @@ class Zeapps_project_timers extends ZeModel {
         $where['zeapps_project_rights.project'] = 1;
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where_or['zeapps_project_rights.id_user'] = $user[0]->id;
-            $where_or['zeapps_project_timers.id_user'] = $user[0]->id;
+            $where_or['zeapps_project_rights.id_user'] = $user->id;
+            $where_or['zeapps_project_timers.id_user'] = $user->id;
         }
 
         return $this->database()->select('*, 
@@ -66,7 +66,7 @@ class Zeapps_project_timers extends ZeModel {
         $where['zeapps_project_rights.project'] = 1;
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_rights.id_user'] = $user[0]->id;
+            $where['zeapps_project_rights.id_user'] = $user->id;
         }
 
         return $this->database()->select('*, 

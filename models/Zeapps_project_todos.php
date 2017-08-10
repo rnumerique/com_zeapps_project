@@ -4,7 +4,7 @@ class Zeapps_project_todos extends ZeModel {
         $this->_pLoad->model('Zeapps_users', 'users');
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_todos.id_user'] = $user[0]->id;
+            $where['zeapps_project_todos.id_user'] = $user->id;
         }
 
         return parent::all($where);
@@ -14,7 +14,7 @@ class Zeapps_project_todos extends ZeModel {
         $this->_pLoad->model('Zeapps_users', 'users');
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $data['id_user'] = $user[0]->id;
+            $data['id_user'] = $user->id;
         }
 
         return parent::insert($data);

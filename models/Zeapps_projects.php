@@ -13,7 +13,7 @@ class Zeapps_projects extends ZeModel {
         $this->_pLoad->model('Zeapps_users', 'users');
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_rights.id_user'] = $user[0]->id;
+            $where['zeapps_project_rights.id_user'] = $user->id;
         }
 
         $where['zeapps_projects.archived'] = null;
@@ -37,7 +37,7 @@ class Zeapps_projects extends ZeModel {
         $this->_pLoad->model('Zeapps_users', 'users');
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_rights.id_user'] = $user[0]->id;
+            $where['zeapps_project_rights.id_user'] = $user->id;
         }
 
         $where['zeapps_projects.deleted_at'] = null;
