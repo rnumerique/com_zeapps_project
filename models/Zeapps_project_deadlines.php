@@ -53,7 +53,6 @@ class Zeapps_project_deadlines extends ZeModel {
     public function get_nextOf($id_project){
         $where = array(
             'id_project' => $id_project,
-            'completed' => 'N',
             'deleted_at' => null
         );
 

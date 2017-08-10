@@ -39,6 +39,7 @@ class Right extends ZeCtrl
 
     public function save_right(){
         $this->load->model("Zeapps_project_rights", "rights");
+        $this->load->model("Zeapps_project_hourly_rates", "hourly_rates");
 
         // constitution du tableau
         $data = array() ;
@@ -54,6 +55,12 @@ class Right extends ZeCtrl
         }
         else{
             $id = $this->rights->insert($data);
+            if(!$user = $this->hourly_rates->get(array('id_project' => $data['id_project'], 'id_user' => $data['id_user']))) {
+                $this->hourly_rates->insert(array(
+                    'id_project' => $data['id_project'],
+                    'id_user' => $data['id_user']
+                ));
+            }
         }
 
         echo $id;

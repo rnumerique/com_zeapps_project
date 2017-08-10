@@ -63,6 +63,18 @@
 
                 <div class="col-md-4" ng-if="type == 'card'">
                     <div class="form-group">
+                        <label>Statut</label>
+                        <select class="form-control" ng-model="form.step">
+                            <option value="1">Nouveau</option>
+                            <option value="2">En cours</option>
+                            <option value="3">Contrôle qualité</option>
+                            <option value="4">Terminé</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4" ng-if="type == 'card'">
+                    <div class="form-group">
                         <label>Priorité</label>
                         <select class="form-control" ng-model="form.id_priority">
                             <option ng-repeat="priority in priorities | orderBy:'order'" value="{{priority.id}}">

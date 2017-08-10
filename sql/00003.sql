@@ -32,3 +32,10 @@ ALTER TABLE `zeapps_project_todo_categories`
 
 ALTER TABLE `zeapps_project_todo_categories`
   MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+
+
+
+
+
+
+ALTER TABLE `zeapps_project_rights` ADD `hourly_rate` FLOAT(9,2) NOT NULL AFTER `project`;

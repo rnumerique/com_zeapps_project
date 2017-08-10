@@ -76,10 +76,16 @@ app.config(["$routeProvider",
 				controller: "ComZeappsProjectJournalCtrl"
 			})
 
-		// To-Dos
+		// TO-DOs
 			.when("/ng/com_zeapps_project/todos", {
 				templateUrl: "/com_zeapps_project/todos/view/",
 				controller: "ComZeappsProjectTodosCtrl"
 			})
+
+		// ARCHIVES
+            .when("/ng/com_zeapps_project/archives/", {
+                templateUrl: "/com_zeapps_project/project/archives/",
+                controller: "ComZeappsProjectArchivesCtrl"
+            })
 		;
 	}]);

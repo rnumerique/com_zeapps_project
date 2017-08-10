@@ -9,28 +9,18 @@ class Zeapps_projects extends ZeModel {
         return $this->database()->select('id_manager as id, name_manager as label')->group_by('id_manager')->where_not(array('id_manager'=>0))->table('zeapps_projects')->result();
     }
 
-    public function all($where = array(), $spaces = 'false', $filter = 'false'){
+    public function all($where = array()){
         $this->_pLoad->model('Zeapps_users', 'users');
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
             $where['zeapps_project_rights.id_user'] = $user[0]->id;
         }
 
-        if(isset($where['id_parent']))
-            $id = $where['id_parent'];
-        else
-            $id = 0;
-
-
-        if($filter !== 'false') {
-            $haystack[] = $filter;
-        }
-
-        $where['zeapps_projects.archived'] = 0;
+        $where['zeapps_projects.archived'] = null;
         $where['zeapps_projects.deleted_at'] = null;
         $where['zeapps_project_rights.access'] = 1;
 
-        $ret = $this->database()->select('*,
+        return $this->database()->select('*,
                                         zeapps_projects.id as id,
                                         zeapps_projects.breadcrumbs as label,
                                         zeapps_projects.breadcrumbs as breadcrumbs,
@@ -41,27 +31,30 @@ class Zeapps_projects extends ZeModel {
                                 ->order_by('zeapps_projects.title')
                                 ->table('zeapps_projects')
                                 ->result();
+    }
 
-        if($ret) {
-            $ret = $this->_parentChild_sort($ret, $id);
-            foreach ($ret as $row) {
-                if ($filter !== 'false') {
-                    if (in_array($row->id, $haystack) || in_array($row->id_parent, $haystack)) {
-                        $haystack[] = $row->id;
-                        //unset($ret[$key]);
-                    }
-                }
-                if ($spaces !== 'false') {
-                    $row->title = html_entity_decode(str_repeat('&nbsp;&nbsp;&nbsp;', intval($row->spaces)) . $row->title);
-                }
-            }
+    public function all_archived($where = array()){
+        $this->_pLoad->model('Zeapps_users', 'users');
 
-            if ($filter !== 'false') {
-                // We are using array_values to reset the keys, so that JS doesn't turn the array into an object
-                return array_values($ret);
-            } else
-                return $ret;
+        if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
+            $where['zeapps_project_rights.id_user'] = $user[0]->id;
         }
+
+        $where['zeapps_projects.deleted_at'] = null;
+        $where['zeapps_project_rights.access'] = 1;
+
+        return $this->database()->select('*,
+                                        zeapps_projects.id as id,
+                                        zeapps_projects.breadcrumbs as label,
+                                        zeapps_projects.breadcrumbs as breadcrumbs,
+                                        zeapps_project_statuses.label as label_status')
+                                ->join('zeapps_project_rights', 'zeapps_project_rights.id_project = zeapps_projects.id', 'LEFT')
+                                ->join('zeapps_project_statuses', 'zeapps_project_statuses.id = zeapps_projects.id_status', 'LEFT')
+                                ->where($where)
+                                ->where_not(array('zeapps_projects.archived' => null))
+                                ->order_by('zeapps_projects.title')
+                                ->table('zeapps_projects')
+                                ->result();
     }
 
     public function insert($data = array()){
@@ -93,7 +86,7 @@ class Zeapps_projects extends ZeModel {
                 $this->_pLoad->ctrl->rights->update(array('access' => 1, 'card' => 1, 'accounting' => 1, 'project' => 1), $manager->id);
             }
             else{
-                $this->_pLoad->ctrl->rights->insert(array('id_project' => $id, 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'card' => 1, 'accounting' => 1, 'project' => 1));
+                $this->_pLoad->ctrl->rights->insert(array('id_project' => $id, 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'card' => 1, 'accounting' => 1, 'project' => 1, 'hourly_rate' => $manager->hourly_rate));
             }
         }
 
@@ -119,7 +112,7 @@ class Zeapps_projects extends ZeModel {
                 $this->_pLoad->ctrl->rights->update(array('access' => 1, 'card' => 1, 'accounting' => 1, 'project' => 1), $manager->id);
             }
             else{
-                $this->_pLoad->ctrl->rights->insert(array('id_project' => $data['id'], 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'card' => 1, 'accounting' => 1, 'project' => 1));
+                $this->_pLoad->ctrl->rights->insert(array('id_project' => $data['id'], 'id_user' => $data['id_manager'], 'name' => $data['name_manager'], 'access' => 1, 'card' => 1, 'accounting' => 1, 'project' => 1, 'hourly_rate' => $manager->hourly_rate));
             }
         }
 

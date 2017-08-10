@@ -5,14 +5,43 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     <div class="checkbox">
         <div class="pull-right">
-            <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/card/create/card/{{ project.id }}' ze-auth="{id_project : project.id, right : 'card'}">
+            <a class='btn btn-xs btn-primary' ng-click="printCards()" project-auth="{id_project : project.id, right : 'project'}">
+                <span class='fa fa-fw fa-print' aria-hidden='true'></span>
+            </a>
+            <a class='btn btn-xs btn-primary' ng-click="printCards(true)" project-auth="{id_project : project.id, right : 'project'}">
+                <span class='fa fa-fw fa-print' aria-hidden='true'></span> avec description
+            </a>
+            <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/card/create/card/{{ project.id }}' project-auth="{id_project : project.id, right : 'card'}">
                 <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Carte
             </a>
         </div>
-        <label>
-            <input type="checkbox" ng-model="options.completed">
-            Inclure les tâches déjà terminées
-        </label>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" ng-click="fetchCards(1)" ng-class="showingStep(1) ? 'active' : ''">
+                    <a href="#">
+                        Nouveau
+                    </a>
+                </li>
+                <li role="presentation" ng-click="fetchCards(2)" ng-class="showingStep(2) ? 'active' : ''">
+                    <a href="#">
+                        En cours
+                    </a>
+                </li>
+                <li role="presentation" ng-click="fetchCards(3)" ng-class="showingStep(3) ? 'active' : ''">
+                    <a href="#">
+                        Contrôle qualité
+                    </a>
+                </li>
+                <li role="presentation" ng-click="fetchCards(4)" ng-class="showingStep(4) ? 'active' : ''">
+                    <a href="#">
+                        Terminé
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <table class="table table-striped table-condensed">
@@ -22,8 +51,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <th>Catégorie</th>
             <th>Priorité</th>
             <th>To-Do</th>
-            <th class="text-right">Demandeur</th>
-            <th class="text-right">Assigné à</th>
+            <th project-auth="{id_project : card.id_project, right : 'card'}">Statut</th>
+            <th class="text-center">Demandeur</th>
+            <th class="text-center">Assigné à</th>
             <th class="text-right"></th>
         </tr>
         </thead>
@@ -33,10 +63,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             ng-if="cardsByDate[date.due_date] && (cardsByDate[date.due_date] | planningFilter:options).length != 0"
             ng-click="showDate[date.due_date] = !showDate[date.due_date]"
         >
-            <th colspan="8">
+            <td colspan="8">
                 {{ (date.due_date != '0000-00-00' ? date.due_date : 'Sans date attribuée') | date:'dd MMMM yyyy' }} ({{(cardsByDate[date.due_date] | planningFilter:options).length}})
                 <i class="fa fa-fw" ng-class="showDate[date.due_date] ? 'fa-caret-down' : 'fa-caret-up'"></i>
-            </th>
+            </td>
         </tr>
         <tr ng-repeat-end ng-repeat="card in cardsByDate[date.due_date] | planningFilter:options | orderBy:['name_company', 'project_title', 'category_title', '-deadline']"
             ng-class="{'text-danger':card.deadline}"
@@ -52,14 +82,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 {{ card.priority }}
             </td>
             <td>
-                <i class="fa fa-flag-checkered fa-lg fa-fw" aria-hidden="true" ng-if="card.deadline" ng-class="card.completed === 'Y' ? 'text-success' : ''"></i>
-                <i class="fa fa-check-circle-o fa-lg fa-fw text-success" aria-hidden="true" ng-if="card.completed === 'Y' && !card.deadline"></i>
+                <i class="fa fa-flag-checkered fa-lg fa-fw" aria-hidden="true" ng-if="card.deadline" ng-class="card.step === '4' ? 'text-success' : ''"></i>
                 {{ card.title }}
             </td>
-            <td class="text-right">
+            <td class="text-right" project-auth="{id_project : card.id_project, right : 'card'}">
+                <select class="form-control input-sm" ng-model="card.step" ng-change="changeStep(card)">
+                    <option value="1">Nouveau</option>
+                    <option value="2">En cours</option>
+                    <option value="3">Contrôle qualité</option>
+                    <option value="4" project-auth="{id_project : project.id, right : 'project'}">Terminé</option>
+                </select>
+            </td>
+            <td class="text-center">
                 {{ card.name_manager }}
             </td>
-            <td class="text-right">
+            <td class="text-center">
                 {{ card.name_assigned_to }}
             </td>
             <td class="text-right no-wrap">
@@ -67,14 +104,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <button type="button" class="btn btn-info btn-xs" ng-click="detailCard(card)">
                         <i class="fa fa-fw fa-eye" ></i>
                     </button>
-                    <span ze-auth="{id_project : card.id_project, right : 'card'}">
-                        <button type="button" class="btn btn-success btn-xs" ng-click="complete(card)" ng-if="card.completed === 'N'">
-                            <i class="fa fa-fw fa-check" ></i>
-                        </button>
+                    <span project-auth="{id_project : card.id_project, right : 'card'}">
                         <button type="button" class="btn btn-info btn-xs" ng-click="edit(card)">
                             <i class="fa fa-fw fa-pencil" ></i>
                         </button>
-                        <button type="button" class="btn btn-danger btn-xs" ng-click="delete(card)">
+                        <button type="button" class="btn btn-danger btn-xs" ng-click="delete(card)" ze-confirmation>
                             <i class="fa fa-fw fa-trash" ></i>
                         </button>
                     </span>

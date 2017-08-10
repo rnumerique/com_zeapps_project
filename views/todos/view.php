@@ -18,12 +18,25 @@
                 </div>
             </div>
 
-            <div ui-sortable="sortableCategories" class="sortableContainerCategories" ng-model="categories">
-                <div class="todo_category" ng-repeat="category in categories" ng-class="isSelected(category.id) ? 'active' : ''" ng-click="loadCategory(category.id)">
-                    {{ category.label }}
+            <div ui-sortable="sortableCategories" class="sortableContainerCategories table" ng-model="categories">
+                <div class="todo_category table-row" ng-repeat="category in categories" ng-class="isSelected(category.id) ? 'active' : ''" ng-click="loadCategory(category.id)">
+                    <div class="table-cell" ng-class="category.edit ? '' : 'handleCategories'">
+                        <div ng-if="!category.edit">
+                            {{ category.label }}
+                        </div>
+                        <div ng-if="category.edit">
+                            <input type="text" class="form-control input-sm" ng-model="category.label" ng-blur="editCategory(category)" ng-keypress="keyEventEditCategory($event, category)" ze-focus="category.edit">
+                        </div>
+                    </div>
+                    <div class="text-center text-info table-cell table-min" ng-click="category.edit = !category.edit">
+                        <i class="fa fa-fw fa-pencil"></i>
+                    </div>
+                    <div class="text-center text-danger table-cell table-min" ng-click="deleteCategory(category)" ze-confirmation="Souhaitez-vous supprimer la catégorie ainsi que tous les todos associés ?">
+                        <i class="fa fa-fw fa-trash"></i>
+                    </div>
                 </div>
             </div>
-            <div class="todo_category" ng-class="isSelected(0) ? 'active' : ''" ng-click="loadCategory(0)">
+            <div class="todo_category defaut_category" ng-class="isSelected(0) ? 'active' : ''" ng-click="loadCategory(0)">
                 Sans catégorie
             </div>
         </div>
@@ -61,7 +74,7 @@
                     <div class="text-center text-info table-cell table-min" ng-click="todo.edit = !todo.edit">
                         <i class="fa fa-fw fa-pencil"></i>
                     </div>
-                    <div class="text-center text-danger table-cell table-min" ng-click="deleteTodo(todo, 'todos')">
+                    <div class="text-center text-danger table-cell table-min" ng-click="deleteTodo(todo, 'todos')" ze-confirmation>
                         <i class="fa fa-fw fa-trash"></i>
                     </div>
                 </div>
@@ -87,7 +100,7 @@
                         <i class="fa fa-fw fa-undo"></i>
                     </div>
                     <div class="table-cell">{{ todo.label }}</div>
-                    <div class="text-center text-danger table-cell table-min" ng-click="deleteTodo(todo, 'history')">
+                    <div class="text-center text-danger table-cell table-min" ng-click="deleteTodo(todo, 'history')" ze-confirmation>
                         <i class="fa fa-fw fa-trash"></i>
                     </div>
                 </div>

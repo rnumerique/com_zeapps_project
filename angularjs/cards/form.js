@@ -7,7 +7,9 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 		var whitelist_ids = [];
 
 		$scope.form = {
-			priority: "Normal"
+			id_category: "0",
+            id_priority: "3",
+			step: "1"
 		};
 		$scope.categories = [];
 		$scope.priorities = [];
@@ -64,7 +66,7 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 					$scope.form.project_title = response.data.project.title;
 
 					whitelist_ids = [];
-					angular.forEach(response.data.project.users, function(user){
+					angular.forEach(response.data.project_users, function(user){
 						whitelist_ids.push(user.id_user);
 					});
 

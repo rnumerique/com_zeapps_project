@@ -21,6 +21,7 @@ app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams",
             axis: "y",
 			handle: '.handleTodos',
             opacity: 1,
+            delay: 200,
             stop: sortableStopTodos
         };
 
@@ -28,7 +29,9 @@ app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams",
             connectWith: ".sortableContainerCategories",
             disabled: false,
             axis: "y",
+            handle: '.handleCategories',
             opacity: 1,
+            delay: 200,
             stop: sortableStopCategories
         };
 
@@ -46,6 +49,9 @@ app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams",
         $scope.loadCategory = loadCategory;
         $scope.createCategory = createCategory;
         $scope.keyEventCreateCategory = keyEventCreateCategory;
+        $scope.editCategory = editCategory;
+        $scope.keyEventEditCategory = keyEventEditCategory;
+        $scope.deleteCategory = deleteCategory;
 
 		zhttp.project.todos.all().then(function(response){
         	if(response.data && response.data != "false"){
@@ -146,9 +152,33 @@ app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams",
 			});
 		}
 
+        function editCategory(category){
+            var formatted_data = angular.toJson(category);
+            zhttp.project.todos.postCategory(formatted_data).then(function(response){
+                if(response.data && response.data != 'false'){
+                    category.edit = false;
+                }
+            });
+        }
+
+        function deleteCategory(category){
+            zhttp.project.todos.delCategory(category.id).then(function(response){
+                if(response.data && response.data != "false"){
+                    $scope.categories.splice($scope.categories.indexOf(category), 1);
+                    loadCategory(0);
+                }
+            });
+        }
+
         function keyEventCreateCategory($event){
             if($event.which === 13){
                 createCategory();
+            }
+        }
+
+        function keyEventEditCategory($event, category){
+            if($event.which === 13){
+                editCategory(category);
             }
         }
 

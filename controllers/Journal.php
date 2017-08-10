@@ -8,21 +8,48 @@ class Journal extends ZeCtrl
     }
 
     public function get_journal(){
-        $this->load->model("Zeapps_projects", "projects");
         $this->load->model("Zeapps_project_cards", "cards");
         $this->load->model("Zeapps_project_timers", "timers");
 
-        $companies = $this->projects->get_companies();
-        $managers = $this->projects->get_managers();
         $assigned = $this->cards->get_assigned();
 
-        $where = array();
+        $filters = array('assigned' => $assigned);
 
-        $projects = $this->projects->all($where);
-        $logs = $this->timers->get_logs();
+        $logs = [];
 
-        $filters = array('projects' => $projects, 'companies' => $companies, 'managers' => $managers, 'assigned' => $assigned);
+        if($timers = $this->timers->get_logs()){
+            foreach($timers as $timer){
+                $date = date('Y-m-d', strtotime($timer->start_time));
+                if(!isset($logs[$date])){
+                    $logs[$date] = [];
+                }
+                if(!isset($logs[$date][$timer->id_user])){
+                    $logs[$date][$timer->id_user] = array(
+                        'id_user' => $timer->id_user,
+                        'name_user' => $timer->name_user,
+                        'time_spent' => intval($timer->time_spent),
+                    );
+                }
+                else{
+                    $logs[$date][$timer->id_user]['time_spent'] += intval($timer->time_spent);
+                }
+            }
+        }
 
-        echo json_encode(array('filters' => $filters, 'logs' => $logs));
+        $formatted_logs = [];
+
+        foreach($logs as $date => $log){
+            foreach($log as $user){
+                array_push($formatted_logs, array(
+                    'date' => $date,
+                    'id_user' => $user['id_user'],
+                    'name_user' => $user['name_user'],
+                    'time_spent' => $user['time_spent']
+                ));
+            }
+        }
+
+
+        echo json_encode(array('filters' => $filters, 'logs' => $formatted_logs));
     }
 }

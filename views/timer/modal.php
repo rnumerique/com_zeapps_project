@@ -6,7 +6,7 @@
 <div class="modal-body table">
     <div class="table-row">
         <div class="row">
-            <div class="col-md-12" ze-auth="{id_project : form.id_project, right : 'project'}">
+            <div class="col-md-12" project-auth="{id_project : form.id_project, right : 'project'}">
                 <div class="form-group">
                     <label>Utilisateur</label>
                     <div class="input-group">

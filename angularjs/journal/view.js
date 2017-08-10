@@ -15,34 +15,17 @@ app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams
                         field: 'id',
                         label: 'Utilisateur',
                         options: []
-                    },
-					{
-						format: 'select',
-						field: 'id_project',
-						label: 'Projet',
-						options: []
-					},
-					{
-						format: 'select',
-						field: 'id_company',
-						label: 'Demandeur',
-						options: []
-					},
-					{
-						format: 'select',
-						field: 'id_manager',
-						label: 'Responsable',
-						options: []
-					}
+                    }
 				],
 				secondaries: []
 			}
 		};
 		$scope.calendarModel = {
+			defaultView: "listWeek",
             header: {
                 left: "prev,next today",
                 center: "title",
-                right: "month,agendaWeek,agendaDay"
+                right: "listWeek,listDay"
             },
 			eventLimit: 6,
 			eventLimitClick: "day",
@@ -51,7 +34,7 @@ app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams
 					"eventLimit": false
 				}
 			},
-			clickDayView: "agendaDay",
+			clickDayView: "listDay",
 			step: 1,
 			completed: false,
 			events: []
@@ -60,22 +43,18 @@ app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams
 		zhttp.project.journal.get_journal().then(function(response){
 			if(response.data && response.data != "false"){
 				$scope.filter.options.main[0].options = response.data.filters.assigned;
-				$scope.filter.options.main[1].options = response.data.filters.projects;
-				$scope.filter.options.main[2].options = response.data.filters.companies;
-				$scope.filter.options.main[3].options = response.data.filters.managers;
 
                 logs = response.data.logs;
 
                 angular.forEach(logs, function (log) {
-                	var date = new Date(log.start_time);
+                	var formatted_date = new Date(log.date);
+					var time_spent_formatted = parseInt(log.time_spent/60) + "h " + (log.time_spent % 60 || '');
 					var event = {
-						allDay: !(date.getHours() || date.getMinutes()),
-						title: log.name_user + " (" + log.name_company + " - " + log.project_title + ") : " + log.label + (log.id_card !== '0' ? ' - tâche #'+log.id_card : ''),
-						start: log.start_time,
-						end: log.stop_time,
-						textColor: log.color ? "#333" : "#fff",
-						color: log.color || "#393939",
-						url: "/ng/com_zeapps_project/project/" + log.id_project
+						allDay: true,
+						title: log.name_user + " : " + time_spent_formatted,
+						start: formatted_date,
+						textColor: "#fff",
+						color: "#393939"
 					};
 
 					$scope.calendarModel.events.push(event);
@@ -88,16 +67,15 @@ app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams
 				var events = [];
 
 				angular.forEach(journalFilter(logs, $scope.filter.model), function (log) {
-                    var date = new Date(log.start_time);
-                    var event = {
-                        allDay: !(date.getHours() || date.getMinutes()),
-                        title: log.name_user + " (" + log.name_company + " - " + log.project_title + ") : " + log.label + (log.id_card !== '0' ? ' - tâche #'+log.id_card : ''),
-                        start: log.start_time,
-                        end: log.stop_time,
-                        textColor: log.color ? "#333" : "#fff",
-                        color: log.color || "#393939",
-                        url: "/ng/com_zeapps_project/project/" + log.id_project
-                    };
+                    var formatted_date = new Date(log.date);
+					var time_spent_formatted = parseInt(log.time_spent/60) + "h " + (log.time_spent % 60 || '');
+					var event = {
+						allDay: true,
+						title: log.name_user + " : " + time_spent_formatted,
+						start: formatted_date,
+						textColor: "#fff",
+						color: "#393939"
+					};
 
 					events.push(event);
 				});

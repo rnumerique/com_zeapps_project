@@ -38,7 +38,8 @@ class Category extends ZeCtrl
         }
 
         if(isset($data['id'])){
-            $id = $this->categories->update($data, $data['id']);
+            $this->categories->update($data, $data['id']);
+            $id = $data['id'];
         }
         else{
             $id = $this->categories->insert($data);

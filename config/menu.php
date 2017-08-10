@@ -79,6 +79,16 @@ $tabMenu["order"] = 50 ;
 $menuLeft[] = $tabMenu ;
 
 
+$tabMenu = array () ;
+$tabMenu["id"] = "com_zeapps_projects_archives" ;
+$tabMenu["space"] = "com_ze_apps_project" ;
+$tabMenu["label"] = "Archives" ;
+$tabMenu["fa-icon"] = "archive" ;
+$tabMenu["url"] = "/ng/com_zeapps_project/archives" ;
+$tabMenu["order"] = 60 ;
+$menuLeft[] = $tabMenu ;
+
+
 
 
 /********** insert in top menu ************/

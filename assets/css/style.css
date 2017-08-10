@@ -49,16 +49,37 @@ timer{
 .todo_categories{
     padding: 5px;
 }
-.todo_categories .todo_category{
-    padding: 5px 10px;
+.todo_categories .todo_category .table-cell,
+.todo_categories .todo_category.defaut_category{
+    position: relative;
+    padding: 10px;
+    border: 1px solid #d3d3d3;
+    border-left: 0;
+    background-color: #fff;
+    margin-bottom: 5px;
 }
-.todo_categories .todo_category:hover,
-.todo_categories .todo_category.active{
-    background-color: #393939;
-    color: #fff;
+.todo_categories .todo_category.defaut_category{
+    border: 1px solid #d3d3d3;
+    border-radius: 3px;
+}
+.todo_categories .todo_category .table-cell:first-child{
+    border: 1px solid #d3d3d3;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+}
+.todo_categories .todo_category .table-cell:last-child{
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+}
+.todo_categories .todo_category:hover .table-cell,
+.todo_categories .todo_category.active .table-cell,
+.todo_categories .todo_category.defaut_category:hover,
+.todo_categories .todo_category.defaut_category.active{
+    border-color: #000;
 }
 
-.project_todos .handleTodos{
+.project_todos .handleTodos,
+.project_todos .handleCategories{
     cursor: move;
 }
 
@@ -124,4 +145,12 @@ timer{
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;
     border-left: 0;
+}
+
+.mywork .date-cell{
+    background-color: #393939 !important;
+    color: #fff;
+}
+.mywork .date-cell:not(:first-child){
+    border-top: 15px solid #fff;
 }

@@ -17,10 +17,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <div class="card_document" ng-repeat="document in documents | orderBy:['-date','-id']">
             <div class="card_document-head clearfix">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-xs btn-info" ng-click="editDocument(document)" ze-auth="{id_project : project.id, right : 'project'}">
+                    <button type="button" class="btn btn-xs btn-info" ng-click="editDocument(document)" project-auth="{id_project : project.id, right : 'project'}">
                         <span class="hover-hint">editer</span> <i class="fa fa-fw fa-pencil"></i>
                     </button>
-                    <button type="button" class="btn btn-xs btn-danger" ng-click="deleteDocument(document)" ze-auth="{id_project : project.id, right : 'project'}">
+                    <button type="button" class="btn btn-xs btn-danger" ng-click="deleteDocument(document)" project-auth="{id_project : project.id, right : 'project'}" ze-confirmation>
                         <span class="hover-hint">supprimer</span> <i class="fa fa-fw fa-times"></i>
                     </button>
                 </div>

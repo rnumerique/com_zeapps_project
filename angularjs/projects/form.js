@@ -24,16 +24,11 @@ app.controller("ComZeappsProjectFormCtrl", ["$scope", "$route", "$routeParams", 
 					$scope.form.due = parseFloat($scope.form.due);
 					$scope.form.commission = parseFloat($scope.form.commission);
 					$scope.form.payed = parseFloat($scope.form.payed);
-					zhttp.project.project.get($scope.form.id_parent).then(function(response){
-						if(response.data && response.data != "false"){
-							$scope.form.title_parent = response.data.project.breadcrumbs;
-						}
-					});
 				}
 			});
 		}
 		else{ // New Project
-			$scope.form.id_status = "0";
+			$scope.form.id_status = $rootScope.statuses[0].id || "0";
 			$scope.form.id_manager = $rootScope.user.id;
 			$scope.form.name_manager = $rootScope.user.firstname ? $rootScope.user.firstname[0] + ". " + $rootScope.user.lastname : $rootScope.user.lastname;
 		}

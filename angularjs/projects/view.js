@@ -1,9 +1,13 @@
-app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "Upload",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, Upload) {
+app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "Upload", "zeProject",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, Upload, zeProject) {
 
 		$scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_management");
 
 		var project_users_ids = [];
+
+		$scope.$on('projectTimerBroadcast', function(){
+            zeProject.update().then(updateScope);
+		});
 
 		$scope.tree = {
 			branches: []
@@ -25,9 +29,28 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
                 if(calEvent.card) {
                     detailCard(calEvent.card);
                 }
+            },
+            editable: true,
+            eventDrop: function(event) {
+                var data = {};
+                var formatted_data = "";
+
+                data.id = event.id;
+                data.due_date = event.start.format();
+
+                formatted_data = angular.toJson(data);
+
+                if(event.order === 1){
+                    zhttp.project.project.post(formatted_data);
+                }else if(event.order === 2){
+                    zhttp.project.deadline.post(formatted_data);
+                }else if(event.order === 3){
+                    zhttp.project.card.post(formatted_data);
+                }
             }
 		};
 		$scope.postits = [];
+		$scope.zeProject = zeProject; // so we can access it from the view
 
 		$scope.tab = "taches";
 		$scope.view = "/com_zeapps_project/project/taches";
@@ -36,11 +59,13 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 		$scope.compareDates = function(date){ return zhttp.project.compareDate(date); };
 
 		$scope.isActive = isActive;
+        $scope.detailCard = detailCard;
 		$scope.editCategory = editCategory;
 		$scope.deleteCategory = deleteCategory;
 		$scope.addProjectUser = addProjectUser;
 		$scope.deleteRightsOf = deleteRightsOf;
 		$scope.changeRights = changeRights;
+		$scope.saveRightsOf = saveRightsOf;
 		$scope.archive_project = archive_project;
 		$scope.delete_project = delete_project;
 		$scope.force_delete_project = force_delete_project;
@@ -50,30 +75,40 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 		$scope.addComment = addComment;
 		$scope.editComment = editComment;
 		$scope.deleteComment = deleteComment;
+		$scope.startTimerProject = startTimerProject;
 		$scope.newTimer = newTimer;
 		$scope.editTimer = editTimer;
         $scope.deleteTimer = deleteTimer;
+		$scope.newSpending = newSpending;
+		$scope.editSpending = editSpending;
+        $scope.deleteSpending = deleteSpending;
+        $scope.linkQuote = linkQuote;
+        $scope.unlinkQuote = unlinkQuote;
+        $scope.linkInvoice = linkInvoice;
+        $scope.unlinkInvoice = unlinkInvoice;
+        $scope.printCards = printCards;
+        $scope.printTimers = printTimers;
 
 		if($routeParams.id){
 			zhttp.project.project.get($routeParams.id).then(function(response){
 				if(response.data && response.data != "false"){
 					$scope.project = response.data.project;
-					$scope.dates = response.data.dates;
+
+                    zeProject.init(response.data.project, response.data.timers);
+					updateScope();
+
 					$scope.categories = response.data.categories;
 					$scope.documents = response.data.documents;
-					$scope.timers = response.data.timers;
                     $scope.comments = response.data.comments;
+                    $scope.cards = response.data.cards;
                     $scope.deadlines = response.data.deadlines;
-                    var cards = response.data.cards;
+                    $scope.quotes = response.data.quotes;
+                    $scope.invoices = response.data.invoices;
+                    $scope.spendings = response.data.spendings;
+
 
 					angular.forEach($scope.documents, function(document){
                         document.date = new Date(document.date);
-					});
-
-					angular.forEach($scope.timers, function(timer){
-                        timer.time_spent_formatted = parseInt(timer.time_spent/60) + "h " + (timer.time_spent % 60 || '');
-                        timer.start_time = new Date(timer.start_time);
-                        timer.stop_time = new Date(timer.stop_time);
 					});
 
                     $scope.note_form = {
@@ -84,22 +119,8 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 						comment.date = new Date(comment.date);
 					});
 
-					$scope.cardsByDate = [];
-					angular.forEach(cards, function (card) {
-						angular.forEach(card.documents, function(document){
-                            document.date = new Date(document.date);
-						});
-
-						angular.forEach(card.comments, function(comment){
-                            comment.date = new Date(comment.date);
-						});
-
-
+					angular.forEach($scope.cards, function (card) {
 						if(card.due_date != 0) {
-							if (!$scope.cardsByDate[card.due_date])
-								$scope.cardsByDate[card.due_date] = [];
-							$scope.cardsByDate[card.due_date].push(card);
-
 							var event = {
 								allDay: true,
 								title: card.title + (card.name_assigned_to ? " - assigné à " + card.name_assigned_to : ''),
@@ -107,7 +128,8 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 								textColor: card.color ? "#333" : "#fff",
 								color: card.color || "#393939",
 								order: 3,
-								card: card
+								card: card,
+								id: card.id
 							};
 
 							$scope.calendarModel.events.push(event);
@@ -122,19 +144,13 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 								start: card.due_date,
 								textColor: "#fff",
 								color: "#a94442",
-								order: 2
+								order: 2,
+                                id: card.id
 							};
 
 							$scope.calendarModel.events.push(event);
 						}
 					});
-
-
-                    var ret = zhttp.project.timer.calcSpentTimeRatio($scope.project);
-					$scope.time_spent_formatted = ret.time_spent_formatted;
-					$scope.timer_color = ret.timer_color;
-					$scope.timer_ratio = ret.timer_ratio;
-                    generatePostits();
 
 					$scope.project_users = response.data.project_users;
 					project_users_ids = [];
@@ -144,16 +160,20 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 						user.card = !!parseInt(user.card);
 						user.accounting = !!parseInt(user.accounting);
 						user.project = !!parseInt(user.project);
+						user.hourly_rate = parseFloat(user.hourly_rate);
 					});
 				}
 			});
 		}
 
-
-
-        function detailCard(card){
-            zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card});
-        }
+		function updateScope(){
+			$scope.timers = zeProject.get.timers();
+			$scope.time_spent_formatted = zeProject.get.time_spent_formatted();
+			$scope.timer_color = zeProject.get.timer_color();
+			$scope.timer_ratio = zeProject.get.timer_ratio();
+			$scope.project.total_spendings = zeProject.get.total_spendings();
+            generatePostits();
+		}
 
         function generatePostits(){
             $scope.postits = [
@@ -183,12 +203,26 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
                     filter: 'currency'
                 },
                 {
+                    value: $scope.project.total_spendings,
+                    legend: 'Dépenses totales',
+                    filter: 'currency'
+
+                },
+                {
                     value: $scope.time_spent_formatted + ' <small>/ ' + parseInt($scope.project.estimated_time) + 'h</small>',
                     legend: 'Temps passé',
 					color: $scope.timer_color
 
                 }
             ]
+        }
+
+        function detailCard(card){
+            zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card}, null, function(objReturn){
+                if(objReturn){
+                    zeProject.update().then(updateScope);
+                }
+            });
         }
 
 		function goToTab(tab){
@@ -221,6 +255,7 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 					user.id_project = $scope.project.id;
 					user.name = objReturn.firstname ? objReturn.firstname[0]  + ". " + objReturn.lastname : objReturn.lastname;
 					user.access = 1;
+					user.hourly_rate = parseFloat(objReturn.hourly_rate);
 
 					var formatted_data = angular.toJson(user);
 					zhttp.project.right.post(formatted_data).then(function(response){
@@ -274,88 +309,20 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 		}
 
 		function archive_project(id) {
-			var modalInstance = $uibModal.open({
-				animation: true,
-				templateUrl: "/assets/angular/popupModalDeBase.html",
-				controller: "ZeAppsPopupModalDeBaseCtrl",
-				size: "lg",
-				resolve: {
-					titre: function () {
-						return "Attention";
-					},
-					msg: function () {
-						return "Souhaitez-vous archiver ce projet ?";
-					},
-					action_danger: function () {
-						return "Annuler";
-					},
-					action_primary: function () {
-						return false;
-					},
-					action_success: function () {
-						return "Confirmer";
-					}
-				}
-			});
-
-			modalInstance.result.then(function (selectedItem) {
-				if (selectedItem.action == "danger") {
-
-				} else if (selectedItem.action == "success") {
-					zhttp.project.project.archive(id);
-				}
-
-			}, function () {
-				//console.log("rien");
-			});
-
+			zhttp.project.project.archive(id);
 		}
 
 		function delete_project(id) {
-			var modalInstance = $uibModal.open({
-				animation: true,
-				templateUrl: "/assets/angular/popupModalDeBase.html",
-				controller: "ZeAppsPopupModalDeBaseCtrl",
-				size: "lg",
-				resolve: {
-					titre: function () {
-						return "Attention";
-					},
-					msg: function () {
-						return "Souhaitez-vous supprimer définitivement ce projet ?";
-					},
-					action_danger: function () {
-						return "Annuler";
-					},
-					action_primary: function () {
-						return false;
-					},
-					action_success: function () {
-						return "Confirmer";
-					}
-				}
-			});
-
-			modalInstance.result.then(function (selectedItem) {
-				if (selectedItem.action == "danger") {
-
-				} else if (selectedItem.action == "success") {
-					zhttp.project.project.del(id).then(function (response) {
-						if (response.data && response.data != "false") {
-							if (response.data.hasDependencies) {
-								$scope.force_delete_project(id);
-							}
-							else {
-								$location.url("/ng/com_zeapps_project/project");
-							}
-						}
-					});
-				}
-
-			}, function () {
-				//console.log("rien");
-			});
-
+            zhttp.project.project.del(id).then(function (response) {
+                if (response.data && response.data != "false") {
+                    if (response.data.hasDependencies) {
+                        $scope.force_delete_project(id);
+                    }
+                    else {
+                        $location.url("/ng/com_zeapps_project/project");
+                    }
+                }
+            });
 		}
 
 		function force_delete_project(id) {
@@ -416,9 +383,14 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 
 			data.id_user = user.id_user;
 			data.id_project = user.id_project;
+			data.hourly_rate = user.hourly_rate;
 
 			var formatted_data = angular.toJson(data);
-			zhttp.project.right.post(formatted_data);
+			zhttp.project.right.post(formatted_data).then(function(response){
+				if(response.data && response.data != "false"){
+                    zeProject.update().then(updateScope);
+				}
+			});
 		}
 
 		function addDocument(){
@@ -528,6 +500,17 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
             })
         }
 
+        function startTimerProject(){
+        	var timer = {
+                id_project : $scope.project.id,
+                project_title : $scope.project.title,
+                id : 0,
+                title : $scope.project.title
+			};
+
+            zhttp.project.timer.start(timer);
+		}
+
 		function newTimer(){
 			var options = {
             	id_project : $scope.project.id,
@@ -538,23 +521,7 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
                     var formatted_data = angular.toJson(objReturn);
                     zhttp.project.timer.post(formatted_data).then(function(response){
                         if(response.data && response.data != "false"){
-                            objReturn.id = response.data;
-
-                            objReturn.start_time = new Date(objReturn.start_time);
-                            objReturn.stop_time = new Date(objReturn.stop_time);
-
-                            var time_spent = moment.duration(parseInt(objReturn.time_spent), 'minutes');
-                            objReturn.time_spent_formatted = parseInt(time_spent.asHours()) + 'h ' + (time_spent.minutes() || "");
-
-                            $scope.timers.push(Object.create(objReturn));
-
-                            $scope.project.time_spent = parseInt($scope.project.time_spent) + parseInt(objReturn.time_spent);
-
-                            var ret = zhttp.project.timer.calcSpentTimeRatio($scope.project);
-							$scope.time_spent_formatted = ret.time_spent_formatted;
-							$scope.timer_color = ret.timer_color;
-							$scope.timer_ratio = ret.timer_ratio;
-                            generatePostits();
+                            zeProject.update().then(updateScope);
                         }
                     });
                 } else {
@@ -571,19 +538,7 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
                     var formatted_data = angular.toJson(objReturn);
                     zhttp.project.timer.post(formatted_data).then(function(response){
                         if(response.data && response.data != "false"){
-                            timer.time_spent_formatted = parseInt(objReturn.time_spent/60) + "h " + (objReturn.time_spent % 60 || '');
-
-                            timer.start_time = new Date(objReturn.start_time);
-                            timer.stop_time = new Date(objReturn.stop_time);
-
-                            $scope.project.time_spent = parseInt($scope.project.time_spent) - parseInt(timer.time_spent) + parseInt(objReturn.time_spent);
-                            timer.time_spent = objReturn.time_spent;
-
-                            var ret = zhttp.project.timer.calcSpentTimeRatio($scope.project);
-							$scope.time_spent_formatted = ret.time_spent_formatted;
-							$scope.timer_color = ret.timer_color;
-							$scope.timer_ratio = ret.timer_ratio;
-                            generatePostits();
+                            zeProject.update().then(updateScope);
                         }
                     });
                 } else {
@@ -594,17 +549,127 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
         function deleteTimer(timer){
             zhttp.project.timer.del(timer.id).then(function(response){
                 if(response.data && response.data != "false"){
-                    $scope.timers.splice($scope.timers.indexOf(timer), 1);
-
-                    $scope.project.time_spent = parseInt($scope.project.time_spent) - parseInt(timer.time_spent);
-
-                    var ret = zhttp.project.timer.calcSpentTimeRatio($scope.project);
-                    $scope.time_spent_formatted = ret.time_spent_formatted;
-                    $scope.timer_color = ret.timer_color;
-                    $scope.timer_ratio = ret.timer_ratio;
-                    generatePostits();
+                    zeProject.update().then(updateScope);
                 }
             });
         }
+
+		function newSpending(){
+			var options = {
+            	id_project : $scope.project.id
+			};
+            zeapps_modal.loadModule("com_zeapps_project", "form_spending", options, function(objReturn) {
+                if (objReturn) {
+                    var formatted_data = angular.toJson(objReturn);
+                    zhttp.project.spendings.post(formatted_data).then(function(response){
+                        if(response.data && response.data != "false"){
+                        	objReturn.id = response.data;
+                        	$scope.spendings.push(objReturn);
+                            zeProject.update().then(updateScope);
+                        }
+                    });
+                } else {
+                }
+            });
+		}
+
+		function editSpending(spending){
+			var options = {
+                spending: angular.fromJson(angular.toJson(spending))
+			};
+            zeapps_modal.loadModule("com_zeapps_project", "form_spending", options, function(objReturn) {
+                if (objReturn) {
+                    var formatted_data = angular.toJson(objReturn);
+                    zhttp.project.spendings.post(formatted_data).then(function(response){
+                        if(response.data && response.data != "false"){
+							$scope.spendings[$scope.spendings.indexOf(spending)] = objReturn;
+                            zeProject.update().then(updateScope);
+                        }
+                    });
+                } else {
+                }
+            });
+		}
+
+        function deleteSpending(spending){
+            zhttp.project.spendings.del(spending.id).then(function(response){
+                if(response.data && response.data != "false"){
+                	$scope.spendings.splice($scope.spendings.indexOf(spending), 1);
+                    zeProject.update().then(updateScope);
+                }
+            });
+        }
+
+        function linkQuote(){
+            zeapps_modal.loadModule("com_zeapps_crm", "search_quote", {}, function(objReturn) {
+                if (objReturn) {
+                	var data = {
+                		id_project : $scope.project.id,
+						id_quote : objReturn.id
+					};
+                    var formatted_data = angular.toJson(data);
+                    zhttp.project.quote.post(formatted_data).then(function(response){
+                        if(response.data && response.data != "false"){
+                            objReturn.id = response.data;
+                        	$scope.quotes.push(objReturn);
+                        }
+                    });
+                } else {
+                }
+            });
+        }
+
+        function unlinkQuote(quote){
+            zhttp.project.quote.del(quote.id).then(function(response){
+                if(response.data && response.data != "false"){
+                	$scope.quotes.splice($scope.quotes.indexOf(quote), 1);
+                }
+            });
+        }
+
+        function linkInvoice(){
+            zeapps_modal.loadModule("com_zeapps_crm", "search_invoice", {}, function(objReturn) {
+                if (objReturn) {
+                    var data = {
+                        id_project : $scope.project.id,
+                        id_invoice : objReturn.id
+                    };
+                    var formatted_data = angular.toJson(data);
+                    zhttp.project.invoice.post(formatted_data).then(function(response){
+                        if(response.data && response.data != "false"){
+                            objReturn.id = response.data;
+                            $scope.invoices.push(objReturn);
+                        }
+                    });
+                } else {
+                }
+            });
+        }
+
+        function unlinkInvoice(invoice){
+            zhttp.project.invoice.del(invoice.id).then(function(response){
+                if(response.data && response.data != "false"){
+                    $scope.invoices.splice($scope.invoices.indexOf(invoice), 1);
+                }
+            });
+        }
+
+        function printCards(description){
+        	var description = description || false;
+
+        	zhttp.project.card.pdf.make($scope.project.id, description).then(function(response){
+        		if(response.data && response.data != "false"){
+                    window.document.location.href = zhttp.project.card.pdf.get() + angular.fromJson(response.data);
+				}
+			});
+		}
+
+        function printTimers(){
+        	zhttp.project.timer.pdf.make($scope.project.id).then(function(response){
+        		if(response.data && response.data != "false"){
+                    window.document.location.href = zhttp.project.timer.pdf.get() + angular.fromJson(response.data);
+				}
+			});
+		}
 
 	}]);

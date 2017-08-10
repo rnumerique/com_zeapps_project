@@ -3,6 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Card extends ZeCtrl
 {
+    private $pdf_path = "tmp/com_zeapps_project/cards/";
+
     public function form(){
         $this->load->view('card/form');
     }
@@ -21,7 +23,7 @@ class Card extends ZeCtrl
 
 
 
-    public function get_cards($id = 0){
+    public function get_cards($id = 0, $step = null){
         $this->load->model("Zeapps_project_cards", "cards");
         $this->load->model("Zeapps_project_card_comments", "comments");
         $this->load->model("Zeapps_project_card_documents", "documents");
@@ -31,18 +33,27 @@ class Card extends ZeCtrl
         else
             $where = array();
 
-        if($cards = $this->cards->order_by('sort')->all($where)) {
-            foreach ($cards as $card){
-                $card->comments = $this->comments->all(array('id_card' => $card->id));
-                if(!$card->comments)
-                    $card->comments = [];
-                $card->documents = $this->documents->all(array('id_card' => $card->id));
-                if(!$card->documents)
-                    $card->documents = [];
+        if($step){
+            $where['zeapps_project_cards.step'] = $step;
+        }
+
+        if(!$cards = $this->cards->order_by('sort')->all($where)) {
+            $cards = [];
+        }
+
+        $dates = [];
+        if($dates_tmp = $this->cards->get_dates($where)) {
+            foreach ($dates_tmp as $date) {
+                if ( ! in_array($date, $dates)) {
+                    $dates[] = $date;
+                }
             }
         }
 
-        echo json_encode($cards);
+        echo json_encode(array(
+            "cards" => $cards,
+            "dates" => $dates
+        ));
     }
 
     public function get_card($id){
@@ -65,7 +76,7 @@ class Card extends ZeCtrl
                 $categories = [];
             }
 
-            $card->time_spent = $this->timers->getTimeOfCard($card->id);
+            $card->total_time_spent = $this->timers->getTimeOfCard($card->id);
         }
         else{
             $project_users = [];
@@ -112,24 +123,6 @@ class Card extends ZeCtrl
         }
 
         echo json_encode($id);
-    }
-
-    public function validate_idea($id){
-        $this->load->model("Zeapps_project_cards", "cards");
-
-        $this->cards->update(array('step' => 1), $id);
-
-        echo json_encode('OK');
-    }
-
-    public function complete_card($id = null, $deadline = 'false'){
-        $this->load->model("Zeapps_project_cards", "cards");
-
-        if($id){
-            $this->cards->update(array('completed' => 'Y'), $id);
-        }
-
-        echo json_encode('OK');
     }
 
     public function delete_card($id = null){
@@ -236,5 +229,65 @@ class Card extends ZeCtrl
         }
 
         echo 'OK';
+    }
+
+    public function makePDF($id_project, $description = false, $echo = true){
+        $this->load->model("Zeapps_projects", "projects");
+        $this->load->model("Zeapps_project_cards", "cards");
+
+        $data = [];
+
+        $data['project'] = $this->projects->get($id_project);
+
+        $data['description'] = $description;
+
+        $data['dates'] = $this->cards->get_dates();
+        $data['cardsByDate'] = [];
+        if($cards = $this->cards->all(array('zeapps_project_cards.id_project'=>$id_project))){
+            foreach($cards as $card){
+                if(!is_array($data['cardsByDate'][$card->due_date])){
+                    $data['cardsByDate'][$card->due_date] = [];
+                }
+                array_push($data['cardsByDate'][$card->due_date], $card);
+            }
+        }
+
+        //load the view and saved it into $html variable
+        $html = $this->load->view('card/PDF', $data, true);
+
+        $nomPDF = $data['project']->title;
+        $nomPDF = preg_replace('/\W+/', '_', $nomPDF);
+        $nomPDF = trim($nomPDF, '_');
+
+        recursive_mkdir(FCPATH . $this->pdf_path);
+
+        //this the the PDF filename that user will get to download
+        $pdfFilePath = FCPATH . $this->pdf_path.$nomPDF.'.pdf';
+
+        //set the PDF header
+        $this->M_pdf->pdf->SetHeader('#'.$data['project']->id.'|'.$data['project']->title.'|Imprimé le {DATE d/m/Y}');
+
+        //set the PDF footer
+        $this->M_pdf->pdf->SetFooter('{PAGENO}/{nb}');
+
+        //generate the PDF from the given html
+        $this->M_pdf->pdf->WriteHTML($html);
+
+        //download it.
+        $this->M_pdf->pdf->Output($pdfFilePath, "F");
+
+        if($echo)
+            echo json_encode($nomPDF);
+
+        return $nomPDF;
+    }
+
+    public function getPDF($nomPDF){
+        $file_url = FCPATH . $this->pdf_path.$nomPDF.'.pdf';
+        header('Content-Type: application/octet-stream');
+        header("Content-Transfer-Encoding: Binary");
+        header("Content-disposition: attachment; filename=\"" . basename($file_url) . "\"");
+        readfile($file_url);
+        unlink($file_url);
     }
 }

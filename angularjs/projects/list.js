@@ -1,5 +1,5 @@
-app.controller("ComZeappsProjectOverviewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "$filter",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, $filter) {
+app.controller("ComZeappsProjectOverviewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "$filter", "zeProject",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, $filter, zeProject) {
 
 		$scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_management");
 
@@ -29,7 +29,7 @@ app.controller("ComZeappsProjectOverviewCtrl", ["$scope", "$route", "$routeParam
 					project.commission = parseFloat(project.commission);
 					project.payed = parseFloat(project.payed);
 
-                    var ret = zhttp.project.timer.calcSpentTimeRatio(project);
+                    var ret = zeProject.get.ratioOf(project);
 					project.time_spent_formatted = ret.time_spent_formatted;
 					project.timer_color = ret.timer_color;
 					project.timer_ratio = ret.timer_ratio;
@@ -108,55 +108,21 @@ app.controller("ComZeappsProjectOverviewCtrl", ["$scope", "$route", "$routeParam
 			]
 		}
 
-		function delete_project(id, $event) {
-			$event.stopPropagation();
-			var modalInstance = $uibModal.open({
-				animation: true,
-				templateUrl: "/assets/angular/popupModalDeBase.html",
-				controller: "ZeAppsPopupModalDeBaseCtrl",
-				size: "lg",
-				resolve: {
-					titre: function () {
-						return "Attention";
-					},
-					msg: function () {
-						return "Souhaitez-vous supprimer définitivement ce projet ?";
-					},
-					action_danger: function () {
-						return "Annuler";
-					},
-					action_primary: function () {
-						return false;
-					},
-					action_success: function () {
-						return "Confirmer";
-					}
-				}
-			});
-
-			modalInstance.result.then(function (selectedItem) {
-				if (selectedItem.action == "danger") {
-
-				} else if (selectedItem.action == "success") {
-					zhttp.project.project.del(id).then(function (response) {
-						if (response.data && response.data != "false") {
-							if (response.data.hasDependencies) {
-								$scope.force_delete_project(id);
-							}
-							else {
-								$location.url("/ng/com_zeapps_project/project");
-							}
-						}
-					});
-				}
-
-			}, function () {
-				//console.log("rien");
-			});
-
+		function delete_project(project) {
+            zhttp.project.project.del(project.id).then(function (response) {
+                if (response.data && response.data != "false") {
+                    if (response.data.hasDependencies) {
+                        $scope.force_delete_project(project);
+                    }
+                    else {
+                    	$scope.projects.splice($scope.projects.indexOf(project), 1);
+                        calcTotals();
+                    }
+                }
+            });
 		}
 
-		function force_delete_project(id) {
+		function force_delete_project(project) {
 			var modalInstance = $uibModal.open({
 				animation: true,
 				templateUrl: "/assets/angular/popupModalDeBase.html",
@@ -185,9 +151,10 @@ app.controller("ComZeappsProjectOverviewCtrl", ["$scope", "$route", "$routeParam
 				if (selectedItem.action == "danger") {
 
 				} else if (selectedItem.action == "success") {
-					zhttp.project.project.del(id, true).then(function (response) {
+					zhttp.project.project.del(project.id, true).then(function (response) {
 						if (response.status == 200) {
-							$location.url("/ng/com_zeapps_project/project");
+                            $scope.projects.splice($scope.projects.indexOf(project), 1);
+                            calcTotals();
 						}
 					});
 				}

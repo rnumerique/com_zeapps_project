@@ -3,19 +3,21 @@ app.controller("ComZeappsProjectMyWorkCtrl", ["$scope", "$route", "$routeParams"
 
         $scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_mywork");
 
-        $scope.cards = [];
+        $scope.dates = [];
+        var cards = [];
+        $scope.cardsByDate = [];
         var actuals = [];
         var leftovers = [];
         var futures = [];
+        var nodates = [];
         var nbLeftovers = 0;
         $scope.postits = [];
         $scope.priorities = [];
 
-        $scope.myworkTab = "";
+        $scope.myworkTab = "currents";
         var priorityFilterValue;
 
         $scope.goToTab = goToTab;
-        $scope.complete = complete;
         $scope.detailCard = detailCard;
         $scope.compareDates = function(date){ return zhttp.project.compareDate(date); };
 
@@ -24,19 +26,22 @@ app.controller("ComZeappsProjectMyWorkCtrl", ["$scope", "$route", "$routeParams"
 				actuals = response.data.actuals;
 				leftovers = response.data.leftovers;
                 futures = response.data.futures;
+                nodates = response.data.nodates;
+                $scope.dates = response.data.dates;
 
                 $scope.priorities = response.data.priorities;
 
-        		$scope.cards = actuals.concat(leftovers).concat(futures);
+        		cards = actuals.concat(leftovers);
 
                 generatePostits();
+                sortCards();
 			}
 		});
 
 		function generatePostits(){
             nbLeftovers = leftovers.length;
 
-            var cards = actuals.concat(leftovers).concat(futures);
+            var total = actuals.concat(leftovers).concat(futures);
 
             $scope.postits = [
                 {
@@ -48,7 +53,7 @@ app.controller("ComZeappsProjectMyWorkCtrl", ["$scope", "$route", "$routeParams"
             angular.forEach($scope.priorities, function(priority){
                 priorityFilterValue = priority.id;
 
-                var nbCards = cards.filter(findPriority).length;
+                var nbCards = total.filter(findPriority).length;
 
                 $scope.postits.push({
                     legend : priority.label,
@@ -57,61 +62,50 @@ app.controller("ComZeappsProjectMyWorkCtrl", ["$scope", "$route", "$routeParams"
             });
 		}
 
-        function complete(card){
-            zhttp.project.card.complete(card.id, card.deadline).then(function(response){
-                if (response.status == 200) {
-                	$scope.cards.splice($scope.cards.indexOf(card), 1);
-
-                	angular.forEach(actuals, function(actual, key){
-                		if(card.id === actual.id){
-                			actuals.splice(key, 1);
-						}
-					});
-
-                    angular.forEach(leftovers, function(leftover, key){
-                        if(card.id === leftover.id){
-                            leftovers.splice(key, 1);
-                        }
-                    });
-
-                    angular.forEach(futures, function(future, key){
-                        if(card.id === future.id){
-                            futures.splice(key, 1);
-                        }
-                    });
-
-                    generatePostits();
-                }
-            });
-        }
-
         function detailCard(card){
             zeapps_modal.loadModule("com_zeapps_project", "detail_card", {card : card});
         }
 
 		function goToTab(tab){
             $scope.myworkTab = tab;
-			if(tab === "leftovers"){
-				$scope.cards = leftovers;
+			if(tab === "currents"){
+				cards = actuals.concat(leftovers);
+			}
+			else if(tab === "leftovers"){
+				cards = leftovers;
 			}
 			else if(tab === "futures"){
-				$scope.cards = futures;
+				cards = futures;
 			}
 			else if(tab === "actuals"){
-				$scope.cards = actuals;
+				cards = actuals;
+			}
+			else if(tab === "nodates"){
+				cards = nodates;
 			}
 			else if(tab === ''){
-                $scope.cards = actuals.concat(leftovers).concat(futures);
+                cards = actuals.concat(leftovers).concat(futures).concat(nodates);
             }
 			else{
                 priorityFilterValue = tab;
-                $scope.cards = actuals.concat(leftovers).concat(futures).filter(findPriority);
+                cards = actuals.concat(leftovers).concat(futures).filter(findPriority);
             }
 
+            sortCards();
 		}
 
 		function findPriority(element){
             return element['id_priority'] === priorityFilterValue;
 		}
 
+		function sortCards(){
+            $scope.cardsByDate = [];
+            angular.forEach(cards, function (card) {
+                if(card.due_date != 0) {
+                    if (!$scope.cardsByDate[card.due_date])
+                        $scope.cardsByDate[card.due_date] = [];
+                    $scope.cardsByDate[card.due_date].push(card);
+                }
+            });
+        }
 	}]);

@@ -14,9 +14,6 @@ app.filter("planningFilter", function($filter){
 				if(filters.id_assigned_to) {
 					return listItem.id_assigned_to == filters.id_assigned_to;
 				}
-				if(!filters.completed) {
-					return listItem.completed !== "Y";
-				}
 				return true;
 			});
 		}
@@ -53,7 +50,7 @@ app.filter("planningFilter", function($filter){
 						return false;
 					if(parseInt(listItem.step) !== 1)
 						return false;
-					if(listItem.completed === "Y")
+					if(listItem.step !== "4")
 						return false;
 					return true;
 				});

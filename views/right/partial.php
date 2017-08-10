@@ -21,6 +21,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <th class="text-center">
             Projet
         </th>
+        <th class="text-center">
+            Taux horaire (€)
+        </th>
         <th></th>
     </tr>
     </thead>
@@ -39,8 +42,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <td class="text-center">
             <input type="checkbox" ng-model="user.project" ng-change="changeRights(user, 'project')" ng-disabled="$root.user.id === user.id_user">
         </td>
+        <td class="text-center">
+            <input type="number" ng-model="user.hourly_rate" ng-change="saveRightsOf(user)" class="form-control input-sm">
+        </td>
         <td class="text-right">
-            <button type="button" class="btn btn-xs btn-danger" ng-click="deleteRightsOf(user)" ng-if="$root.user.id !== user.id_user">
+            <button type="button" class="btn btn-xs btn-danger" ng-click="deleteRightsOf(user)" ng-if="$root.user.id !== user.id_user" ze-confirmation>
                 <i class="fa fa-fw fa-trash"></i>
             </button>
         </td>

@@ -23,7 +23,7 @@ class Planning extends ZeCtrl
 
         $projects = $this->projects->all();
 
-        $cards = $this->cards->all();
+        $cards = $this->cards->all(array(), true);
 
         $deadlines = $this->deadlines->all();
 

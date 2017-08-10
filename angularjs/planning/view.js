@@ -56,7 +56,25 @@ app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams",
 			},
 			step: 1,
 			completed: false,
-			events: []
+			events: [],
+			editable: true,
+            eventDrop: function(event) {
+				var data = {};
+				var formatted_data = "";
+
+                data.id = event.id;
+                data.due_date = event.start.format();
+
+                formatted_data = angular.toJson(data);
+
+				if(event.order === 1){
+					zhttp.project.project.post(formatted_data);
+				}else if(event.order === 2){
+                    zhttp.project.deadline.post(formatted_data);
+				}else if(event.order === 3){
+                    zhttp.project.card.post(formatted_data);
+            	}
+            }
 		};
 
 		zhttp.project.planning.get_context().then(function(response){
@@ -76,6 +94,7 @@ app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams",
 							start: card.due_date,
 							color: "#760692",
 							order: 1,
+							id: card.id,
 							url: "/ng/com_zeapps_project/project/" + card.id_project
 						};
 
@@ -92,6 +111,7 @@ app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams",
 							start: card.due_date,
 							color: "#a94442",
 							order: 2,
+                            id: card.id,
                             url: "/ng/com_zeapps_project/project/" + card.id_project
 						};
 
@@ -114,6 +134,7 @@ app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams",
 							start: card.due_date,
 							color: "#760692",
 							order: 1,
+                            id: card.id,
                             url: "/ng/com_zeapps_project/project/" + card.id_project
 						};
 
@@ -129,6 +150,7 @@ app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams",
 							start: card.due_date,
 							color: "#a94442",
 							order: 2,
+                            id: card.id,
                             url: "/ng/com_zeapps_project/project/" + card.id_project
 						};
 
@@ -141,11 +163,12 @@ app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams",
                         if (card.due_date != 0) {
                             var event = {
                                 allDay: true,
-                                title: card.name_company + " ( " + card.project_title + " ) : " + (card.name_assigned_to ? " - assigné à " + card.name_assigned_to : ''),
+                                title: card.name_company + " ( " + card.project_title + " ) : " + card.title + " " + (card.name_assigned_to ? " - assigné à " + card.name_assigned_to : ''),
                                 start: card.due_date,
                                 textColor: card.color ? "#333" : "#fff",
                                 color: card.color || "#393939",
                                 order: 3,
+                                id: card.id,
                                 url: "/ng/com_zeapps_project/project/" + card.id_project
                             };
 

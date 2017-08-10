@@ -2,14 +2,19 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 
-<small><strong>Utilisation du temps :</strong></small>
-<div class="progress">
-    <div class="progress-bar" role="progressbar" aria-valuenow="{{timer_ratio}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 40px" ng-style="{width: timer_ratio+'%', 'background-color': timer_color}">
-        {{timer_ratio}}%
+<div project-auth="{id_project : (project.id || card.id_project), right : 'project'}">
+    <small><strong>Utilisation du temps :</strong></small>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="{{timer_ratio}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 40px" ng-style="{width: timer_ratio+'%', 'background-color': timer_color}">
+            {{timer_ratio}}%
+        </div>
     </div>
 </div>
 
 <div class="text-right">
+    <a class='btn btn-xs btn-primary' ng-click="printTimers()" project-auth="{id_project : project.id, right : 'project'}">
+        <span class='fa fa-fw fa-print' aria-hidden='true'></span>
+    </a>
     <button type="button" class="btn btn-xs btn-success" ng-click="newTimer()">
         <i class="fa fa-fw fa-plus"></i> temps
     </button>
@@ -39,7 +44,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <button type="button" class="btn btn-xs btn-info" ng-click="editTimer(timer)">
                 <i class="fa fa-fw fa-pencil"></i>
             </button>
-            <button type="button" class="btn btn-xs btn-danger" ng-click="deleteTimer(timer)">
+            <button type="button" class="btn btn-xs btn-danger" ng-click="deleteTimer(timer)" ze-confirmation>
                 <i class="fa fa-fw fa-trash"></i>
             </button>
         </td>

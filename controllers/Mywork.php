@@ -51,13 +51,38 @@ class Mywork extends ZeCtrl
             $futures = [];
         }
 
+        if($nodates = $this->cards->get_nodates()){
+            foreach($nodates as $nodate){
+                if(!$nodate->comments = $this->comments->all(array('id_card' => $nodate->id)))
+                    $nodate->comments = [];
+                if(!$nodate->documents = $this->documents->all(array('id_card' => $nodate->id)))
+                    $nodate->documents = [];
+            }
+        }
+        else{
+            $nodates = [];
+        }
+
+        if(!$dates_tmp = $this->cards->get_dates()) {
+            $dates_tmp = [];
+        }
+        $dates = [];
+
+        foreach ($dates_tmp as $date) {
+            if ( ! in_array($date, $dates)) {
+                $dates[] = $date;
+            }
+        }
+
         $priorities = $this->priorities->all();
 
         echo json_encode(array(
             "actuals" => $actuals,
             "leftovers" => $leftovers,
             "futures" => $futures,
-            "priorities" => $priorities
+            "nodates" => $nodates,
+            "priorities" => $priorities,
+            "dates" => $dates
         ));
     }
 }

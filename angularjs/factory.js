@@ -1,6 +1,6 @@
 app.config(["$provide",
 	function ($provide) {
-		$provide.decorator("zeHttp", function($delegate, $rootScope, $interval, zeapps_modal){
+		$provide.decorator("zeHttp", function($delegate, $rootScope, $interval, zeapps_modal, $q){
 			var zeHttp = $delegate;
 
 			var tday = new Date();
@@ -18,8 +18,10 @@ app.config(["$provide",
 				project : {
 					tree : get_projects_tree,
 					get : get_project,
+					update : update_project,
 					get_all : getAll_project,
 					get_overview : getOverview_project,
+					get_archives : getArchives_project,
 					get_childs : getChilds_project,
 					post : post_project,
 					archive : archive_project,
@@ -34,12 +36,15 @@ app.config(["$provide",
 					get : get_card,
 					post : post_card,
 					del : delete_card,
-					complete : complete_card,
 					validate : validate_idea,
 					comment : comment_card,
                     del_comment : delComment_card,
 					document : documentUrl_card,
-                    del_document : delDocument_card
+                    del_document : delDocument_card,
+					pdf : {
+						make : makePDF_card,
+						get : getPDF_card
+					}
 				},
 				deadline : {
 					get_all : getAll_deadline,
@@ -75,7 +80,10 @@ app.config(["$provide",
 					start : timer_start,
 					stop : timer_stop,
 					get_interval : getInterval_timer,
-                    calcSpentTimeRatio : calcSpentTimeRatio
+                    pdf : {
+                        make : makePDF_timer,
+                        get : getPDF_timer
+                    }
 				},
 				mywork : {
 					get_work : getWork_mywork
@@ -91,8 +99,21 @@ app.config(["$provide",
 					cancel : cancel_Todos,
 					del : del_Todos,
 					postCategory : postCategory_Todos,
+                    delCategory : delCategory_Todos,
 					todos_position : todosPosition_Todos,
 					categories_position : categoriesPosition_Todos
+				},
+				quote : {
+					post : post_quote,
+					del : delete_quote
+				},
+				invoice : {
+					post : post_invoice,
+					del : delete_invoice
+				},
+				spendings : {
+					post : post_spendings,
+					del : delete_spendings
 				},
 				openTree : recursiveOpening,
 				compareDate : compareDate
@@ -124,15 +145,17 @@ app.config(["$provide",
 			function get_project (id){
 				return zeHttp.get("/com_zeapps_project/project/get_project/" + id);
 			}
-            
-			function getAll_project(id, spaces, filter){
-				if(!id) id = 0;
-				if(!spaces) spaces = "false";
-				if(!filter) filter = "false";
-				return zeHttp.get("/com_zeapps_project/project/get_projects/" + id + "/" + spaces + "/" + filter);
+			function update_project (id){
+				return zeHttp.get("/com_zeapps_project/project/update_project/" + id);
+			}
+			function getAll_project(){
+				return zeHttp.get("/com_zeapps_project/project/get_projects/");
 			}
 			function getOverview_project(){
 				return zeHttp.get("/com_zeapps_project/project/get_overview/");
+			}
+			function getArchives_project(){
+				return zeHttp.get("/com_zeapps_project/project/get_archives/");
 			}
 			function getChilds_project(id){
 				return zeHttp.get("/com_zeapps_project/project/get_childs/" + id);
@@ -165,9 +188,10 @@ app.config(["$provide",
 
 
 			// CARD
-			function getAll_card(id){
-				if(!id) id = 0;
-				return zeHttp.get("/com_zeapps_project/card/get_cards/" + id);
+			function getAll_card(id, step){
+				id = id || 0;
+				step = step || '';
+				return zeHttp.get("/com_zeapps_project/card/get_cards/" + id + "/" + step);
 			}
 			function get_card(id){
 				return zeHttp.get("/com_zeapps_project/card/get_card/" + id);
@@ -177,10 +201,6 @@ app.config(["$provide",
 			}
 			function delete_card(id){
 				return zeHttp.get("/com_zeapps_project/card/delete_card/" + id);
-			}
-			function complete_card(id, deadline){
-				deadline = !!deadline;
-				return zeHttp.get("/com_zeapps_project/card/complete_card/" + id + "/" + deadline);
 			}
 			function validate_idea(id){
 				return zeHttp.get("/com_zeapps_project/card/validate_idea/" + id);
@@ -196,6 +216,12 @@ app.config(["$provide",
             }
 			function delDocument_card(id){
 				return zeHttp.delete("/com_zeapps_project/card/del_document/" + id);
+			}
+			function makePDF_card(id, description){
+				return zeHttp.get("/com_zeapps_project/card/makePDF/" + id + "/" + description);
+			}
+			function getPDF_card(){
+                return "/com_zeapps_project/card/getPDF/";
 			}
 
 
@@ -286,11 +312,38 @@ app.config(["$provide",
             function postCategory_Todos(data){
                 return zeHttp.post("/com_zeapps_project/todos/save_category/", data);
             }
+            function delCategory_Todos(id){
+                return zeHttp.delete("/com_zeapps_project/todos/delete_category/" + id);
+            }
             function todosPosition_Todos(data){
                 return zeHttp.post("/com_zeapps_project/todos/todos_position/", data);
             }
             function categoriesPosition_Todos(data){
                 return zeHttp.post("/com_zeapps_project/todos/categories_position/", data);
+            }
+
+            // QUOTE
+			function post_quote(data){
+                return zeHttp.post("/com_zeapps_project/project_quotes/save/", data);
+			}
+			function delete_quote(id){
+                return zeHttp.delete("/com_zeapps_project/project_quotes/delete/" + id);
+			}
+
+			// INVOICE
+			function post_invoice(data){
+                return zeHttp.post("/com_zeapps_project/project_invoices/save/", data);
+			}
+			function delete_invoice(id){
+                return zeHttp.delete("/com_zeapps_project/project_invoices/delete/" + id);
+			}
+
+			// SPENDINGS
+            function post_spendings(data){
+                return zeHttp.post("/com_zeapps_project/spending/save/", data);
+            }
+            function delete_spendings(id){
+                return zeHttp.delete("/com_zeapps_project/spending/delete/" + id);
             }
 
 			// TIMER
@@ -306,25 +359,29 @@ app.config(["$provide",
 			function delete_timer(id){
 				return zeHttp.get("/com_zeapps_project/timer/delete/" + id);
 			}
-			function timer_start(card){
-				if(card){
-					if($rootScope.currentTask && $rootScope.project_timer)
+            function makePDF_timer(id, description){
+                return zeHttp.get("/com_zeapps_project/timer/makePDF/" + id + "/" + description);
+            }
+            function getPDF_timer(){
+                return "/com_zeapps_project/timer/getPDF/";
+            }
+			function timer_start(src){
+				if(src){
+					if($rootScope.currentTimer && $rootScope.project_timer)
 						timer_stop();
-					$rootScope.currentTask = {
-						id_project : card.id_project,
-						id_category : card.id_category,
-						id_sprint : card.id_sprint,
-						id_card : card.id,
-						id_user : $rootScope.user.id,
-						name_user : $rootScope.user.firstname + " " + $rootScope.user.lastname,
-						label : card.title,
+
+					$rootScope.currentTimer = {
+						id_project : src.id_project,
+						name_project : src.project_title,
+						id_card : src.id,
+						label : src.title,
 						start_time : moment().format("YYYY-MM-DD HH:mm:ss")
 					};
 
-					var formatted_data = angular.toJson($rootScope.currentTask);
+					var formatted_data = angular.toJson($rootScope.currentTimer);
 					post_timer(formatted_data).then(function(response){
 						if(response && response.data != "false"){
-							$rootScope.currentTask.id = response.data;
+							$rootScope.currentTimer.id = response.data;
 							$rootScope.project_timer = getInterval_timer();
 						}
 					});
@@ -333,79 +390,68 @@ app.config(["$provide",
 					$rootScope.project_timer = getInterval_timer();
 				}
 			}
-			function timer_stop(card){
-				if($rootScope.currentTask && $rootScope.project_timer) {
+			function timer_stop(){
+                var defer = $q.defer();
+                var promise;
+
+				if($rootScope.currentTimer && $rootScope.project_timer) {
+
 					$interval.cancel($rootScope.project_timer);
-					$rootScope.currentTask.stop_time = moment().format("YYYY-MM-DD HH:mm:ss");
-					zeapps_modal.loadModule("com_zeapps_project", "timer_end", {}, function (objReturn) {
-						if (objReturn) {
-							$rootScope.project_timer = null;
-							if (card) {
-								if ($rootScope.currentTask && $rootScope.currentTask.id_card == card.id) {
-									var formatted_data = angular.toJson($rootScope.currentTask);
-									post_timer(formatted_data).then(function (response) {
-										if (response && response.data != "false") {
-											$rootScope.currentTask = false;
-										}
-									});
-								}
-								else {
-									delete $rootScope.currentTask.stop_time;
-								}
-							}
-							else if ($rootScope.currentTask) {
-								var formatted_data = angular.toJson($rootScope.currentTask);
-								post_timer(formatted_data).then(function (response) {
-									if (response && response.data != "false") {
-										delete $rootScope.currentTask.interval;
-									}
-								});
-							}
-							else {
-								delete $rootScope.currentTask.stop_time;
-							}
-						} else {
-							$rootScope.project_timer = getInterval_timer();
-							delete $rootScope.currentTask.stop_time;
-						}
-					});
+					$rootScope.currentTimer.stop_time = moment().format("YYYY-MM-DD HH:mm:ss");
+
+					var date_start = new Date($rootScope.currentTimer.start_time);
+					var date_stop = new Date($rootScope.currentTimer.stop_time);
+
+                    var start_time_m = date_start.getMinutes();
+                    var start_time_h = date_start.getHours();
+
+                    var stop_time_m = date_stop.getMinutes();
+                    var stop_time_h = date_stop.getHours();
+
+                    var minutes = stop_time_m - start_time_m;
+                    var hours = stop_time_h - start_time_h;
+
+                    if (minutes < 0) {
+                        hours -= 1;
+                        minutes += 60;
+                    }
+
+                    $rootScope.currentTimer.time_spent = hours * 60 + minutes;
+
+                    var formatted_data = angular.toJson($rootScope.currentTimer);
+                    post_timer(formatted_data).then(function (response) {
+                        if (response && response.data != "false") {
+                            var options = {
+                                id: response.data
+                            };
+                            $rootScope.currentTimer = false;
+                            $rootScope.project_timer = null;
+                            delete $rootScope.currentTimer.interval;
+                            zeapps_modal.loadModule("com_zeapps_project", "form_timer", options, function(objReturn){
+								if(objReturn) {
+                                    var formatted_data = angular.toJson(objReturn);
+                                    post_timer(formatted_data).then(function (response) {
+                                        if (response.data && response.data != "false") {
+                                            defer.resolve(response);
+                                        }
+                                    });
+                                }
+							}, function(){
+                                defer.resolve(response);
+							});
+                        }
+                    });
 				}
+
+                promise = defer.promise;
+
+                return promise;
 			}
 			function getInterval_timer(){
 				return $interval(function () {
-					$rootScope.currentTask.seconds = moment().diff(moment($rootScope.currentTask.start_time));
-					$rootScope.currentTask.interval = moment.utc($rootScope.currentTask.seconds).format("HH:mm:ss");
+					$rootScope.currentTimer.seconds = moment().diff(moment($rootScope.currentTimer.start_time));
+					$rootScope.currentTimer.interval = moment.utc($rootScope.currentTimer.seconds).format("HH:mm:ss");
 				}, 500);
-			}
-
-			function calcSpentTimeRatio(src){
-				if(src.time_spent && src.estimated_time) {
-                    var time_spent = moment.duration(parseInt(src.time_spent), 'minutes');
-                    var time_spent_formatted = parseInt(time_spent.asHours()) + 'h' + (time_spent.minutes() || '');
-                    var timer_color;
-                    var timer_ratio;
-					var estimated_time = moment.duration(parseInt(src.estimated_time), 'hours');
-
-					var ratio = time_spent.asSeconds() / estimated_time.asSeconds();
-					if (ratio > 1) ratio = 1;
-					var g = ratio < 0.5 ? 200 : parseInt(((0.5 - (ratio - 0.5)) * 2) * 200);
-					var r = ratio >= 0.5 ? 200 : parseInt(((ratio) * 2) * 200);
-					timer_color = '#' + ('00' + r.toString(16)).substr(-2) + ('00' + g.toString(16)).substr(-2) + '00';
-					timer_ratio = (ratio * 100).toFixed(2);
-
-                    return {
-                    	time_spent_formatted : time_spent_formatted,
-						timer_color : timer_color,
-						timer_ratio : timer_ratio
-					}
-                }
-                else{
-                    return {
-                        time_spent_formatted : "0h",
-                        timer_color : '#00c800',
-                        timer_ratio : 0
-                    }
-				}
 			}
 
 			// FILTER

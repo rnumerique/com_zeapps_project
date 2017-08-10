@@ -7,8 +7,16 @@ class Project extends ZeCtrl
         $this->load->view('project/view');
     }
 
+    public function partial(){
+        $this->load->view('project/partial');
+    }
+
     public function overview(){
         $this->load->view('project/list');
+    }
+
+    public function archives(){
+        $this->load->view('project/archives');
     }
 
     public function deadlines(){
@@ -35,8 +43,20 @@ class Project extends ZeCtrl
         $this->load->view('document/partial');
     }
 
+    public function quotes(){
+        $this->load->view('quotes/partial');
+    }
+
+    public function invoices(){
+        $this->load->view('invoices/partial');
+    }
+
     public function timers(){
         $this->load->view('timer/partial');
+    }
+
+    public function spendings(){
+        $this->load->view('spendings/partial');
     }
 
     public function rights(){
@@ -103,18 +123,18 @@ class Project extends ZeCtrl
         $this->load->model("Zeapps_project_card_comments", "card_comments");
         $this->load->model("Zeapps_project_card_documents", "card_documents");
         $this->load->model("Zeapps_project_card_priorities", "priorities");
+        $this->load->model("Zeapps_project_quotes", "quotes");
+        $this->load->model("Zeapps_project_invoices", "invoices");
+        $this->load->model("Zeapps_project_spendings", "spendings");
 
         if($id) {
             $whereC = array('zeapps_project_cards.id_project' => $id);
             $whereD = array('zeapps_project_deadlines.id_project' => $id);
         }
 
-        if($project = $this->projects->get($id)) {
-            $project->users = $this->rights->all(array('id_project' => $id));
-            $project->time_spent = $this->timers->getTimeOfProject($project->id);
-        }
+        $project = $this->projects->get($id);
 
-        if(!$timers = $this->timers->all(array('id_project' => $id))){
+        if(!$timers = $this->timers->all(array('zeapps_project_timers.id_project' => $id))){
             $timers = [];
         }
 
@@ -130,29 +150,27 @@ class Project extends ZeCtrl
             $categories = [];
         }
 
+        if(!$quotes = $this->quotes->all(array('id_project' => $id))){
+            $quotes = [];
+        }
+
+        if(!$spendings = $this->spendings->all(array('id_project' => $id))){
+            $spendings = [];
+        }
+
+        if(!$invoices = $this->invoices->all(array('id_project' => $id))){
+            $invoices = [];
+        }
+
         if(!$priorities = $this->priorities->all()){
             $priorities = [];
-        }
-
-        if($dates_tmp = $this->cards->get_dates()) {
-            $dates_merged = array_merge($dates_tmp, $this->deadlines->get_dates());
-        }
-        else{
-            $dates_merged = $this->deadlines->get_dates();
-        }
-        $dates = [];
-
-        foreach ($dates_merged as $date) {
-            if ( ! in_array($date, $dates)) {
-                $dates[] = $date;
-            }
         }
 
         if(!$project_users = $this->rights->all(array('id_project' => $id))){
             $project_users = [];
         }
 
-        if(!$cards = $this->cards->all($whereC)) {
+        if(!$cards = $this->cards->all($whereC, true)) {
             $cards = [];
         }
         if(!$deadlines = $this->deadlines->all($whereD)) {
@@ -170,21 +188,45 @@ class Project extends ZeCtrl
                 'project_users' => $project_users,
                 'cards' => $cards,
                 'deadlines' => $deadlines,
-                'dates' => $dates
+                'quotes' => $quotes,
+                'invoices' => $invoices,
+                'spendings' => $spendings
             )
         );
     }
 
-    public function get_projects($id_parent = 0, $spaces = 'false', $filter = 'false'){
+    public function update_project($id = 0){
+        $this->load->model("Zeapps_projects", "projects");
+        $this->load->model("Zeapps_project_timers", "timers");
+        $this->load->model("Zeapps_project_spendings", "spendings");
+
+        $time_spent = $this->timers->getTimeOfProject($id);
+        $total_hourly = $this->timers->getHourlyPriceOfProject($id);
+        $spendings = $this->spendings->getTotalProject($id);
+
+        $this->projects->update(array(
+            'total_time_spent' => $time_spent,
+            'total_spendings' => floatval($total_hourly) + floatval($spendings)
+        ), $id);
+
+        if(!$timers = $this->timers->all(array('zeapps_project_timers.id_project' => $id))){
+            $timers = [];
+        }
+
+        echo json_encode(
+            array(
+                'spendings' => $spendings,
+                'total_hourly' => $total_hourly,
+                'time_spent' => $time_spent,
+                'timers' => $timers
+            )
+        );
+    }
+
+    public function get_projects(){
         $this->load->model("Zeapps_projects", "projects");
         $this->load->model("Zeapps_project_categories", "categories");
-
-        if($id_parent)
-            $where = array('id_parent' => $id_parent);
-        else
-            $where = array();
-
-        if($projects = $this->projects->all($where, $spaces, $filter)){
+        if($projects = $this->projects->all()){
             foreach($projects as $project){
                 $project->categories = $this->categories->all(array('id_project' => $project->id));
             }
@@ -200,43 +242,34 @@ class Project extends ZeCtrl
         $this->load->model("Zeapps_project_statuses", "statuses");
         $this->load->model("Zeapps_project_timers", "timers");
 
-        $where = array();
-
-        if($projects = $this->projects->all($where, 'false', 'false')){
+        if($projects = $this->projects->all()){
             foreach($projects as $project){
-                if($deadline = $this->deadlines->get_nextOf($project->id))
+                if($deadline = $this->deadlines->get_nextOf($project->id)) {
                     $project->nextDeadline = $deadline[0]->due_date;
-                else
+                }
+                else {
                     $project->nextDeadline = 0;
-
-                $project->time_spent = $this->timers->getTimeOfProject($project->id);
+                }
             }
         }
 
         echo json_encode($projects);
     }
 
-    public function get_childs($id){
+    public function get_archives(){
         $this->load->model("Zeapps_projects", "projects");
+        $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_deadlines", "deadlines");
+        $this->load->model("Zeapps_project_statuses", "statuses");
+        $this->load->model("Zeapps_project_timers", "timers");
 
-        $childs = $this->_getChildsOf($id);
-
-        echo json_encode($childs);
-    }
-
-    public function get_projects_tree(){
-        $this->load->model("Zeapps_projects", "projects");
-
-        $where = [];
-
-        $projects = $this->projects->all($where);
-
-        if ($projects == false) {
-            echo json_encode(array());
-        } else {
-            $result = $this->_build_tree($projects);
-            echo json_encode($result);
+        if($projects = $this->projects->all_archived()){
+            foreach($projects as $project){
+                $project->nextDeadline = 0;
+            }
         }
+
+        echo json_encode($projects);
     }
 
     public function save_project(){
@@ -272,12 +305,11 @@ class Project extends ZeCtrl
     }
 
     public function delete_project($id = null, $force = 'false'){
-        $this->load->model("Zeapps_projects", "projects");
         $this->load->model("Zeapps_project_deadlines", "deadlines");
         $this->load->model("Zeapps_project_cards", "cards");
 
         if($force == 'false'){
-            if($this->projects->all(array('id_parent' => $id)) || $this->deadlines->all(array('id_project' => $id)) || $this->cards->all(array('id_project' => $id))){
+            if($this->deadlines->all(array('id_project' => $id)) || $this->cards->all(array('id_project' => $id))){
                 echo json_encode(array('hasDependencies' => true));
                 return;
             }
@@ -390,40 +422,5 @@ class Project extends ZeCtrl
         }
 
         echo 'OK';
-    }
-
-    private function _build_tree($categories, $id = 0){
-        $result = array();
-
-        foreach($categories as $category){
-            if($category->id_parent == $id){
-
-                $tmp = $category;
-                $res = $this->_build_tree($categories, $category->id);
-                if(!empty($res)) {
-                    $tmp->branches = $res;
-                }
-                $tmp->open = false;
-                $result[] = $tmp;
-            }
-        }
-
-        return $result;
-    }
-
-    private function _getChildsOf($id){
-
-        $arr = [];
-
-        if($childs = $this->projects->all(array('id_parent' => $id))){
-            foreach($childs as $child){
-                $arr[] = $child->id;
-                $ret = $this->_getChildsOf($child->id);
-                $arr = array_merge($arr, $ret);
-            }
-        }
-
-        return array_unique($arr);
-
     }
 }

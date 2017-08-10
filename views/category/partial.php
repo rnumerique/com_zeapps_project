@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <button type="button" class="btn btn-info btn-xs" ng-click="editCategory(category)">
                 <i class="fa fa-fw fa-pencil" ></i>
             </button>
-            <button type="button" class="btn btn-danger btn-xs" ng-click="deleteCategory(category)">
+            <button type="button" class="btn btn-danger btn-xs" ng-click="deleteCategory(category)" ze-confirmation>
                 <i class="fa fa-fw fa-trash" ></i>
             </button>
         </td>

@@ -1,0 +1,1 @@
+ALTER TABLE `zeapps_users` ADD `hourly_rate` FLOAT(9,2) UNSIGNED NOT NULL AFTER `lang`;

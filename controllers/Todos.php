@@ -68,7 +68,8 @@ class Todos extends ZeCtrl
         }
 
         if(isset($data['id'])){
-            $id = $this->todos->update($data, $data['id']);
+            $this->todos->update($data, $data['id']);
+            $id = $data['id'];
         }
         else{
             $id = $this->todos->insert($data);
@@ -89,13 +90,23 @@ class Todos extends ZeCtrl
         }
 
         if(isset($data['id'])){
-            $id = $this->categories->update($data, $data['id']);
+            $this->categories->update($data, $data['id']);
+            $id = $data['id'];
         }
         else{
             $id = $this->categories->insert($data);
         }
 
         echo json_encode($id);
+    }
+
+    public function delete_category($id){
+        $this->load->model("Zeapps_project_todo_categories", "categories");
+        $this->load->model("Zeapps_project_todos", "todos");
+
+        $this->todos->delete(array('id_category' => $id));
+
+        echo $this->categories->delete($id);
     }
 
     public function validate($id){

@@ -9,10 +9,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
 <div class="card_comment clearfix" ng-repeat="comment in comments | orderBy:['-date','-id']">
     <div class="pull-right">
-        <button type="button" class="btn btn-xs btn-info" ng-click="editComment(comment)" ze-auth="{id_project : project.id, right : 'project'}">
+        <button type="button" class="btn btn-xs btn-info" ng-click="editComment(comment)" project-auth="{id_project : project.id, right : 'project'}">
             <span class="hover-hint">editer</span> <i class="fa fa-fw fa-pencil"></i>
         </button>
-        <button type="button" class="btn btn-xs btn-danger" ng-click="deleteComment(comment)" ze-auth="{id_project : project.id, right : 'project'}">
+        <button type="button" class="btn btn-xs btn-danger" ng-click="deleteComment(comment)" project-auth="{id_project : project.id, right : 'project'}" ze-confirmation>
             <span class="hover-hint">supprimer</span> <i class="fa fa-fw fa-times"></i>
         </button>
     </div>

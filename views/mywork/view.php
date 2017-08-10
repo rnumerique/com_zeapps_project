@@ -11,14 +11,20 @@
                 <li role="presentation" ng-click="goToTab('')" ng-class="myworkTab === '' ? 'active' : ''">
                     <a href="#">Tous</a>
                 </li>
+                <li role="presentation" ng-click="goToTab('currents')" ng-class="myworkTab === 'currents' ? 'active' : ''">
+                    <a href="#">Aujourd'hui + retards</a>
+                </li>
+                <li role="presentation" ng-click="goToTab('actuals')" ng-class="myworkTab === 'actuals' ? 'active' : ''">
+                    <a href="#">Aujourd'hui</a>
+                </li>
                 <li role="presentation" ng-click="goToTab('leftovers')" ng-class="myworkTab === 'leftovers' ? 'active' : ''">
                     <a href="#">Retards</a>
                 </li>
-                <li role="presentation" ng-click="goToTab('actuals')" ng-class="myworkTab === 'actuals' ? 'active' : ''">
-                    <a href="#">Du jour</a>
-                </li>
                 <li role="presentation" ng-click="goToTab('futures')" ng-class="myworkTab === 'futures' ? 'active' : ''">
-                    <a href="#">Futures</a>
+                    <a href="#">A venir</a>
+                </li>
+                <li role="presentation" ng-click="goToTab('nodates')" ng-class="myworkTab === 'nodates' ? 'active' : ''">
+                    <a href="#">Sans échéance</a>
                 </li>
                 <li role="presentation" ng-click="goToTab(priority.id)" ng-class="myworkTab === priority.id ? 'active' : ''" ng-repeat="priority in priorities" ng-style="{'background-color': priority.color}">
                     <a href="#">{{priority.label}}</a>
@@ -36,24 +42,24 @@
                     <th>Client</th>
                     <th>Projet</th>
                     <th>Tâche</th>
-                    <th>Date limite</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="card in cards | orderBy:['due_date', 'id_priority', 'project_title']" ng-style="{'background-color': card.priority_color}">
+                <tr ng-repeat-start="date in dates | orderBy:'due_date'" ng-if="cardsByDate[date.due_date] && cardsByDate[date.due_date].length != 0" class="date-cell">
+                    <td colspan="6">
+                        {{ (date.due_date != '0000-00-00' ? date.due_date : 'Sans échéance') | date:'dd MMMM yyyy' }}
+                    </td>
+                </tr>
+                <tr ng-repeat-end ng-repeat="card in cardsByDate[date.due_date] | orderBy:['due_date', 'id_priority', 'project_title']" ng-style="{'background-color': card.priority_color}">
                     <td>{{card.id}}</td>
                     <td>{{card.name_company ? card.name_company : card.name_contact}}</td>
-                    <td>{{card.project_title}}</td>
+                    <td>
+                        <a href="/ng/com_zeapps_project/project/{{card.id_project}}">{{card.project_title}}</a>
+                    </td>
                     <td>{{card.title}}</td>
-                    <td ng-class="'text-' + compareDates(card.due_date)">{{(card.due_date || '-') | date:'dd/MM/yyyy'}}</td>
                     <td class="text-right no-wrap">
-                        <button type="button" class="btn btn-info btn-xs" ng-click="detailCard(card)">
-                            <i class="fa fa-fw fa-eye" ></i> <span class="hover-hint">détails</span>
-                        </button>
-                        <button type="button" class="btn btn-success btn-xs" ng-click="complete(card)">
-                            <i class="fa fa-fw fa-check" ></i> <span class="hover-hint">valider</span>
-                        </button>
+                        <ze-btn fa="eye" hint="Détails" color="info" direction="right" ng-click="detailCard(card)"></ze-btn>
                     </td>
                 </tr>
                 </tbody>

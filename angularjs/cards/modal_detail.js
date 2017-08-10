@@ -9,10 +9,12 @@ listModuleModalFunction.push({
 });
 
 
-app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope, $uibModalInstance, zeHttp, option, $location, Upload, zeapps_modal) {
+app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope, $uibModalInstance, zeHttp, option, $location, Upload, zeapps_modal, zeProject) {
 
 	$scope.card = option.card;
 	$scope.progress = false;
+
+	var edited_timers = false;
 
     $scope.tab = "notes";
     $scope.view = "/com_zeapps_project/project/notes";
@@ -28,6 +30,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope,
     $scope.deleteComment = deleteComment;
 	$scope.edit = edit;
 	$scope.close = close;
+    $scope.startTimer = startTimer;
     $scope.newTimer = newTimer;
     $scope.editTimer = editTimer;
     $scope.deleteTimer = deleteTimer;
@@ -58,7 +61,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope,
                 comment.date = new Date(comment.date);
             });
 
-            var ret = zeHttp.project.timer.calcSpentTimeRatio($scope.card);
+            var ret = zeProject.get.ratioOf($scope.card);
             $scope.time_spent_formatted = ret.time_spent_formatted;
             $scope.timer_color = ret.timer_color;
             $scope.timer_ratio = ret.timer_ratio;
@@ -72,6 +75,10 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope,
 
     function isActiveCard(tab){
         return $scope.tab === tab;
+    }
+
+    function startTimer(){
+        zeHttp.project.timer.start($scope.card);
     }
 
     function newTimer(){
@@ -99,10 +106,12 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope,
 
                         $scope.card.time_spent = parseInt($scope.card.time_spent) + parseInt(objReturn.time_spent);
 
-                        var ret = zeHttp.project.timer.calcSpentTimeRatio($scope.card);
+                        var ret = zeProject.get.ratioOf($scope.card);
                         $scope.time_spent_formatted = ret.time_spent_formatted;
                         $scope.timer_color = ret.timer_color;
                         $scope.timer_ratio = ret.timer_ratio;
+
+                        edited_timers = true;
                     }
                 });
             } else {
@@ -127,10 +136,12 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope,
                         $scope.card.time_spent = parseInt($scope.card.time_spent) - parseInt(timer.time_spent) + parseInt(objReturn.time_spent);
                         timer.time_spent = objReturn.time_spent;
 
-                        var ret = zeHttp.project.timer.calcSpentTimeRatio($scope.card);
+                        var ret = zeProject.get.ratioOf($scope.card);
                         $scope.time_spent_formatted = ret.time_spent_formatted;
                         $scope.timer_color = ret.timer_color;
                         $scope.timer_ratio = ret.timer_ratio;
+
+                        edited_timers = true;
                     }
                 });
             } else {
@@ -145,10 +156,12 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope,
 
                 $scope.card.time_spent = parseInt($scope.card.time_spent) - parseInt(timer.time_spent);
 
-                var ret = zeHttp.project.timer.calcSpentTimeRatio($scope.card);
+                var ret = zeProject.get.ratioOf($scope.card);
                 $scope.time_spent_formatted = ret.time_spent_formatted;
                 $scope.timer_color = ret.timer_color;
                 $scope.timer_ratio = ret.timer_ratio;
+
+                edited_timers = true;
             }
         });
     }
@@ -262,11 +275,11 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope,
 
 	function edit(){
 		$location.url("/ng/com_zeapps_project/project/card/edit/card/" + $scope.card.id);
-		$uibModalInstance.dismiss();
+		$uibModalInstance.dismiss(edited_timers);
 	}
 
 	function close() {
-		$uibModalInstance.dismiss();
+		$uibModalInstance.dismiss(edited_timers);
 	}
 
 }) ;
