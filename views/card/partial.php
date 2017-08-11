@@ -3,44 +3,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 <div ng-controller="ComZeAppsPlanningTableCtrl">
 
-    <div class="checkbox">
-        <div class="pull-right">
-            <a class='btn btn-xs btn-primary' ng-click="printCards()" project-auth="{id_project : project.id, right : 'project'}">
-                <span class='fa fa-fw fa-print' aria-hidden='true'></span>
-            </a>
-            <a class='btn btn-xs btn-primary' ng-click="printCards(true)" project-auth="{id_project : project.id, right : 'project'}">
-                <span class='fa fa-fw fa-print' aria-hidden='true'></span> avec description
-            </a>
-            <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/card/create/card/{{ project.id }}' project-auth="{id_project : project.id, right : 'card'}">
-                <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Carte
-            </a>
-        </div>
-    </div>
-
     <div class="row">
         <div class="col-md-12">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" ng-click="fetchCards(1)" ng-class="showingStep(1) ? 'active' : ''">
-                    <a href="#">
-                        Nouveau
-                    </a>
-                </li>
-                <li role="presentation" ng-click="fetchCards(2)" ng-class="showingStep(2) ? 'active' : ''">
-                    <a href="#">
-                        En cours
-                    </a>
-                </li>
-                <li role="presentation" ng-click="fetchCards(3)" ng-class="showingStep(3) ? 'active' : ''">
-                    <a href="#">
-                        Contrôle qualité
-                    </a>
-                </li>
-                <li role="presentation" ng-click="fetchCards(4)" ng-class="showingStep(4) ? 'active' : ''">
-                    <a href="#">
-                        Terminé
-                    </a>
-                </li>
-            </ul>
+            <div class="pull-right">
+                <a class='btn btn-xs btn-primary' ng-click="printCards()" project-auth="{id_project : project.id, right : 'project'}">
+                    <span class='fa fa-fw fa-print' aria-hidden='true'></span>
+                </a>
+                <a class='btn btn-xs btn-primary' ng-click="printCards(true)" project-auth="{id_project : project.id, right : 'project'}">
+                    <span class='fa fa-fw fa-print' aria-hidden='true'></span> avec description
+                </a>
+                <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/card/create/card/{{ project.id }}' project-auth="{id_project : project.id, right : 'card'}">
+                    <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Carte
+                </a>
+            </div>
+
+            <div class="form-group form-inline">
+                <label>Statut</label>
+                <select class="form-control" ng-model="currentStep" ng-change="fetchCards()">
+                    <option value="">Tous</option>
+                    <option value="1">Nouveau</option>
+                    <option value="2">En cours</option>
+                    <option value="3">Contrôle qualité</option>
+                    <option value="4">Terminé</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -90,7 +76,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <option value="1">Nouveau</option>
                     <option value="2">En cours</option>
                     <option value="3">Contrôle qualité</option>
-                    <option value="4" project-auth="{id_project : project.id, right : 'project'}">Terminé</option>
+                    <option value="4">Terminé</option>
                 </select>
             </td>
             <td class="text-center">
