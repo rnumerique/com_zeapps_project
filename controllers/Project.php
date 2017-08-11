@@ -128,7 +128,6 @@ class Project extends ZeCtrl
         $this->load->model("Zeapps_project_spendings", "spendings");
 
         if($id) {
-            $whereC = array('zeapps_project_cards.id_project' => $id);
             $whereD = array('zeapps_project_deadlines.id_project' => $id);
         }
 
@@ -170,9 +169,6 @@ class Project extends ZeCtrl
             $project_users = [];
         }
 
-        if(!$cards = $this->cards->all($whereC, true)) {
-            $cards = [];
-        }
         if(!$deadlines = $this->deadlines->all($whereD)) {
             $deadlines = [];
         }
@@ -186,11 +182,34 @@ class Project extends ZeCtrl
                 'documents' => $documents,
                 'timers' => $timers,
                 'project_users' => $project_users,
-                'cards' => $cards,
                 'deadlines' => $deadlines,
                 'quotes' => $quotes,
                 'invoices' => $invoices,
                 'spendings' => $spendings
+            )
+        );
+    }
+
+    public function get_calendar($id){
+        $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_project_deadlines", "deadlines");
+
+        if($id) {
+            $whereC = array('zeapps_project_cards.id_project' => $id);
+            $whereD = array('zeapps_project_deadlines.id_project' => $id);
+        }
+
+        if(!$cards = $this->cards->all($whereC, true)) {
+            $cards = [];
+        }
+        if(!$deadlines = $this->deadlines->all($whereD)) {
+            $deadlines = [];
+        }
+
+        echo json_encode(
+            array(
+                'cards' => $cards,
+                'deadlines' => $deadlines
             )
         );
     }
