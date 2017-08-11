@@ -1,4 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
-<calendar model="calendarModel"></calendar>
+<div ng-controller="ComZeAppsProjectCalendarCtrl">
+    <calendar model="calendarModel"></calendar>
+</div>
