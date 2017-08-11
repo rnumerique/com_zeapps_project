@@ -39,7 +39,7 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" ng-click="goToTab('taches')" ng-class="isActive('taches') ? 'active' : ''">
                             <a href="#">
-                                Tâches ({{ cards.length }})
+                                Tâches
                             </a>
                         </li>
                         <li role="presentation" ng-click="goToTab('deadlines')" ng-class="isActive('deadlines') ? 'active' : ''">
