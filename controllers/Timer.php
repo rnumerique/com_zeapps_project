@@ -45,12 +45,7 @@ class Timer extends ZeCtrl
 
         $timer = $this->timer->ongoing();
 
-        if($timer && sizeof($timer) > 0) {
-            echo json_encode($timer[0]);
-        }
-        else{
-            echo json_encode(false);
-        }
+        echo json_encode($timer);
     }
 
     public function save(){
