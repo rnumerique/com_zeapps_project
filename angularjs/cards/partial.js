@@ -2,17 +2,16 @@ app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams"
 	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal) {
 
 		$scope.showDate = [];
-		$scope.currentStep = 1;
+		$scope.currentStep = "";
 
 		$scope.fetchCards = fetchCards;
-		$scope.showingStep = showingStep;
 		$scope.changeStep = changeStep;
 		$scope.edit = edit;
 		$scope.edit_deadline = edit_deadline;
 		$scope.delete = del;
 		$scope.delete_deadline = del_deadline;
 
-		zhttp.project.card.get_all($scope.project.id, 1).then(function(response){
+		zhttp.project.card.get_all($scope.project.id).then(function(response){
 			if(response.data && response.data != false){
                 $scope.dates = response.data.dates;
                 var cards = response.data.cards;
@@ -26,10 +25,8 @@ app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams"
 			}
 		});
 
-		function fetchCards(step){
-            $scope.currentStep = step;
-
-            zhttp.project.card.get_all($scope.project.id, step).then(function(response){
+		function fetchCards(){
+            zhttp.project.card.get_all($scope.project.id, $scope.currentStep).then(function(response){
                 if(response.data && response.data != false){
                     $scope.dates = response.data.dates;
                     var cards = response.data.cards;
@@ -42,10 +39,6 @@ app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams"
                     });
                 }
             });
-		}
-
-		function showingStep(step){
-			return step === $scope.currentStep;
 		}
 
 		function changeStep(card){
