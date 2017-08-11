@@ -19,7 +19,7 @@ class Zeapps_project_timers extends ZeModel {
 
         $where = [];
 
-        $where['zeapps_project_timers.time_stop'] = null;
+        $where['zeapps_project_timers.stop_time'] = null;
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
             $where['zeapps_project_timers.id_user'] = $user->id;
@@ -63,11 +63,6 @@ class Zeapps_project_timers extends ZeModel {
 
         $where = [];
         $where['zeapps_project_timers.deleted_at'] = null;
-        $where['zeapps_project_rights.project'] = 1;
-
-        if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_rights.id_user'] = $user->id;
-        }
 
         return $this->database()->select('*, 
                                         zeapps_project_timers.id as id, 
