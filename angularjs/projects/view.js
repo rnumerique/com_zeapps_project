@@ -100,7 +100,6 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 					$scope.categories = response.data.categories;
 					$scope.documents = response.data.documents;
                     $scope.comments = response.data.comments;
-                    $scope.cards = response.data.cards;
                     $scope.deadlines = response.data.deadlines;
                     $scope.quotes = response.data.quotes;
                     $scope.invoices = response.data.invoices;
@@ -117,39 +116,6 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 
 					angular.forEach($scope.comments, function(comment){
 						comment.date = new Date(comment.date);
-					});
-
-					angular.forEach($scope.cards, function (card) {
-						if(card.due_date != 0) {
-							var event = {
-								allDay: true,
-								title: card.title + (card.name_assigned_to ? " - assigné à " + card.name_assigned_to : ''),
-								start: card.due_date,
-								textColor: card.color ? "#333" : "#fff",
-								color: card.color || "#393939",
-								order: 3,
-								card: card,
-								id: card.id
-							};
-
-							$scope.calendarModel.events.push(event);
-						}
-					});
-
-					angular.forEach($scope.deadlines, function (card) {
-						if(card.due_date != 0) {
-							var event = {
-								allDay: true,
-								title: card.title,
-								start: card.due_date,
-								textColor: "#fff",
-								color: "#a94442",
-								order: 2,
-                                id: card.id
-							};
-
-							$scope.calendarModel.events.push(event);
-						}
 					});
 
 					$scope.project_users = response.data.project_users;
@@ -368,7 +334,6 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 		}
 
 		function saveRightsOf(user){
-
 			var data = {};
 
 			if(user.id){
@@ -376,9 +341,8 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 			}
 
 			data.access = user.access ? 1 : 0;
-			data.sandbox = user.sandbox ? 1 : 0;
 			data.card = user.card ? 1 : 0;
-			data.sprint = user.sprint ? 1 : 0;
+			data.accounting = user.accounting ? 1 : 0;
 			data.project = user.project ? 1 : 0;
 
 			data.id_user = user.id_user;
