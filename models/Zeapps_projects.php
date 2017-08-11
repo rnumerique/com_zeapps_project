@@ -141,8 +141,6 @@ class Zeapps_projects extends ZeModel {
         return parent::delete($where);
     }
 
-
-
     private function _parentChild_sort(&$arr, $parent = 0){
 
         $res = [];
