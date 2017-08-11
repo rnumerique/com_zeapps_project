@@ -20,6 +20,7 @@ app.config(["$provide",
 					get : get_project,
 					update : update_project,
 					get_all : getAll_project,
+					get_calendar : getCalendar_project,
 					get_overview : getOverview_project,
 					get_archives : getArchives_project,
 					get_childs : getChilds_project,
@@ -150,6 +151,9 @@ app.config(["$provide",
 			}
 			function getAll_project(){
 				return zeHttp.get("/com_zeapps_project/project/get_projects/");
+			}
+			function getCalendar_project(id){
+				return zeHttp.get("/com_zeapps_project/project/get_calendar/" + id);
 			}
 			function getOverview_project(){
 				return zeHttp.get("/com_zeapps_project/project/get_overview/");
