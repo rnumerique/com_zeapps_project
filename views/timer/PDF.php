@@ -12,7 +12,7 @@
             background-color: #ffffff;
             border-collapse: collapse;
         }
-        td{
+        table.lines td{
             vertical-align: top;
             border-top: 1px solid #c7c7c7;
         }
@@ -39,7 +39,12 @@
 <body>
 <table class="root">
     <tr>
-        <td colspan="2">
+        <td class="title">
+            <b>Détails</b>
+        </td>
+    </tr>
+    <tr>
+        <td>
             <table class="lines">
                 <thead>
                 <tr>
@@ -76,6 +81,66 @@
                     }
                 }
                 ?>
+                <tr>
+                    <td class="text-right" colspan="2">
+                        <b>Total</b>
+                    </td>
+                    <td class="text-center">
+                        <?php echo $project->total_time_spent_formatted; ?>
+                    </td>
+                    <td colspan="2">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class="title">
+            <b>Résumé</b>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table class="lines">
+                <thead>
+                <tr>
+                    <th class="text-left">Utilisateur</th>
+                    <th class="text-center">Durée</th>
+                    <th class="text-left">Coût (en euros)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                if(isset($costs)) {
+                    foreach ($costs as $cost) {
+                        ?>
+                        <tr>
+                            <td class="text-left">
+                                <?php echo $cost['name_user'];?>
+                            </td>
+                            <td class="text-center">
+                                <?php echo $cost['time_spent_formatted']; ?>
+                            </td>
+                            <td class="text-left">
+                                <?php echo number_format($cost['total'], 2, ',', ' '); ?>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                }
+                ?>
+                <tr>
+                    <td class="text-right">
+                        <b>Total</b>
+                    </td>
+                    <td class="text-center">
+                        <?php echo $project->total_time_spent_formatted; ?>
+                    </td>
+                    <td class="text-left">
+                        <?php echo number_format($project->total_cost, 2, ',', ' ');; ?>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </td>
