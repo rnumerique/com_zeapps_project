@@ -4,7 +4,9 @@
 
 <div id="content">
 
-    <ze-postits postits="postits"></ze-postits>
+    <div ze-auth="com_zeapps_project_financial">
+        <ze-postits postits="postits"></ze-postits>
+    </div>
 
     <div class="row">
         <div class="col-md-12">
