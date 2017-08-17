@@ -79,20 +79,38 @@ class Timer extends ZeCtrl
             echo json_encode(false);
     }
 
-    public function makePDF($id_project, $description = false, $echo = true){
+    public function makePDF($id_project, $echo = true){
         $this->load->model("Zeapps_projects", "projects");
         $this->load->model("Zeapps_project_timers", "timers");
 
         $data = [];
 
         $data['project'] = $this->projects->get($id_project);
+        $data['project']->total_time_spent = 0;
 
-        $data['description'] = $description;
-
-        if($data['timers'] = $this->timers->all(array('id_project' => $id_project))){
+        $data['costs'] = [];
+        if($data['timers'] = $this->timers->all(array('zeapps_project_timers.id_project' => $id_project))){
             foreach($data['timers'] as $timer){
-                $timer->time_spent_formatted = intval($timer->time_spent / 60) . 'h ' . (($timer->time_spent % 60) ? : '');
+                $data['project']->total_time_spent += intval($timer->time_spent);
+
+                $timer->time_spent_formatted = intval($timer->time_spent / 60) . 'h ' . str_pad(($timer->time_spent % 60) ? : '', 2, '0', STR_PAD_LEFT);
+                if(!isset($data['costs'][$timer->id_user])){
+                    $data['costs'][$timer->id_user] = [];
+                    $data['costs'][$timer->id_user]['time_spent'] = 0;
+                    $data['costs'][$timer->id_user]['name_user'] = $timer->name_user;
+                    $data['costs'][$timer->id_user]['hourly_rate'] = floatval($timer->hourly_rate);
+                }
+                $data['costs'][$timer->id_user]['time_spent'] += intval($timer->time_spent);
             }
+        }
+
+        $data['project']->total_time_spent_formatted = intval($data['project']->total_time_spent / 60) . 'h ' . str_pad(($data['project']->total_time_spent % 60) ? : '', 2, '0', STR_PAD_LEFT);
+        $data['project']->total_cost = 0;
+
+        foreach($data['costs'] as &$cost){
+            $cost['total'] = $cost['time_spent'] / 60 * $cost['hourly_rate'];
+            $data['project']->total_cost += $cost['total'];
+            $cost['time_spent_formatted'] = intval($cost['time_spent'] / 60) . 'h ' . str_pad(($cost['time_spent'] % 60) ? : '', 2, '0', STR_PAD_LEFT);
         }
 
         //load the view and saved it into $html variable
@@ -107,8 +125,12 @@ class Timer extends ZeCtrl
         //this the the PDF filename that user will get to download
         $pdfFilePath = FCPATH . $this->pdf_path.$nomPDF.'.pdf';
 
+        $id = $data['project']->id;
+        $client = $data['project']->name_company ?: $data['project']->name_contact;
+        $title = $data['project']->title;
+
         //set the PDF header
-        $this->M_pdf->pdf->SetHeader('#'.$data['project']->id.'|'.$data['project']->title.'|Imprimé le {DATE d/m/Y}');
+        $this->M_pdf->pdf->SetHeader('#'.$id.'|'.$client.' - '.$title.'|Imprimé le {DATE d/m/Y}');
 
         //set the PDF footer
         $this->M_pdf->pdf->SetFooter('{PAGENO}/{nb}');
