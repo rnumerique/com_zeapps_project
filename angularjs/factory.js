@@ -363,8 +363,8 @@ app.config(["$provide",
 			function delete_timer(id){
 				return zeHttp.get("/com_zeapps_project/timer/delete/" + id);
 			}
-            function makePDF_timer(id, description){
-                return zeHttp.get("/com_zeapps_project/timer/makePDF/" + id + "/" + description);
+            function makePDF_timer(id){
+                return zeHttp.get("/com_zeapps_project/timer/makePDF/" + id);
             }
             function getPDF_timer(){
                 return "/com_zeapps_project/timer/getPDF/";
