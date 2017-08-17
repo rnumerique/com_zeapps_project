@@ -20,7 +20,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="form-group form-inline">
                 <label>Statut</label>
                 <select class="form-control" ng-model="currentStep" ng-change="fetchCards()">
-                    <option value="">Tous</option>
+                    <option value="0">A faire</option>
                     <option value="1">Nouveau</option>
                     <option value="2">En cours</option>
                     <option value="3">Contrôle qualité</option>
@@ -37,7 +37,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <th>Catégorie</th>
             <th>Priorité</th>
             <th>To-Do</th>
-            <th project-auth="{id_project : card.id_project, right : 'card'}">Statut</th>
+            <th project-auth="{id_project : project.id, right : 'card'}">Statut</th>
             <th class="text-center">Demandeur</th>
             <th class="text-center">Assigné à</th>
             <th class="text-right"></th>
