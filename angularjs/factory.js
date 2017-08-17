@@ -194,7 +194,7 @@ app.config(["$provide",
 			// CARD
 			function getAll_card(id, step){
 				id = id || 0;
-				step = step || '';
+				step = step !== undefined ? step : '';
 				return zeHttp.get("/com_zeapps_project/card/get_cards/" + id + "/" + step);
 			}
 			function get_card(id){

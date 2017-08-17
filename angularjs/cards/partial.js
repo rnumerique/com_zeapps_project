@@ -2,7 +2,7 @@ app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams"
 	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal) {
 
 		$scope.showDate = [];
-		$scope.currentStep = "";
+		$scope.currentStep = "0";
 
 		$scope.fetchCards = fetchCards;
 		$scope.changeStep = changeStep;
@@ -11,19 +11,7 @@ app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams"
 		$scope.delete = del;
 		$scope.delete_deadline = del_deadline;
 
-		zhttp.project.card.get_all($scope.project.id).then(function(response){
-			if(response.data && response.data != false){
-                $scope.dates = response.data.dates;
-                var cards = response.data.cards;
-
-                $scope.cardsByDate = [];
-                angular.forEach(cards, function (card) {
-					if (!$scope.cardsByDate[card.due_date])
-						$scope.cardsByDate[card.due_date] = [];
-					$scope.cardsByDate[card.due_date].push(card);
-                });
-			}
-		});
+        fetchCards();
 
 		function fetchCards(){
             zhttp.project.card.get_all($scope.project.id, $scope.currentStep).then(function(response){
