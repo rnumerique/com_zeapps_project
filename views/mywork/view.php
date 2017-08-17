@@ -59,7 +59,7 @@
                     </td>
                     <td>{{card.title}}</td>
                     <td class="text-right no-wrap">
-                        <ze-btn fa="eye" hint="Détails" color="info" direction="right" ng-click="detailCard(card)"></ze-btn>
+                        <ze-btn fa="eye" hint="Détails" color="info" direction="left" ng-click="detailCard(card)"></ze-btn>
                     </td>
                 </tr>
                 </tbody>
