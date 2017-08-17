@@ -28,18 +28,18 @@
         <div class="col-md-12">
 
             <div class="row">
-                <div class="col-md-4 col-md-push-8 form-inline text-right">
-                    <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/create/'>
-                        <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Projet
-                    </a>
-                </div>
-                <div class="col-md-8 col-md-pull-4">
+                <div class="col-md-8">
                     <div class="input-group">
                         <div class="input-group-addon">
                             <i class="fa fa-fw fa-search"></i>
                         </div>
                         <input class="form-control" ng-model="filters.search" placeholder="Rechercher...">
                     </div>
+                </div>
+                <div class="col-md-4 form-inline text-right" ze-auth="com_zeapps_project_management">
+                    <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/create/'>
+                        <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Projet
+                    </a>
                 </div>
             </div>
 
