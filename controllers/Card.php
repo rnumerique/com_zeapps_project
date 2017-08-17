@@ -35,10 +35,15 @@ class Card extends ZeCtrl
 
         if($step){
             $where['zeapps_project_cards.step'] = $step;
-        }
 
-        if(!$cards = $this->cards->order_by('sort')->all($where)) {
-            $cards = [];
+            if(!$cards = $this->cards->order_by('sort')->all($where)) {
+                $cards = [];
+            }
+        }
+        elseif($step === "0"){
+            if(!$cards = $this->cards->order_by('sort')->all($where, true)) {
+                $cards = [];
+            }
         }
 
         $dates = [];
