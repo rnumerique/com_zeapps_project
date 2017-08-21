@@ -194,6 +194,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope,
     }
 
     function editDocument(document){
+        delete document.deleted_at;
         var options = {
             document: Object.create(document)
         };
@@ -247,6 +248,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope,
     }
 
     function editComment(comment){
+        delete comment.deleted_at;
         var options = {
             comment: angular.fromJson(angular.toJson(comment))
         };

@@ -385,6 +385,7 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 		}
 
 		function editDocument(document){
+            delete document.deleted_at;
             var options = {
                 document: angular.fromJson(angular.toJson(document))
 			};
@@ -438,6 +439,7 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 		}
 
 		function editComment(comment){
+            delete comment.deleted_at;
             var options = {
             	comment: angular.fromJson(angular.toJson(comment))
 			};
