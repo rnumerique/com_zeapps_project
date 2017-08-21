@@ -216,7 +216,16 @@ class Card extends ZeCtrl
                 echo json_encode($data);
             }
             else{
-                echo json_encode(false);
+                if ($data['id']) {
+                    $this->documents->update($data, $data['id']);
+
+                    $data['date'] = date('Y-m-d H:i:s');
+
+                    echo json_encode($data);
+                }
+                else {
+                    echo json_encode(false);
+                }
             }
         }
         else {
