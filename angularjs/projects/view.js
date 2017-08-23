@@ -567,7 +567,18 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
         }
 
         function linkQuote(){
-            zeapps_modal.loadModule("com_zeapps_crm", "search_quote", {}, function(objReturn) {
+            var options = {
+                http: zhttp.crm.quote,
+                fields: [
+                    {label:'Numéro',key:'numerotation'},
+                    {label:'Libelle',key:'libelle'},
+                    {label:'Entreprise',key:'name_company'},
+                    {label:'Contact',key:'name_contact'},
+                    {label:'Total HT (€)',key:'total_ht'}
+                ],
+                title: 'Choisir un devis'
+            };
+            zeapps_modal.loadModule("com_zeapps_core", "search_modal", options, function(objReturn) {
                 if (objReturn) {
                 	var data = {
                 		id_project : $scope.project.id,
@@ -594,7 +605,18 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
         }
 
         function linkInvoice(){
-            zeapps_modal.loadModule("com_zeapps_crm", "search_invoice", {}, function(objReturn) {
+            var options = {
+                http: zhttp.crm.invoice,
+                fields: [
+                    {label:'Numéro',key:'numerotation'},
+                    {label:'Libelle',key:'libelle'},
+                    {label:'Entreprise',key:'name_company'},
+                    {label:'Contact',key:'name_contact'},
+                    {label:'Total HT (€)',key:'total_ht'}
+                ],
+                title: 'Choisir une facture'
+            };
+            zeapps_modal.loadModule("com_zeapps_core", "search_modal", options, function(objReturn) {
                 if (objReturn) {
                     var data = {
                         id_project : $scope.project.id,
