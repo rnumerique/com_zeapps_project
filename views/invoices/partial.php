@@ -3,9 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
 
 <div class="text-right">
-    <button type="button" class="btn btn-xs btn-success" ng-click="linkInvoice()">
-        <i class="fa fa-fw fa-plus"></i> Facture
-    </button>
+    <ze-btn fa="link" color="success" hint="Facture" always-on="true" ng-click="linkInvoice()"></ze-btn>
 </div>
 
 <div class="row">
@@ -43,9 +41,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <td><a href="/ng/com_zeapps_crm/invoice/{{invoice.id}}">{{invoice.user_name}}</a></td>
                 <td><a href="/ng/com_zeapps_crm/invoice/{{invoice.id}}">{{invoice.finalized === '1' ? 'cloturé' : ''}}</a></td>
                 <td class="text-right">
-                    <button type="button" class="btn btn-xs btn-danger" ng-click="unlinkInvoice(invoice)" ze-confirmation="Souhaitez-vous supprimer la liaison entre ce document et ce projet ?">
-                        <i class="fa fa-trash fa-fw"></i>
-                    </button>
+                    <ze-btn fa="trash" color="danger" hint="Supprimer" direction="left" ng-click="unlinkInvoice(quote)" ze-confirmation="Souhaitez-vous supprimer la liaison entre ce document et ce projet ?"></ze-btn>
                 </td>
             </tr>
             </tbody>
