@@ -25,21 +25,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </thead>
             <tbody>
             <tr ng-repeat="quote in quotes">
-                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id}}">{{quote.numerotation}}</a></td>
-                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id}}">{{quote.libelle}}</a></td>
+                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id_quote}}">{{quote.numerotation}}</a></td>
+                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id_quote}}">{{quote.libelle}}</a></td>
                 <td>
-                    <a href="/ng/com_zeapps_crm/quote/{{quote.id}}">
-                        {{quote.company.company_name}}
-                        <span ng-if="quote.company.company_name && quote.contact.last_name">-</span>
-                        {{quote.contact ? quote.contact.first_name[0] + '. ' + quote.contact.last_name : ''}}
+                    <a href="/ng/com_zeapps_crm/quote/{{quote.id_quote}}">
+                        {{quote.name_company}}
+                        <span ng-if="quote.name_company && quote.name_contact">-</span>
+                        {{quote.name_contact}}
                     </a>
                 </td>
-                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id}}">{{quote.total_ht}}</a></td>
-                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id}}">{{quote.total_ttc}}</a></td>
-                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id}}">{{quote.date_creation | date:'dd/MM/yyyy'}}</a></td>
-                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id}}">{{quote.date_limit | date:'dd/MM/yyyy'}}</a></td>
-                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id}}">{{quote.user_name}}</a></td>
-                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id}}">{{quote.finalized === '1' ? 'cloturé' : ''}}</a></td>
+                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id_quote}}">{{quote.total_ht}}</a></td>
+                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id_quote}}">{{quote.total_ttc}}</a></td>
+                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id_quote}}">{{quote.date_creation | date:'dd/MM/yyyy'}}</a></td>
+                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id_quote}}">{{quote.date_limit | date:'dd/MM/yyyy'}}</a></td>
+                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id_quote}}">{{quote.name_user}}</a></td>
+                <td><a href="/ng/com_zeapps_crm/quote/{{quote.id_quote}}">{{quote.finalized === '1' ? 'cloturé' : ''}}</a></td>
                 <td class="text-right">
                     <ze-btn fa="trash" color="danger" hint="Supprimer" direction="left" ng-click="unlinkQuote(quote)" ze-confirmation="Souhaitez-vous supprimer la liaison entre ce document et ce projet ?"></ze-btn>
                 </td>
