@@ -7,7 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
 
 <div id="content">
-    <ze-filters data-model="filter.model" data-options="filter.options"></ze-filters>
+    <ze-filters class="pull-right" data-model="filter_model" data-filters="filters" data-update="applyFilters"></ze-filters>
 
     <div class="row">
         <div class="col-md-12">
