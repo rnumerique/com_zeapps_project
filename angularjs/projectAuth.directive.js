@@ -8,14 +8,20 @@ app.directive("projectAuth", function($rootScope){
 		link: function(scope, elm){
             elm.hide();
 
-            scope.$watch("projectAuth", function(value){
+            var watch1 = scope.$watch("projectAuth", function(value){
             	if(value) {
-                    evaluateRight(value.id_project, value.right, elm);
+                    if(evaluateRight(value.id_project, value.right, elm)){
+                        watch1();
+                        watch2();
+                    }
                 }
 			}, true);
-            $rootScope.$watch("project_rights", function(value){
+            var watch2 = $rootScope.$watch("project_rights", function(value){
             	if(value) {
-                    evaluateRight(scope.projectAuth.id_project, scope.projectAuth.right, elm);
+                    if(evaluateRight(scope.projectAuth.id_project, scope.projectAuth.right, elm)){
+                        watch1();
+                        watch2();
+                    }
                 }
 			}, true);
 		}
@@ -25,11 +31,15 @@ app.directive("projectAuth", function($rootScope){
 		if($rootScope.project_rights[id_project]){
 			if($rootScope.project_rights[id_project][right] !== "1") {
                 elm.remove();
+                return true;
             }
             else{
 				elm.show();
+                elm.removeAttr("project-auth");
+                return true;
 			}
 		}
+        return false;
 	}
 
 });
