@@ -1,5 +1,5 @@
-app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "Upload", "zeProject",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, Upload, zeProject) {
+app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "Upload", "zeProject", "toasts",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, Upload, zeProject, toasts) {
 
 		$scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_management");
 
@@ -372,10 +372,10 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 								response.data.id_user = $rootScope.user.id;
 								response.data.name_user = $rootScope.user.firstname[0] + '. ' + $rootScope.user.lastname;
 								$scope.documents.push(response.data);
-                                $rootScope.toasts.push({success: "Les documents ont bien été mis en ligne"});
+                                toasts('success', "Les documents ont bien été mis en ligne");
                             }
                             else{
-                                $rootScope.toasts.push({danger: "Il y a eu une erreur lors de la mise en ligne des documents"});
+                                toasts('danger', "Il y a eu une erreur lors de la mise en ligne des documents");
                             }
                         }
                     );
@@ -400,10 +400,10 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
                             if(response.data && response.data != "false"){
                                 response.data.date = new Date(response.data.date);
                                 $scope.documents[$scope.documents.indexOf(document)] = response.data;
-                                $rootScope.toasts.push({success: "Les documents ont bien été mis à jour"});
+                                toasts('success', "Les documents ont bien été mis à jour");
                             }
                             else{
-                                $rootScope.toasts.push({danger: "Il y a eu une erreur lors de la mise à jour des documents"});
+                                toasts('danger', "Il y a eu une erreur lors de la mise à jour des documents");
                             }
                         }
                     );
