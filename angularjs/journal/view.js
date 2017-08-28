@@ -1,5 +1,5 @@
-app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$filter",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $filter) {
+app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$filter", "zeCalendar",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $filter, zeCalendar) {
 
 		$scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_journal");
 
@@ -18,7 +18,7 @@ app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams
             secondaries: []
 		};
         $scope.filter_model = {};
-		$scope.calendarModel = {
+		var calendarModel = {
 			defaultView: "listWeek",
             header: {
                 left: "prev,next today",
@@ -37,6 +37,8 @@ app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams
 			completed: false,
 			events: []
 		};
+
+		zeCalendar.init(calendarModel);
 
         $scope.applyFilters = applyFilters;
 
@@ -67,6 +69,6 @@ app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams
                 events.push(event);
             });
 
-            $scope.calendarModel.events = events;
+            zeCalendar.fill(events);
 		}
 	}]);

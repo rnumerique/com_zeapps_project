@@ -1,5 +1,5 @@
-app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$filter",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $filter) {
+app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$filter", "zeCalendar",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $filter, zeCalendar) {
 
 		$scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_planning");
 
@@ -44,7 +44,8 @@ app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams",
             secondaries: []
 		};
         $scope.filter_model = {};
-		$scope.calendarModel = {
+
+		var calendarModel = {
 			eventLimit: 6,
 			eventLimitClick: "day",
 			views: {
@@ -74,6 +75,7 @@ app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams",
             	}
             }
 		};
+        zeCalendar.init(calendarModel);
 
 		$scope.applyFilters = applyFilters;
 
@@ -145,6 +147,6 @@ app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams",
 				});
 			}
 
-			$scope.calendarModel.events = events;
+            zeCalendar.fill(events);
 		}
 	}]);

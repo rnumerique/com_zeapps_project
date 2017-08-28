@@ -14,41 +14,7 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
 		};
 		$scope.options = {};
 		$scope.project = {};
-		$scope.calendarModel = {
-			eventLimit: 6,
-			eventLimitClick: "day",
-			views: {
-				basic: {
-					"eventLimit": false
-				}
-			},
-			step: 1,
-			completed: false,
-			events: [],
-            eventClick: function(calEvent){
-                if(calEvent.card) {
-                    detailCard(calEvent.card);
-                }
-            },
-            editable: true,
-            eventDrop: function(event) {
-                var data = {};
-                var formatted_data = "";
 
-                data.id = event.id;
-                data.due_date = event.start.format();
-
-                formatted_data = angular.toJson(data);
-
-                if(event.order === 1){
-                    zhttp.project.project.post(formatted_data);
-                }else if(event.order === 2){
-                    zhttp.project.deadline.post(formatted_data);
-                }else if(event.order === 3){
-                    zhttp.project.card.post(formatted_data);
-                }
-            }
-		};
 		$scope.postits = [];
 		$scope.zeProject = zeProject; // so we can access it from the view
 

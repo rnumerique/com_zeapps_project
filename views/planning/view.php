@@ -11,7 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     <div class="row">
         <div class="col-md-12">
-            <calendar model="calendarModel"></calendar>
+            <ze-calendar></ze-calendar>
         </div>
     </div>
 </div>
