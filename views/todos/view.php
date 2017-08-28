@@ -25,10 +25,10 @@
                             {{ category.label }}
                         </div>
                         <div ng-if="category.edit">
-                            <input type="text" class="form-control input-sm" ng-model="category.label" ng-blur="editCategory(category)" ng-keypress="keyEventEditCategory($event, category)" ze-focus="category.edit">
+                            <input type="text" id="category_{{category.id}}" class="form-control input-sm" ng-model="category.label" ng-blur="editCategory(category)" ng-keypress="keyEventEditCategory($event, category)">
                         </div>
                     </div>
-                    <div class="text-center text-info table-cell table-min" ng-click="category.edit = !category.edit">
+                    <div class="text-center text-info table-cell table-min" ng-click="focus('category_', category)">
                         <i class="fa fa-fw fa-pencil"></i>
                     </div>
                     <div class="text-center text-danger table-cell table-min" ng-click="deleteCategory(category)" ze-confirmation="Souhaitez-vous supprimer la catégorie ainsi que tous les todos associés ?">
@@ -68,10 +68,10 @@
                             {{ todo.label }}
                         </div>
                         <div ng-if="todo.edit">
-                            <input type="text" class="form-control input-sm" ng-model="todo.label" ng-blur="editTodo(todo)" ng-keypress="keyEventEditTodo($event, todo)" ze-focus="todo.edit">
+                            <input type="text" id="todo_{{todo.id}}" class="form-control input-sm" ng-model="todo.label" ng-blur="editTodo(todo)" ng-keypress="keyEventEditTodo($event, todo)">
                         </div>
                     </div>
-                    <div class="text-center text-info table-cell table-min" ng-click="todo.edit = !todo.edit">
+                    <div class="text-center text-info table-cell table-min" ng-click="focus('todo_', todo)">
                         <i class="fa fa-fw fa-pencil"></i>
                     </div>
                     <div class="text-center text-danger table-cell table-min" ng-click="deleteTodo(todo, 'todos')" ze-confirmation>

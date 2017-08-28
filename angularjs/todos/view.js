@@ -1,5 +1,5 @@
-app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal) {
+app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$timeout",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $timeout) {
 
         $scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_todos");
 
@@ -37,6 +37,8 @@ app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams",
 
         var currentCategory = 0;
 
+        $scope.focus = focus;
+
         $scope.createTodo = createTodo;
         $scope.keyEventCreateTodo = keyEventCreateTodo;
         $scope.editTodo = editTodo;
@@ -64,6 +66,11 @@ app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams",
 				}
 			}
 		});
+
+		function focus(type, target){
+		    target.edit = true;
+            $timeout(function(){angular.element("#" + type + target.id).focus();});
+        }
 
 		function createTodo(){
 			$scope.form.sort = $scope.todos.length;
