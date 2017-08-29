@@ -46,5 +46,5 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="close()" i8n="Fermer"></button>
+    <button class="btn btn-default" type="button" ng-click="close()">Fermer</button>
 </div>

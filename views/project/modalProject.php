@@ -9,9 +9,9 @@
             <table class="table table-bordered table-striped table-condensed table-responsive" ng-show="projects.length">
                 <thead>
                 <tr>
-                    <th i8n="Titre"></th>
-                    <th i8n="Demandeur"></th>
-                    <th i8n="Manager"></th>
+                    <th>Titre</th>
+                    <th>Demandeur</th>
+                    <th>Manager</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -27,5 +27,5 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-danger" type="button" ng-click="cancel()" i8n="Annuler"></button>
+    <button class="btn btn-danger" type="button" ng-click="cancel()">Annuler</button>
 </div>

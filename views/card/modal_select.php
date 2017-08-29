@@ -27,5 +27,5 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-danger" type="button" ng-click="cancel()" i8n="Annuler"></button>
+    <button class="btn btn-danger" type="button" ng-click="cancel()">Annuler</button>
 </div>
