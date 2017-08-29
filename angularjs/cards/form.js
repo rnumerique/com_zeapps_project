@@ -134,6 +134,9 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 
 				$scope.form.due_date = new Date(Date.UTC(y2, M2, d2));
 			}
+			else{
+				$scope.form.due_date = 0;
+			}
 
 			if($scope.type == "card") {
 
