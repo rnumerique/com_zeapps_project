@@ -34,7 +34,9 @@ app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams"
 
 			zhttp.project.card.post(formatted_data).then(function(response){
 				if(response.data && response.data != "false"){
-                    $scope.cardsByDate[card.due_date].splice($scope.cardsByDate[card.due_date].indexOf(card), 1);
+					if($scope.currentStep !== "0" || card.step === "4"){
+                        $scope.cardsByDate[card.due_date].splice($scope.cardsByDate[card.due_date].indexOf(card), 1);
+					}
 				}
 			});
 		}
