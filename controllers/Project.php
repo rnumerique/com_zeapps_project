@@ -324,6 +324,7 @@ class Project extends ZeCtrl
     }
 
     public function delete_project($id = null, $force = 'false'){
+        $this->load->model("Zeapps_projects", "projects");
         $this->load->model("Zeapps_project_deadlines", "deadlines");
         $this->load->model("Zeapps_project_cards", "cards");
 
