@@ -110,7 +110,16 @@ class Card extends ZeCtrl
     }
 
     public function save_card(){
+        $this->load->model("Zeapps_projects", "projects");
         $this->load->model("Zeapps_project_cards", "cards");
+        $this->load->model("Zeapps_users", "users");
+        $this->load->model("Zeapps_notifications", "notifications");
+
+        $notification = array(
+            'module' => 'Projects',
+            'color' => 'rgba(0,128,0,1)',
+            'status' => 'info'
+        );
 
         // constitution du tableau
         $data = array() ;
@@ -122,9 +131,41 @@ class Card extends ZeCtrl
 
         if(isset($data['id'])){
             $id = $this->cards->update($data, array('id'=>$data['id']));
+            if($user = $this->users->getUserByToken($this->session->get('token'))){
+                if($project = $this->projects->get($data['id_project'])){
+                    if($user->id !== $project->id_manager){
+                        $notification['id_user'] = $project->id_manager;
+                        $notification['url'] = "/ng/com_zeapps_project/project/" . $project->id;
+                        $notification['message'] = 'La tâche n°'.$data['id'].' a été mise à jour dans le projet '.$project->title;
+                        $this->notifications->insert($notification);
+                    }
+                    if($user->id !== $data['id_assigned_to']){
+                        $notification['id_user'] = $data['id_assigned_to'];
+                        $notification['url'] = "/ng/com_zeapps_project/project/" . $project->id;
+                        $notification['message'] = 'La tâche n°'.$data['id'].' a été mise à jour dans le projet '.$project->title;
+                        $this->notifications->insert($notification);
+                    }
+                }
+            }
         }
         else{
             $id = $this->cards->insert($data);
+            if($user = $this->users->getUserByToken($this->session->get('token'))){
+                if($project = $this->projects->get($data['id_project'])){
+                    if($user->id !== $project->id_manager){
+                        $notification['id_user'] = $project->id_manager;
+                        $notification['url'] = "/ng/com_zeapps_project/project/" . $project->id;
+                        $notification['message'] = 'La tâche n°'.$data['id'].' vient d\'être ajoutée dans le projet '.$project->title;
+                        $this->notifications->insert($notification);
+                    }
+                    if($user->id !== $data['id_assigned_to']){
+                        $notification['id_user'] = $data['id_assigned_to'];
+                        $notification['url'] = "/ng/com_zeapps_project/project/" . $project->id;
+                        $notification['message'] = 'La tâche n°'.$data['id'].' vient d\'être ajoutée dans le projet '.$project->title;
+                        $this->notifications->insert($notification);
+                    }
+                }
+            }
         }
 
         echo json_encode($id);
