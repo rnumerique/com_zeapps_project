@@ -286,7 +286,7 @@ class Card extends ZeCtrl
         echo 'OK';
     }
 
-    public function makePDF($id_project, $description = false, $echo = true){
+    public function makePDF($id_project, $description = false, $step = null, $echo = true){
         $this->load->model("Zeapps_projects", "projects");
         $this->load->model("Zeapps_project_cards", "cards");
 
@@ -298,7 +298,18 @@ class Card extends ZeCtrl
 
         $data['dates'] = $this->cards->get_dates();
         $data['cardsByDate'] = [];
-        if($cards = $this->cards->all(array('zeapps_project_cards.id_project'=>$id_project))){
+
+        $where = array('zeapps_project_cards.id_project'=>$id_project);
+
+        if($step){
+            $where['zeapps_project_cards.step'] = $step;
+            $cards = $this->cards->all($where);
+        }
+        else{
+            $cards = $this->cards->all($where, true);
+        }
+
+        if($cards){
             foreach($cards as $card){
                 if(!is_array($data['cardsByDate'][$card->due_date])){
                     $data['cardsByDate'][$card->due_date] = [];

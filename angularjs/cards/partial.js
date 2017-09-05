@@ -10,6 +10,7 @@ app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams"
 		$scope.edit_deadline = edit_deadline;
 		$scope.delete = del;
 		$scope.delete_deadline = del_deadline;
+        $scope.printCards = printCards;
 
         fetchCards();
 
@@ -64,5 +65,15 @@ app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams"
                 }
             });
 		}
+
+        function printCards(description){
+            var description = description || false;
+
+            zhttp.project.card.pdf.make($scope.project.id, description, $scope.currentStep).then(function(response){
+                if(response.data && response.data != "false"){
+                    window.document.location.href = zhttp.project.card.pdf.get() + angular.fromJson(response.data);
+                }
+            });
+        }
 
 	}]);

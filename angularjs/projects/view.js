@@ -52,7 +52,6 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
         $scope.unlinkQuote = unlinkQuote;
         $scope.linkInvoice = linkInvoice;
         $scope.unlinkInvoice = unlinkInvoice;
-        $scope.printCards = printCards;
         $scope.printTimers = printTimers;
 
 		if($routeParams.id){
@@ -607,16 +606,6 @@ app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", 
                 }
             });
         }
-
-        function printCards(description){
-        	var description = description || false;
-
-        	zhttp.project.card.pdf.make($scope.project.id, description).then(function(response){
-        		if(response.data && response.data != "false"){
-                    window.document.location.href = zhttp.project.card.pdf.get() + angular.fromJson(response.data);
-				}
-			});
-		}
 
         function printTimers(){
         	zhttp.project.timer.pdf.make($scope.project.id).then(function(response){

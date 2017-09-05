@@ -7,6 +7,10 @@ class Status extends ZeCtrl
         $this->load->view('status/config');
     }
 
+    public function form_modal(){
+        $this->load->view('status/form_modal');
+    }
+
 
     public function get_all(){
         $this->load->model("Zeapps_project_statuses", "statuses");

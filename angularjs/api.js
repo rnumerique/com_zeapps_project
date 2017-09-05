@@ -221,8 +221,8 @@ app.config(["$provide",
 			function delDocument_card(id){
 				return zeHttp.delete("/com_zeapps_project/card/del_document/" + id);
 			}
-			function makePDF_card(id, description){
-				return zeHttp.get("/com_zeapps_project/card/makePDF/" + id + "/" + description);
+			function makePDF_card(id, description, step){
+				return zeHttp.get("/com_zeapps_project/card/makePDF/" + id + "/" + description + "/" + step);
 			}
 			function getPDF_card(){
                 return "/com_zeapps_project/card/getPDF/";

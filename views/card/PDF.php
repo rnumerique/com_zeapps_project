@@ -12,7 +12,7 @@
             background-color: #ffffff;
             border-collapse: collapse;
         }
-        td{
+        table.lines td{
             vertical-align: top;
             border-top: 1px solid #c7c7c7;
         }
@@ -39,7 +39,7 @@
 <body>
 <table class="root">
     <tr>
-        <td colspan="2">
+        <td>
             <table class="lines">
                 <thead>
                 <tr>
@@ -69,18 +69,18 @@
                                     ?>
                                     <tr>
                                         <td><?php echo $card->id; ?></td>
-                                        <td style="background-color: <?php echo $card->color; ?>">
+                                        <td<?php if($card->color){ ?> style="background-color: <?php echo $card->color; ?>"<?php } ?>>
                                             <?php echo $card->category_title; ?>
                                         </td>
-                                        <td style="background-color: <?php echo $card->priority_color; ?>">
+                                        <td<?php if($card->priority_color){ ?> style="background-color: <?php echo $card->priority_color; ?>"<?php } ?>>
                                             <?php echo $card->priority; ?>
                                         </td>
                                         <td>
                                             <?php
-                                            echo $card->title;
+                                            echo htmlspecialchars($card->title);
                                             if ($description) {
                                                 echo "\n";
-                                                echo $card->description;
+                                                echo htmlspecialchars($card->description);
                                             }
                                             ?>
                                         </td>
