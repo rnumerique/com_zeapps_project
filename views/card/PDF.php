@@ -80,7 +80,7 @@
                                             echo htmlspecialchars($card->title);
                                             if ($description) {
                                                 echo "\n";
-                                                echo htmlspecialchars($card->description);
+                                                echo nl2br(htmlspecialchars($card->description));
                                             }
                                             ?>
                                         </td>
