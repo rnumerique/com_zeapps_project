@@ -44,7 +44,7 @@
                         </li>
                         <li role="presentation" ng-click="goToTab('deadlines')" ng-class="isActive('deadlines') ? 'active' : ''">
                             <a href="#">
-                                Deadlines ({{ deadlines.length }})
+                                Jalons ({{ deadlines.length }})
                             </a>
                         </li>
                         <li role="presentation" ng-click="goToTab('calendar')" ng-class="isActive('calendar') ? 'active' : ''">

@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     <div class="pull-right">
         <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/card/create/deadline/{{ project.id }}' project-auth="{id_project : project.id, right : 'card'}">
-            <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Deadline
+            <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Jalon
         </a>
     </div>
 
@@ -13,9 +13,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <thead>
         <tr>
             <td>#</td>
-            <td>Projet</td>
+            <!--<td>Projet</td>-->
             <td>Catégorie</td>
-            <td>To-Do</td>
+            <td>Date</td>
             <td>Date</td>
             <td></td>
         </tr>
@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <tbody>
         <tr ng-repeat="deadline in deadlines | planningFilter:options | orderBy:'-due_date'">
             <td>{{deadline.id}}</td>
-            <td>{{deadline.breadcrumbs}}</td>
+            <!--<td>{{deadline.breadcrumbs}}</td>-->
             <td>{{deadline.category_title}}</td>
             <td>
                 {{deadline.title}}
