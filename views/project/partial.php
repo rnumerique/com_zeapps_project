@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <th ng-if="details== 1" class="text-center" ze-auth="com_zeapps_project_financial">Reste dû</th>
         <th ng-if="details== 1" class="text-center" ze-auth="com_zeapps_project_financial">Total dépenses</th>
         <th class="text-center">Temps passé</th>
-        <th class="text-right">Deadline</th>
+        <th class="text-right">Prochain écheance</th>
         <th class="text-right" ze-auth="com_zeapps_project_management"></th>
     </tr>
     </thead>
