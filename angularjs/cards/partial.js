@@ -2,7 +2,7 @@ app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams"
 	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal) {
 
 		$scope.showDate = [];
-		$scope.currentStep = "0";
+		$scope.currentStep = $rootScope.project_currentStep || "0";
 
 		$scope.fetchCards = fetchCards;
 		$scope.changeStep = changeStep;
@@ -15,6 +15,7 @@ app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams"
         fetchCards();
 
 		function fetchCards(){
+            $rootScope.project_currentStep = $scope.currentStep;
             zhttp.project.card.get_all($scope.project.id, $scope.currentStep).then(function(response){
                 if(response.data && response.data != false){
                     $scope.dates = response.data.dates;
