@@ -54,7 +54,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <i class="fa fa-fw" ng-class="showDate[date.due_date] ? 'fa-caret-down' : 'fa-caret-up'"></i>
             </td>
         </tr>
-        <tr ng-repeat-end ng-repeat="card in cardsByDate[date.due_date] | planningFilter:options | orderBy:['name_company', 'project_title', 'category_title', '-deadline']"
+        <tr ng-repeat-end ng-repeat="card in cardsByDate[date.due_date] | planningFilter:options | orderBy:['id_priority', 'step']"
             ng-class="{'text-danger':card.deadline}"
             ng-if="!showDate[date.due_date]"
         >
