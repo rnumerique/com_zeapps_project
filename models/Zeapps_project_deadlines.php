@@ -1,7 +1,7 @@
 <?php
 class Zeapps_project_deadlines extends ZeModel {
 
-    public function all($where = array()){
+    public function all($where = array(), $unfinished = false){
         $this->_pLoad->model('Zeapps_users', 'users');
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
@@ -10,6 +10,12 @@ class Zeapps_project_deadlines extends ZeModel {
 
         $where['zeapps_project_deadlines.deleted_at'] = null;
         $where['zeapps_project_rights.access'] = 1;
+
+
+
+        if($unfinished){
+            $where['zeapps_project_deadlines.end_at'] = '0000-00-00';
+        }
 
         $this->database()->clearSql();
         return $this->database()->select('*, 
@@ -57,7 +63,8 @@ class Zeapps_project_deadlines extends ZeModel {
         $this->database()->clearSql();
         $where = array(
             'id_project' => $id_project,
-            'deleted_at' => null
+            'deleted_at' => null,
+            'end_at' => '0000-00-00'
         );
 
         return $this->database()->select('*')->limit(1)->where($where)->table('zeapps_project_deadlines')->result();

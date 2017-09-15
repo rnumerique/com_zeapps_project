@@ -25,7 +25,7 @@ class Planning extends ZeCtrl
 
         $cards = $this->cards->all(array(), true);
 
-        $deadlines = $this->deadlines->all();
+        $deadlines = $this->deadlines->all(array(), true);
 
         $filters = array('companies' => $companies, 'managers' => $managers, 'assigned' => $assigned);
 

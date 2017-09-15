@@ -98,6 +98,14 @@
                         <input class="form-control" type='number' ng-model="form.estimated_time">
                     </div>
                 </div>
+
+
+                <div class="col-md-6" ng-if="type == 'deadline'">
+                    <div class="form-group">
+                        <label>Date de clôture</label>
+                        <input class="form-control" type='date' ng-model="form.end_at">
+                    </div>
+                </div>
             </div>
 
             <div class="row" ng-if="type == 'card'">

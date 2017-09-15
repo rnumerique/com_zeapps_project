@@ -263,7 +263,7 @@ class Project extends ZeCtrl
 
         if($projects = $this->projects->all()){
             foreach($projects as $project){
-                if($deadline = $this->deadlines->get_nextOf($project->id)) {
+                /*if($deadline = $this->deadlines->get_nextOf($project->id)) {
                     if ($project->due_date && $project->due_date != '0000-00-00') {
                         if (strtotime($project->due_date) < strtotime($deadline[0]->due_date)) {
                             $project->nextDeadline = $project->due_date;
@@ -280,6 +280,12 @@ class Project extends ZeCtrl
                     } else {
                         $project->nextDeadline = 0;
                     }
+                }*/
+
+                if ($project->next_due_date > 0) {
+                    $project->nextDeadline = date("Y-m-d", $project->next_due_date);
+                } else {
+                    $project->nextDeadline = 0 ;
                 }
             }
         }

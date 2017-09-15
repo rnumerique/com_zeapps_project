@@ -23,8 +23,9 @@ app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams"
 
                     $scope.cardsByDate = [];
                     angular.forEach(cards, function (card) {
-						if (!$scope.cardsByDate[card.due_date])
-							$scope.cardsByDate[card.due_date] = [];
+						if (!$scope.cardsByDate[card.due_date]) {
+                            $scope.cardsByDate[card.due_date] = [];
+                        }
 						$scope.cardsByDate[card.due_date].push(card);
                     });
                 }

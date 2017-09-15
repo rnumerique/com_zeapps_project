@@ -28,6 +28,9 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 					if (response.data && response.data != "false") {
 						$scope.form = response.data.deadline;
 						$scope.form.due_date = new Date($scope.form.due_date);
+						if ($scope.form.end_at) {
+                            $scope.form.end_at = new Date($scope.form.end_at);
+                        }
 
                         whitelist_ids = [];
                         angular.forEach(response.data.project_users, function(user){
@@ -38,8 +41,7 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
                         $scope.categories = response.data.categories;
 					}
 				});
-			}
-			else {
+			} else {
 				zhttp.project.card.get($routeParams.id).then(function (response) {
 					if (response.data && response.data != "false") {
 						$scope.form = response.data.card;
@@ -58,8 +60,7 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 					}
 				});
 			}
-		}
-		else if($routeParams.id_project){ // Project
+		} else if($routeParams.id_project){ // Project
 			zhttp.project.project.get($routeParams.id_project).then(function(response){
 				if(response.data && response.data != "false"){
 					$scope.form.id_project = response.data.project.id;
@@ -74,8 +75,7 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
                     $scope.priorities = response.data.priorities;
 				}
 			});
-		}
-		else{
+		} else {
 
 		}
 
@@ -138,6 +138,19 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 				$scope.form.due_date = 0;
 			}
 
+            if($scope.form.end_at) {
+                var y2 = $scope.form.end_at.getFullYear();
+                var M2 = $scope.form.end_at.getMonth();
+                var d2 = $scope.form.end_at.getDate();
+
+                $scope.form.end_at = new Date(Date.UTC(y2, M2, d2));
+            }
+            else{
+                $scope.form.end_at = 0;
+            }
+
+
+
 			if($scope.type == "card") {
 
 				$scope.form.step = $scope.form.step || step;
@@ -149,8 +162,7 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 						$location.url("/ng/com_zeapps_project/project/" + ($scope.form.id_project || ''));
 					}
 				});
-			}
-			else{
+			} else{
 				var data = {};
 
 				if($scope.form.id)
@@ -159,6 +171,7 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 				data["id_project"] = $scope.form.id_project;
 				data["title"] = $scope.form.title;
 				data["due_date"] = $scope.form.due_date;
+				data["end_at"] = $scope.form.end_at;
 
 				formatted_data = angular.toJson(data);
 

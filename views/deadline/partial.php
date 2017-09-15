@@ -15,8 +15,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <td>#</td>
             <!--<td>Projet</td>-->
             <td>Catégorie</td>
+            <td>Jalon</td>
             <td>Date</td>
-            <td>Date</td>
+            <td>Date de clôture</td>
             <td></td>
         </tr>
         </thead>
@@ -29,6 +30,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 {{deadline.title}}
             </td>
             <td>{{ (deadline.due_date != '0000-00-00' ? deadline.due_date : 'Sans date attribuée') | date:'dd MMMM yyyy' }}</td>
+            <td>{{ ((deadline.end_at && deadline.end_at != '0000-00-00') ? deadline.end_at : '-') | date:'dd MMMM yyyy' }}</td>
             <td class="text-right no-wrap">
                 <div>
                     <span project-auth="{id_project : deadline.id_project, right : 'card'}">
