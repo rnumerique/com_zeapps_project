@@ -96,6 +96,8 @@ app.controller("ComZeappsProjectFormCtrl", ["$scope", "$route", "$routeParams", 
 				var date = new Date(Date.UTC(y, M, d));
 
 				$scope.form.start_date = date;
+			} else {
+                $scope.form.start_date = 0;
 			}
 
 			if($scope.form.due_date) {
@@ -106,6 +108,8 @@ app.controller("ComZeappsProjectFormCtrl", ["$scope", "$route", "$routeParams", 
 				var date2 = new Date(Date.UTC(y2, M2, d2));
 
 				$scope.form.due_date = date2;
+			} else {
+                $scope.form.due_date = 0;
 			}
 
 			var formatted_data = angular.toJson($scope.form);
