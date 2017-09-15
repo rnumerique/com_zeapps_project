@@ -53,6 +53,17 @@ app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams",
 					"eventLimit": false
 				}
 			},
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay,listYear'
+            },
+            buttonText:{
+				list:'Année'
+			},
+            /*listMonth: {
+                name:"ddddd"
+            },*/
 			step: 1,
 			completed: false,
 			events: [],
