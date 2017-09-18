@@ -33,7 +33,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <tr ng-repeat="project in projects | orderBy:['name_company','breadcrumbs'] | projectFilter:filters" ng-click="goTo(project.id)">
         <td>{{ project.id }}</td>
         <td>{{ project.name_company ? project.name_company : project.name_contact }}</td>
-        <td>{{ project.breadcrumbs }}</td>
+        <td>{{ project.title }}</td>
         <td>{{ project.name_manager }}</td>
         <td>{{ project.label_status }}</td>
         <td ng-if="details== 1" class="text-center" ze-auth="com_zeapps_project_financial"><span project-auth="{id_project : project.id, right : 'accounting'}">{{ project.due || '-' | currency }}</span></td>
