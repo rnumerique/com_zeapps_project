@@ -159,7 +159,7 @@ class Zeapps_projects extends ZeModel
         $projet = $this->get($id_project) ;
         if ($projet) {
             if ($projet->due_date && $projet->due_date != "0000-00-00") {
-                if (strtotime($projet->due_date) < $nextDeadLine || $nextDeadLine == 0) {
+                if ((strtotime($projet->due_date) < $nextDeadLine) || $nextDeadLine == 0) {
                     $nextDeadLine = strtotime($projet->due_date) ;
                 }
             }

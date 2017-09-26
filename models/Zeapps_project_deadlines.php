@@ -67,7 +67,7 @@ class Zeapps_project_deadlines extends ZeModel {
             'end_at' => '0000-00-00'
         );
 
-        return $this->database()->select('*')->limit(1)->where($where)->table('zeapps_project_deadlines')->result();
+        return $this->database()->select('*')->limit(1)->order_by('due_date', 'ASC')->where($where)->table('zeapps_project_deadlines')->result();
     }
 
 
