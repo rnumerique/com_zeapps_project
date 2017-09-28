@@ -5,12 +5,35 @@ app.controller("ComZeappsProjectFormCtrl", ["$scope", "$route", "$routeParams", 
 
 		$scope.form = {};
 
+        $scope.managerHttp = zhttp.app.user;
+        $scope.managerFields = [
+            {label:'Prénom',key:'firstname'},
+            {label:'Nom',key:'lastname'}
+        ];
+
+        $scope.companyHttp = zhttp.contact.company;
+        $scope.companyTplNew = '/com_zeapps_contact/companies/form_modal/';
+        $scope.companyFields = [
+            {label:'Nom',key:'company_name'},
+            {label:'Téléphone',key:'phone'},
+            {label:'Ville',key:'billing_city'},
+            {label:'Gestionnaire du compte',key:'name_user_account_manager'}
+        ];
+
+        $scope.contactHttp = zhttp.contact.contact;
+        $scope.contactTplNew = '/com_zeapps_contact/contacts/form_modal/';
+        $scope.contactFields = [
+            {label:'Nom',key:'last_name'},
+            {label:'Prénom',key:'first_name'},
+            {label:'Entreprise',key:'name_company'},
+            {label:'Téléphone',key:'phone'},
+            {label:'Ville',key:'city'},
+            {label:'Gestionnaire du compte',key:'name_user_account_manager'}
+        ];
+
 		$scope.loadCompany = loadCompany;
-		$scope.removeCompany = removeCompany;
 		$scope.loadContact = loadContact;
-		$scope.removeContact = removeContact;
 		$scope.loadManager = loadManager;
-		$scope.removeManager = removeManager;
 		$scope.success = success;
 		$scope.cancel = cancel;
 
@@ -33,56 +56,35 @@ app.controller("ComZeappsProjectFormCtrl", ["$scope", "$route", "$routeParams", 
 			$scope.form.name_manager = $rootScope.user.firstname ? $rootScope.user.firstname[0] + ". " + $rootScope.user.lastname : $rootScope.user.lastname;
 		}
 
-		function loadCompany() {
-			zeapps_modal.loadModule("com_zeapps_contact", "search_company", {}, function(objReturn) {
-				if (objReturn) {
-					$scope.form.id_company = objReturn.id;
-					$scope.form.name_company = objReturn.company_name;
-				} else {
-					$scope.form.id_company = 0;
-					$scope.form.name_company = "";
-				}
-			});
+		function loadCompany(company) {
+            if (company) {
+                $scope.form.id_company = company.id;
+                $scope.form.name_company = company.company_name;
+            } else {
+                $scope.form.id_company = 0;
+                $scope.form.name_company = "";
+            }
 		}
 
-		function removeCompany() {
-			$scope.form.id_company = 0;
-			$scope.form.name_company = "";
+		function loadContact(contact) {
+            if (contact) {
+                $scope.form.id_contact = contact.id;
+                $scope.form.name_contact = contact.first_name ? contact.first_name[0] + ". " + contact.last_name : contact.last_name;
+            } else {
+                $scope.form.id_contact = 0;
+                $scope.form.name_contact = "";
+            }
 		}
 
-		function loadContact() {
-			zeapps_modal.loadModule("com_zeapps_contact", "search_contact", {}, function(objReturn) {
-				if (objReturn) {
-					$scope.form.id_contact = objReturn.id;
-					$scope.form.name_contact = objReturn.first_name ? objReturn.first_name[0] + ". " + objReturn.last_name : objReturn.last_name;
-				} else {
-					$scope.form.id_contact = 0;
-					$scope.form.name_contact = "";
-				}
-			});
-		}
-
-		function removeContact() {
-			$scope.form.id_contact = 0;
-			$scope.form.name_contact = "";
-		}
-
-		function loadManager() {
-			zeapps_modal.loadModule("com_zeapps_core", "search_user", {}, function(objReturn) {
-				if (objReturn) {
-					$scope.form.id_manager = objReturn.id;
-					$scope.form.name_manager = objReturn.firstname ? objReturn.firstname[0]  + ". " + objReturn.lastname : objReturn.lastname;
-				} else {
-					$scope.form.id_manager = 0;
-					$scope.form.name_manager = "";
-				}
-			});
-		}
-
-		function removeManager() {
-			$scope.form.id_manager = 0;
-			$scope.form.name_manager = "";
-		}
+        function loadManager(user) {
+            if (user) {
+                $scope.form.id_manager = user.id;
+                $scope.form.name_manager = user.firstname + " " + user.lastname;
+            } else {
+                $scope.form.id_manager = "0";
+                $scope.form.name_manager = "";
+            }
+        }
 
 		function success(){
 

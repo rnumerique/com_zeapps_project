@@ -29,7 +29,7 @@ app.controller("ZeAppsProjectsModalSelectCardCtrl", function($scope, $uibModalIn
 	function loadList() {
 		zeHttp.project.card.get_all(option.id_project).then(function (response) {
 			if (response.status == 200) {
-				$scope.cards = response.data ;
+				$scope.cards = response.data.cards ;
 				angular.forEach($scope.cards, function(card){
 					card.id = parseInt(card.id);
 				})

@@ -9,16 +9,11 @@
             <div class="col-md-12" project-auth="{id_project : form.id_project, right : 'project'}">
                 <div class="form-group">
                     <label>Utilisateur</label>
-                    <div class="input-group">
-                        <input type="text" ng-model="form.name_user" class="form-control" disabled ng-required="true">
-
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button" ng-click="removeUser()"
-                                    ng-show="form.id_user != 0 && form.id_user != undefined">x
-                            </button>
-                            <button class="btn btn-default" type="button" ng-click="loadUser()">...</button>
-                        </span>
-                    </div>
+                    <span   ze-modalsearch="loadUser"
+                            data-http="userHttp"
+                            data-model="form.name_user"
+                            data-fields="userFields"
+                            data-title="Choisir une entreprise"></span>
                 </div>
             </div>
         </div>

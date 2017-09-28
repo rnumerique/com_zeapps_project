@@ -48,16 +48,11 @@
                 <div class="col-md-4" ng-if="type == 'card'">
                     <div class="form-group">
                         <label>Assigné à</label>
-                        <div class="input-group">
-                            <input type="text" ng-model="form.name_assigned_to" class="form-control" disabled>
-
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" ng-click="removeAssigned()"
-                                        ng-show="form.id_assigned_to != 0 && form.id_assigned_to != undefined">x
-                                </button>
-                                <button class="btn btn-default" type="button" ng-click="loadAssigned()">...</button>
-                            </span>
-                        </div>
+                        <span   ze-modalsearch="loadAssigned"
+                                data-http="accountManagerHttp"
+                                data-model="form.name_assigned_to"
+                                data-fields="accountManagerFields"
+                                data-title="Choisir un utilisateur"></span>
                     </div>
                 </div>
 

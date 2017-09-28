@@ -37,46 +37,33 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Entreprise</label>
-                        <div class="input-group">
-                            <input type="text" ng-model="form.name_company" class="form-control" disabled  ng-required="!form.id_contact">
-
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" ng-click="removeCompany()"
-                                        ng-show="form.id_company != 0 && form.id_company != undefined">x
-                                </button>
-                                <button class="btn btn-default" type="button" ng-click="loadCompany()">...</button>
-                            </span>
-                        </div>
+                        <span   ze-modalsearch="loadCompany"
+                                data-http="companyHttp"
+                                data-model="form.name_company"
+                                data-fields="companyFields"
+                                data-template-new="companyTplNew"
+                                data-title="Choisir une entreprise"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Contact</label>
-                        <div class="input-group">
-                            <input type="text" ng-model="form.name_contact" class="form-control" disabled  ng-required="!form.id_company">
-
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" ng-click="removeContact()"
-                                        ng-show="form.id_contact != 0 && form.id_contact != undefined">x
-                                </button>
-                                <button class="btn btn-default" type="button" ng-click="loadContact()">...</button>
-                            </span>
-                        </div>
+                        <span   ze-modalsearch="loadContact"
+                                data-http="contactHttp"
+                                data-model="form.name_contact"
+                                data-fields="contactFields"
+                                data-template-new="contactTplNew"
+                                data-title="Choisir un contact"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Manager</label>
-                        <div class="input-group">
-                            <input type="text" ng-model="form.name_manager" class="form-control" disabled ng-required="true">
-
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" ng-click="removeManager()"
-                                        ng-show="form.id_manager != 0 && form.id_manager != undefined">x
-                                </button>
-                                <button class="btn btn-default" type="button" ng-click="loadManager()">...</button>
-                            </span>
-                        </div>
+                        <span   ze-modalsearch="loadManager"
+                                data-http="managerHttp"
+                                data-model="form.name_manager"
+                                data-fields="managerFields"
+                                data-title="Choisir une entreprise"></span>
                     </div>
                 </div>
             </div>

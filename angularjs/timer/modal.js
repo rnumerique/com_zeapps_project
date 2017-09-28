@@ -27,11 +27,16 @@ app.controller("ZeAppsProjectsModalTimerCtrl", function($scope, $uibModalInstanc
         stop_time_h : 0
 	};
 
+    $scope.userHttp = zeHttp.app.user;
+    $scope.userFields = [
+        {label:'Prénom',key:'firstname'},
+        {label:'Nom',key:'lastname'}
+    ];
+
 	$scope.cancel = cancel;
 	$scope.save = save;
 	$scope.update = update;
 	$scope.loadUser = loadUser;
-	$scope.removeUser = removeUser;
 	$scope.loadCard = loadCard;
 	$scope.removeCard = removeCard;
 
@@ -71,21 +76,14 @@ app.controller("ZeAppsProjectsModalTimerCtrl", function($scope, $uibModalInstanc
 		}
 	}
 
-    function loadUser() {
-        zeapps_modal.loadModule("com_zeapps_core", "search_user", {}, function(objReturn) {
-            if (objReturn) {
-                $scope.form.id_user = objReturn.id;
-                $scope.form.name_user = objReturn.firstname ? objReturn.firstname  + " " + objReturn.lastname : objReturn.lastname;
-            } else {
-                $scope.form.id_user = 0;
-                $scope.form.name_user = "";
-            }
-        });
-    }
-
-    function removeUser() {
-        $scope.form.id_user = 0;
-        $scope.form.name_user = "";
+    function loadUser(user) {
+        if (user) {
+            $scope.form.id_user = user.id;
+            $scope.form.name_user = user.firstname ? user.firstname  + " " + user.lastname : user.lastname;
+        } else {
+            $scope.form.id_user = 0;
+            $scope.form.name_user = "";
+        }
     }
 
     function loadCard() {

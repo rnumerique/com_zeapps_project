@@ -15,10 +15,15 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 		$scope.priorities = [];
 		$scope.type = $routeParams.type || "card";
 
+        $scope.accountManagerHttp = zhttp.app.user;
+        $scope.accountManagerFields = [
+            {label:'Prénom',key:'firstname'},
+            {label:'Nom',key:'lastname'}
+        ];
+
 		$scope.loadProject = loadProject;
 		$scope.removeProject = removeProject;
 		$scope.loadAssigned = loadAssigned;
-		$scope.removeAssigned = removeAssigned;
 		$scope.success = success;
 		$scope.cancel = cancel;
 
@@ -104,22 +109,15 @@ app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParam
 			$scope.form.project_title = "";
 		}
 
-		function loadAssigned() {
-			zeapps_modal.loadModule("com_zeapps_core", "search_user", {whitelist_ids : whitelist_ids}, function(objReturn) {
-				if (objReturn) {
-					$scope.form.id_assigned_to = objReturn.id;
-					$scope.form.name_assigned_to = objReturn.firstname ? objReturn.firstname[0]  + ". " + objReturn.lastname : objReturn.lastname;
-				} else {
-					$scope.form.id_assigned_to = 0;
-					$scope.form.name_assigned_to = "";
-				}
-			});
-		}
-
-		function removeAssigned() {
-			$scope.form.id_assigned_to = 0;
-			$scope.form.name_assigned_to = "";
-		}
+        function loadAssigned(user) {
+            if (user) {
+                $scope.form.id_assigned_to = user.id;
+                $scope.form.name_assigned_to = user.firstname + " " + user.lastname;
+            } else {
+                $scope.form.id_assigned_to = "0";
+                $scope.form.name_assigned_to = "";
+            }
+        }
 
 		function success(){
 			var formatted_data;
