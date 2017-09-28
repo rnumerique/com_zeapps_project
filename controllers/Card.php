@@ -36,12 +36,17 @@ class Card extends ZeCtrl
         if($step){
             $where['zeapps_project_cards.step'] = $step;
 
-            if(!$cards = $this->cards->order_by('sort')->all($where)) {
+            if(!$cards = $this->cards->all($where)) {
                 $cards = [];
             }
         }
         elseif($step === "0"){
-            if(!$cards = $this->cards->order_by('sort')->all($where, true)) {
+            if(!$cards = $this->cards->all($where, true)) {
+                $cards = [];
+            }
+        }
+        else{
+            if(!$cards = $this->cards->all($where)) {
                 $cards = [];
             }
         }
