@@ -34,11 +34,13 @@ class Zeapps_project_timers extends ZeModel {
         $where['zeapps_project_timers.deleted_at'] = null;
 
         $where_or = [];
-        $where['zeapps_project_rights.project'] = 1;
 
         if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
             $where_or['zeapps_project_rights.id_user'] = $user->id;
             $where_or['zeapps_project_timers.id_user'] = $user->id;
+        }
+        if(!isset($user->rights['com_zeapps_project_sudo']) || !$user->rights['com_zeapps_project_sudo']) {
+            $where['zeapps_project_rights.project'] = 1;
         }
 
         return $this->database()->select('*, 

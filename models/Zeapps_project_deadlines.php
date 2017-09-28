@@ -4,12 +4,13 @@ class Zeapps_project_deadlines extends ZeModel {
     public function all($where = array(), $unfinished = false){
         $this->_pLoad->model('Zeapps_users', 'users');
 
-        if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_rights.id_user'] = $user->id;
-        }
+        $user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'));
 
         $where['zeapps_project_deadlines.deleted_at'] = null;
-        $where['zeapps_project_rights.access'] = 1;
+        if(!isset($user->rights['com_zeapps_project_sudo']) || !$user->rights['com_zeapps_project_sudo']) {
+            $where['zeapps_project_rights.id_user'] = $user->id;
+            $where['zeapps_project_rights.access'] = 1;
+        }
 
 
 

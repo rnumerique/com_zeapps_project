@@ -4,12 +4,13 @@ class Zeapps_project_cards extends ZeModel {
     public function all($where = array(), $unfinished = false){
         $this->_pLoad->model('Zeapps_users', 'users');
 
-        if($user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'))){
-            $where['zeapps_project_rights.id_user'] = $user->id;
-        }
+        $user = $this->_pLoad->ctrl->users->getUserByToken($this->_pLoad->ctrl->session->get('token'));
 
         $where['zeapps_project_cards.deleted_at'] = null;
-        $where['zeapps_project_rights.access'] = 1;
+        if(!isset($user->rights['com_zeapps_project_sudo']) || !$user->rights['com_zeapps_project_sudo']) {
+            $where['zeapps_project_rights.access'] = 1;
+            $where['zeapps_project_rights.id_user'] = $user->id;
+        }
 
         $where_not = array('zeapps_project_cards.id' => null);
 
@@ -35,7 +36,6 @@ class Zeapps_project_cards extends ZeModel {
             ->join('zeapps_project_card_priorities', 'zeapps_project_card_priorities.id = zeapps_project_cards.id_priority', 'LEFT')
             ->where($where)
             ->where_not($where_not)
-            ->group_by('zeapps_project_cards.id')
             ->order_by('zeapps_project_cards.sort')
             ->table('zeapps_project_cards')
             ->result();
@@ -117,7 +117,9 @@ class Zeapps_project_cards extends ZeModel {
             $where['zeapps_project_cards.id_assigned_to'] = $user->id;
         }
 
-        $where['zeapps_project_rights.access'] = 1;
+        if(!isset($user->rights['com_zeapps_project_sudo']) || !$user->rights['com_zeapps_project_sudo']) {
+            $where['zeapps_project_rights.access'] = 1;
+        }
         $where['zeapps_project_cards.due_date'] = '0000-00-00';
 
         $where_not = array('zeapps_project_cards.id' => null, 'zeapps_project_cards.step' => '4');
@@ -156,7 +158,9 @@ class Zeapps_project_cards extends ZeModel {
             $where['zeapps_project_cards.id_assigned_to'] = $user->id;
         }
 
-        $where['zeapps_project_rights.access'] = 1;
+        if(!isset($user->rights['com_zeapps_project_sudo']) || !$user->rights['com_zeapps_project_sudo']) {
+            $where['zeapps_project_rights.access'] = 1;
+        }
         $where['zeapps_project_cards.due_date'] = date('Y-m-d');
 
         $where_not = array('zeapps_project_cards.id' => null, 'zeapps_project_cards.due_date' => "0000-00-00", 'zeapps_project_cards.step' => '4');
@@ -195,7 +199,9 @@ class Zeapps_project_cards extends ZeModel {
             $where['zeapps_project_cards.id_assigned_to'] = $user->id;
         }
 
-        $where['zeapps_project_rights.access'] = 1;
+        if(!isset($user->rights['com_zeapps_project_sudo']) || !$user->rights['com_zeapps_project_sudo']) {
+            $where['zeapps_project_rights.access'] = 1;
+        }
         $where['zeapps_project_cards.due_date <'] = date('Y-m-d');
 
         $where_not = array('zeapps_project_cards.id' => null, 'zeapps_project_cards.due_date' => "0000-00-00", 'zeapps_project_cards.step' => '4');
@@ -234,7 +240,9 @@ class Zeapps_project_cards extends ZeModel {
             $where['zeapps_project_cards.id_assigned_to'] = $user->id;
         }
 
-        $where['zeapps_project_rights.access'] = 1;
+        if(!isset($user->rights['com_zeapps_project_sudo']) || !$user->rights['com_zeapps_project_sudo']) {
+            $where['zeapps_project_rights.access'] = 1;
+        }
         $where['zeapps_project_cards.due_date >'] = date('Y-m-d');
 
         $where_not = array('zeapps_project_cards.id' => null, 'zeapps_project_cards.due_date' => "0000-00-00", 'zeapps_project_cards.step' => '4');
