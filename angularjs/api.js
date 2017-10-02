@@ -30,7 +30,11 @@ app.config(["$provide",
 					document : documentUrl_project,
                     del_document : delDocument_project,
                     comment : comment_project,
-					del_comment : delComment_project
+					del_comment : delComment_project,
+					excel : {
+						get : getExcel_project,
+						make : makeExcel_project
+					}
 				},
 				card : {
 					get_all : getAll_card,
@@ -189,6 +193,14 @@ app.config(["$provide",
 			function delDocument_project(id){
                 return zeHttp.delete("/com_zeapps_project/project/del_document/" + id);
 			}
+            function makeExcel_project(id_status, details){
+                id_status = id_status === undefined ? "all" : id_status;
+                details = details || '';
+                return zeHttp.get("/com_zeapps_project/project/make_excel/" + id_status + "/" + details);
+            }
+			function getExcel_project(){
+                return "/com_zeapps_project/project/get_excel/"
+			}
 
 
 			// CARD
@@ -225,7 +237,7 @@ app.config(["$provide",
 				return zeHttp.get("/com_zeapps_project/card/makePDF/" + id + "/" + description + "/" + step);
 			}
 			function getPDF_card(){
-                return "/com_zeapps_project/card/getPDF/";
+                return "/com_zeapps_project/print/getPDF/";
 			}
 
 

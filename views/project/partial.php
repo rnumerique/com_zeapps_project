@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <div class="text-right" ze-auth="com_zeapps_project_financial">
     <div class="form-group">
         <label for="details">
-            <input type="checkbox" id="details" name="details" ng-model="details" value="1">
+            <input type="checkbox" id="details" name="details" ng-model="$parent.details" value="1">
             Afficher le détail
         </label>
     </div>

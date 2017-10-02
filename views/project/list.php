@@ -40,6 +40,7 @@
                     <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/create/'>
                         <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Projet
                     </a>
+                    <ze-btn fa="download" color="info" hint="Télécharger" direction="left" ng-click="print()"></ze-btn>
                 </div>
             </div>
 

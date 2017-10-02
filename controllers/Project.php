@@ -293,6 +293,99 @@ class Project extends ZeCtrl
         echo json_encode($projects);
     }
 
+    public function make_excel($status = null, $details = null){
+        $this->load->model("Zeapps_projects", "projects");
+
+        $writer = new XLSXWriter();
+
+        if($details){
+            $header = array(
+                "#",
+                "Client",
+                "Projet",
+                "Responsable",
+                "Statut",
+                "Montant",
+                "Commission",
+                "Marge",
+                "Déjà facturé",
+                "Reste dû",
+                "Total dépenses",
+                "Temps passé",
+                "Prochaine échéance",
+                "Note"
+            );
+        }
+        else{
+            $header = array(
+                "#",
+                "Client",
+                "Projet",
+                "Responsable",
+                "Statut",
+                "Temps passé",
+                "Prochaine échéance",
+                "Note"
+            );
+        }
+        $writer->writeSheetRow('Projets', $header);
+
+        $where = [];
+        if($status && $status !== "all"){
+            $where['id_status'] = $status;
+        }
+
+        if ($projects = $this->projects->all($where)) {
+            foreach($projects as &$project) {
+                $data = array(
+                    $project->id,
+                    $project->name_company ? $project->name_company : $project->name_contact,
+                    $project->title,
+                    $project->name_manager,
+                    $project->label_status
+                );
+
+                if($details){
+                    array_push($data, $project->due);
+                    array_push($data, $project->commission);
+                    array_push($data, $project->due - $project->commission);
+                    array_push($data, $project->payed);
+                    array_push($data, $project->due - $project->payed);
+                    array_push($data, $project->total_spendings);
+                }
+
+                var_dump($project);
+
+                if($project->total_time_spent) {
+                    $time_spent_formatted = intval($project->total_time_spent / 60).'h '.intval($project->total_time_spent % 60);
+                }
+                else{
+                    $time_spent_formatted = '0h';
+                }
+
+                array_push($data, $time_spent_formatted);
+                array_push($data, $project->next_due_date ? date('d/m/Y',$project->next_due_date) : "");
+                array_push($data, $project->annotations);
+
+                $writer->writeSheetRow('Projets', $data);
+            }
+        }
+
+        recursive_mkdir(FCPATH . 'tmp/com_zeapps_project/projects/');
+        $writer->writeToFile(FCPATH . 'tmp/com_zeapps_project/projects/projects.xlsx');
+
+        echo json_encode(true);
+    }
+
+    public function get_excel(){
+        $file_url = FCPATH . 'tmp/com_zeapps_project/projects/projects.xlsx';
+
+        header('Content-Type: application/octet-stream');
+        header("Content-Transfer-Encoding: Binary");
+        header("Content-disposition: attachment; filename=\"" . basename($file_url) . "\"");
+        readfile($file_url);
+    }
+
     public function get_archives(){
         $this->load->model("Zeapps_projects", "projects");
         $this->load->model("Zeapps_project_cards", "cards");
