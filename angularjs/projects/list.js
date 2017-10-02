@@ -20,6 +20,7 @@ app.controller("ComZeappsProjectOverviewCtrl", ["$scope", "$route", "$routeParam
 		$scope.edit = edit;
 		$scope.delete_project = delete_project;
 		$scope.force_delete_project = force_delete_project;
+		$scope.print = print;
 
 		zhttp.project.project.get_overview().then(function(response){
 			if(response.data && response.data != "false"){
@@ -164,4 +165,12 @@ app.controller("ComZeappsProjectOverviewCtrl", ["$scope", "$route", "$routeParam
 			});
 
 		}
+
+        function print(){
+            zhttp.project.project.excel.make($scope.filters.id_status, $scope.details).then(function(response){
+                if(response.data && response.data != "false"){
+                    window.document.location.href = zhttp.project.project.excel.get();
+                }
+            });
+        }
 	}]);
