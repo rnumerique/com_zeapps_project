@@ -1,7 +1,7 @@
-app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$filter", "zeCalendar",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $filter, zeCalendar) {
+app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$filter", "zeCalendar", "menu",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $filter, zeCalendar, menu) {
 
-		$scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_planning");
+        menu("com_ze_apps_project", "com_zeapps_projects_planning");
 
 		var cards = [];
 		var deadlines = [];

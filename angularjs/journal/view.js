@@ -1,7 +1,7 @@
-app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$filter", "zeCalendar",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $filter, zeCalendar) {
+app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$filter", "zeCalendar", "menu",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $filter, zeCalendar, menu) {
 
-		$scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_journal");
+        menu("com_ze_apps_project", "com_zeapps_projects_journal");
 
 		var logs = [];
 		var journalFilter = $filter('journalFilter');

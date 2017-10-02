@@ -1,7 +1,7 @@
-app.controller("ComZeappsProjectArchivesCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "$filter", "zeProject",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, $filter, zeProject) {
+app.controller("ComZeappsProjectArchivesCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "$filter", "zeProject", "menu",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, $filter, zeProject, menu) {
 
-		$scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_archives");
+        menu("com_ze_apps_project", "com_zeapps_projects_archives");
 
 		$scope.projects = [];
 

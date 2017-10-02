@@ -1,7 +1,7 @@
-app.controller("ComZeappsProjectMyWorkCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal) {
+app.controller("ComZeappsProjectMyWorkCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "menu",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, menu) {
 
-        $scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_mywork");
+        menu("com_ze_apps_project", "com_zeapps_projects_mywork");
 
         $scope.dates = [];
         var cards = [];

@@ -1,7 +1,7 @@
-app.controller("ComZeappsProjectStatusConfigCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal) {
+app.controller("ComZeappsProjectStatusConfigCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "menu",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, menu) {
 
-		$scope.$parent.loadMenu("com_ze_apps_config", "com_ze_apps_project_statuses");
+        menu("com_ze_apps_config", "com_ze_apps_project_statuses");
 
         $scope.templateForm = "/com_zeapps_project/status/form_modal";
 

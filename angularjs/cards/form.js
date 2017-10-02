@@ -1,7 +1,7 @@
-app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "$timeout",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, $timeout) {
+app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "menu",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, menu) {
 
-        $scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_management");
+        menu("com_ze_apps_project", "com_zeapps_projects_management");
 
 		var step;
 		var whitelist_ids = [];

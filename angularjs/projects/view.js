@@ -1,7 +1,7 @@
-app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "Upload", "zeProject", "toasts",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, Upload, zeProject, toasts) {
+app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "Upload", "zeProject", "toasts", "menu",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, Upload, zeProject, toasts, menu) {
 
-		$scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_management");
+        menu("com_ze_apps_project", "com_zeapps_projects_management");
 
 		var project_users_ids = [];
 

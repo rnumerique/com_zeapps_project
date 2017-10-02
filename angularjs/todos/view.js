@@ -1,7 +1,7 @@
-app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$timeout",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $timeout) {
+app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$timeout", "menu",
+	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $timeout, menu) {
 
-        $scope.$parent.loadMenu("com_ze_apps_project", "com_zeapps_projects_todos");
+        menu("com_ze_apps_project", "com_zeapps_projects_todos");
 
         $scope.form = {
         	label : ""
