@@ -13,6 +13,7 @@ app.directive("projectAuth", ["$rootScope", function($rootScope){
                     if(evaluateRight(value.id_project, value.right, elm)){
                         watch1();
                         watch2();
+                        watch3();
                     }
                 }
 			}, true);
@@ -21,6 +22,16 @@ app.directive("projectAuth", ["$rootScope", function($rootScope){
                     if(evaluateRight(scope.projectAuth.id_project, scope.projectAuth.right, elm)){
                         watch1();
                         watch2();
+                        watch3();
+                    }
+                }
+			}, true);
+            var watch3 = $rootScope.$watch("user", function(value){
+            	if(value) {
+                    if(evaluateRight(scope.projectAuth.id_project, scope.projectAuth.right, elm)){
+                        watch1();
+                        watch2();
+                        watch3();
                     }
                 }
 			}, true);
@@ -28,16 +39,24 @@ app.directive("projectAuth", ["$rootScope", function($rootScope){
 	};
 
 	function evaluateRight(id_project, right, elm){
-		if($rootScope.project_rights[id_project]){
-			if($rootScope.project_rights[id_project][right] !== "1") {
+	    if($rootScope.user){
+            if($rootScope.user.rights.com_zeapps_project_sudo === 1){
+                elm.show();
+                elm.removeAttr("project-auth");
+                return true;
+            }
+        }
+
+        if($rootScope.project_rights[id_project]){
+            if ($rootScope.project_rights[id_project][right] !== "1") {
                 elm.remove();
                 return true;
             }
-            else{
-				elm.show();
+            else {
+                elm.show();
                 elm.removeAttr("project-auth");
                 return true;
-			}
+            }
 		}
         return false;
 	}

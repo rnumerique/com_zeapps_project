@@ -36,6 +36,7 @@ class Zeapps_projects extends ZeModel
             ->join('zeapps_project_statuses', 'zeapps_project_statuses.id = zeapps_projects.id_status', 'LEFT')
             ->where($where)
             ->order_by('zeapps_projects.title')
+            ->group_by('zeapps_projects.id')
             ->table('zeapps_projects')
             ->result();
     }
