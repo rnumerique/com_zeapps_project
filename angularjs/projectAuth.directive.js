@@ -1,4 +1,4 @@
-app.directive("projectAuth", function($rootScope){
+app.directive("projectAuth", ["$rootScope", function($rootScope){
 
 	return {
 		restrict: "A",
@@ -42,4 +42,4 @@ app.directive("projectAuth", function($rootScope){
         return false;
 	}
 
-});
+}]);

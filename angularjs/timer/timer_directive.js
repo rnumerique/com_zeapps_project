@@ -1,4 +1,4 @@
-app.directive("timer", function($rootScope, $interval, zeHttp){
+app.directive("timer", ["$rootScope", "$interval", "zeHttp", function($rootScope, $interval, zeHttp){
 	return{
 		restrict: "E",
 		templateUrl: "/com_zeapps_project/timer/directive",
@@ -12,4 +12,4 @@ app.directive("timer", function($rootScope, $interval, zeHttp){
 			}
 		}
 	};
-});
+}]);

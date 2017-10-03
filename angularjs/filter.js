@@ -1,4 +1,4 @@
-app.filter("planningFilter", function($filter){
+app.filter("planningFilter", ["$filter", function($filter){
 	return function(list, filters){
 		if(filters){
 			return $filter("filter")(list, function(listItem){
@@ -19,8 +19,8 @@ app.filter("planningFilter", function($filter){
 		}
 		return list;
 	};
-})
-	.filter("journalFilter", function($filter){
+}])
+	.filter("journalFilter", ["$filter", function($filter){
 		return function(list, filters){
 			if(filters){
 				return $filter("filter")(list, function(listItem){
@@ -41,8 +41,8 @@ app.filter("planningFilter", function($filter){
 			}
 			return list;
 		};
-	})
-	.filter("cardmodalFilter", function($filter){
+	}])
+	.filter("cardmodalFilter", ["$filter", function($filter){
 		return function(list, filters){
 			if(filters){
 				return $filter("filter")(list, function(listItem){
@@ -57,8 +57,8 @@ app.filter("planningFilter", function($filter){
 			}
 			return list;
 		};
-	})
-	.filter("projectFilter", function($filter){
+	}])
+	.filter("projectFilter", ["$filter", function($filter){
 		return function(list, filters){
 			if(filters){
 				return $filter("filter")(list, function(listItem){
@@ -81,4 +81,4 @@ app.filter("planningFilter", function($filter){
 		};
 
 
-	});
+	}]);

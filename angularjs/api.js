@@ -1,6 +1,7 @@
 app.config(["$provide",
 	function ($provide) {
-		$provide.decorator("zeHttp", function($delegate, $rootScope, $interval, zeapps_modal, $q){
+		$provide.decorator("zeHttp", ["$delegate", "$rootScope", "$interval", "zeapps_modal", "$q",
+			function($delegate, $rootScope, $interval, zeapps_modal, $q){
 			var zeHttp = $delegate;
 
 			var tday = new Date();
@@ -507,5 +508,5 @@ app.config(["$provide",
 				else
 					return "info";
 			}
-		});
+		}]);
 	}]);

@@ -9,7 +9,8 @@ listModuleModalFunction.push({
 });
 
 
-app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope, $uibModalInstance, zeHttp, option, $location, Upload, zeapps_modal, zeProject, toasts) {
+app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstance", "zeHttp", "option", "$location", "Upload", "zeapps_modal", "zeProject", "toasts",
+    function($scope, $rootScope, $uibModalInstance, zeHttp, option, $location, Upload, zeapps_modal, zeProject, toasts) {
 
 	$scope.card = option.card;
 	$scope.progress = false;
@@ -284,4 +285,4 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", function($scope, $rootScope,
 		$uibModalInstance.dismiss(edited_timers);
 	}
 
-}) ;
+}]) ;

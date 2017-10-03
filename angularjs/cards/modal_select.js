@@ -13,7 +13,7 @@ listModuleModalFunction.push({
 });
 
 
-app.controller("ZeAppsProjectsModalSelectCardCtrl", function($scope, $uibModalInstance, zeHttp, titre, option) {
+app.controller("ZeAppsProjectsModalSelectCardCtrl", ["$scope", "$uibModalInstance", "zeHttp", "titre", "option", function($scope, $uibModalInstance, zeHttp, titre, option) {
 
 	$scope.titre = titre ;
 
@@ -41,4 +41,4 @@ app.controller("ZeAppsProjectsModalSelectCardCtrl", function($scope, $uibModalIn
 		$uibModalInstance.close(card);
 	}
 
-}) ;
+}]) ;

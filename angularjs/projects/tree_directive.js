@@ -1,4 +1,4 @@
-app.directive("projectTree",
+app.directive("projectTree",[
 	function(){
 		return{
 			restrict: "E",
@@ -11,9 +11,9 @@ app.directive("projectTree",
 																												"<project-branch ng-repeat=\"branch in tree | orderBy:'title'\" data-branch=\"branch\" data-active-branch=\"activeBranch\"></project-branch>" +
 																								"</ul>"
 		};
-	})
+	}])
 
-	.directive("projectBranch", function($compile){
+	.directive("projectBranch", ["$compile", function($compile){
 		return{
 			restrict: "E",
 			replace: true,
@@ -61,4 +61,4 @@ app.directive("projectTree",
 				};
 			}
 		};
-	});
+	}]);

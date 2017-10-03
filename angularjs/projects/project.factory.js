@@ -1,4 +1,4 @@
-app.factory("zeProject", function(zeHttp, $q){
+app.factory("zeProject", ["zeHttp", "$q", function(zeHttp, $q){
     var time_spent_formatted = "0h";
     var timer_color = "#00c800";
     var timer_ratio = 0;
@@ -124,4 +124,4 @@ app.factory("zeProject", function(zeHttp, $q){
             }
         }
     }
-});
+}]);

@@ -13,7 +13,8 @@ listModuleModalFunction.push({
 });
 
 
-app.controller("ZeAppsProjectsModalTimerCtrl", function($scope, $uibModalInstance, zeHttp, titre, option, zeapps_modal, $rootScope) {
+app.controller("ZeAppsProjectsModalTimerCtrl", ["$scope", "$uibModalInstance", "zeHttp", "titre", "option", "zeapps_modal", "$rootScope",
+    function($scope, $uibModalInstance, zeHttp, titre, option, zeapps_modal, $rootScope) {
 
 	$scope.titre = titre ;
 	$scope.option = option;
@@ -229,4 +230,4 @@ app.controller("ZeAppsProjectsModalTimerCtrl", function($scope, $uibModalInstanc
 		$uibModalInstance.close($scope.form);
 	}
 
-}) ;
+}]) ;

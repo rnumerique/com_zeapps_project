@@ -1,4 +1,4 @@
-app.run(function(zeHttp, $rootScope){
+app.run(["zeHttp", "$rootScope", function(zeHttp, $rootScope){
 	$rootScope.project_rights = [];
 	zeHttp.project.right.get_connected().then(function(response){
 		if(response.data && response.data != "false"){
@@ -19,4 +19,4 @@ app.run(function(zeHttp, $rootScope){
             zeHttp.project.timer.start();
         }
     });
-});
+}]);

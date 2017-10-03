@@ -13,7 +13,7 @@ listModuleModalFunction.push({
 });
 
 
-app.controller("ZeAppsProjectsModalCommentCtrl", function($scope, $uibModalInstance, zeHttp, titre, option) {
+app.controller("ZeAppsProjectsModalCommentCtrl", ["$scope", "$uibModalInstance", "zeHttp", "titre", "option", function($scope, $uibModalInstance, zeHttp, titre, option) {
 
 	$scope.titre = titre ;
 
@@ -36,4 +36,4 @@ app.controller("ZeAppsProjectsModalCommentCtrl", function($scope, $uibModalInsta
 		$uibModalInstance.close($scope.form);
 	}
 
-}) ;
+}]) ;
