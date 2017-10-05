@@ -54,12 +54,15 @@ class Category extends ZeCtrl
         $this->load->model("Zeapps_project_deadlines", "deadlines");
 
         if($id){
-            $this->categories->delete(array('id' => $id));
+            ;
 
             $this->cards->update(array('id_category' => 0), array('id_category' => $id));
             $this->deadlines->update(array('id_category' => 0), array('id_category' => $id));
-        }
 
-        echo json_encode('OK');
+            echo json_encode($this->categories->delete($id));
+        }
+        else{
+            echo json_encode(false);
+        }
     }
 }

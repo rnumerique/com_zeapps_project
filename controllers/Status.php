@@ -56,18 +56,16 @@ class Status extends ZeCtrl
             foreach($data as $status){
                 $this->statuses->update($status, $status['id']);
             }
-            echo json_encode('OK');
+            echo json_encode(true);
         }
         else{
-            echo json_encode('false');
+            echo json_encode(false);
         }
     }
 
     public function delete($id){
         $this->load->model("Zeapps_project_statuses", "statuses");
 
-        $this->statuses->delete($id);
-
-        echo json_encode('OK');
+        echo json_encode($this->statuses->delete($id));
     }
 }

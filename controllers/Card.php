@@ -177,14 +177,9 @@ class Card extends ZeCtrl
     }
 
     public function delete_card($id = null){
+        $this->load->model("Zeapps_project_cards", "cards");
 
-        if($id){
-            $this->load->model("Zeapps_project_cards", "cards");
-
-            $this->cards->delete(array('id' => $id));
-        }
-
-        echo json_encode('OK');
+        echo json_encode($this->cards->delete(array('id' => $id)));
     }
 
     public function comment(){
@@ -285,10 +280,11 @@ class Card extends ZeCtrl
         if($document = $this->documents->get($id)){
             unlink($document->path);
 
-            $this->documents->delete($id);
+            echo json_encode($this->documents->delete($id));
         }
-
-        echo 'OK';
+        else{
+            echo json_encode(false);
+        }
     }
 
     public function makePDF($id_project, $description = false, $step = null, $echo = true){

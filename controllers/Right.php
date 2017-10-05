@@ -69,10 +69,6 @@ class Right extends ZeCtrl
     public function delete_right($id = null){
         $this->load->model("Zeapps_project_rights", "rights");
 
-        if($id){
-            $this->rights->delete($id);
-        }
-
-        echo json_encode('OK');
+        echo json_encode($this->rights->delete($id));
     }
 }

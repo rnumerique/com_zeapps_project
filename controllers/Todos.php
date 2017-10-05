@@ -142,11 +142,14 @@ class Todos extends ZeCtrl
             $data = json_decode(file_get_contents('php://input'), true);
         }
 
+        $res = true;
+
         foreach($data as $todo){
-            $this->todos->update(array('sort' => $todo['sort']), $todo['id']);
+            $r = $this->todos->update(array('sort' => $todo['sort']), $todo['id']);
+            $res = $res && $r;
         }
 
-        echo 'OK';
+        echo json_encode($res);
     }
 
     public function categories_position(){
@@ -160,10 +163,13 @@ class Todos extends ZeCtrl
             $data = json_decode(file_get_contents('php://input'), true);
         }
 
+        $res = true;
+
         foreach($data as $category){
-            $this->categories->update(array('sort' => $category['sort']), $category['id']);
+            $r = $this->categories->update(array('sort' => $category['sort']), $category['id']);
+            $res = $res && $r;
         }
 
-        echo 'OK';
+        echo json_encode($res);
     }
 }

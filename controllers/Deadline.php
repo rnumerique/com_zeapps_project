@@ -57,13 +57,8 @@ class Deadline extends ZeCtrl
     }
 
     public function delete_deadline($id = null){
+        $this->load->model("Zeapps_project_deadlines", "deadlines");
 
-        if($id){
-            $this->load->model("Zeapps_project_deadlines", "deadlines");
-
-            $this->deadlines->delete(array('id' => $id));
-        }
-
-        echo json_encode('OK');
+        echo json_encode($this->deadlines->delete(array('id' => $id)));
     }
 }

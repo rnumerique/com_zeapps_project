@@ -427,11 +427,7 @@ class Project extends ZeCtrl
     public function archive_project($id = null){
         $this->load->model("Zeapps_projects", "projects");
 
-        if($id) {
-            $this->projects->update(array('archived' => 1), $id);
-        }
-
-        echo json_encode('OK');
+        echo json_encode($this->projects->update(array('archived' => 1), $id));
     }
 
     public function delete_project($id = null, $force = 'false'){
@@ -446,9 +442,7 @@ class Project extends ZeCtrl
             }
         }
 
-        $this->projects->delete($id);
-
-        echo json_encode('OK');
+        echo json_encode($this->projects->delete($id));
     }
 
     public function comment(){
@@ -549,9 +543,10 @@ class Project extends ZeCtrl
         if($document = $this->documents->get($id)){
             unlink($document->path);
 
-            $this->documents->delete($id);
+            echo json_encode($this->documents->delete($id));
         }
-
-        echo 'OK';
+        else{
+            echo json_encode(false);
+        }
     }
 }
