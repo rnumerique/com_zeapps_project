@@ -1,4 +1,4 @@
-app.factory("zeProject", ["zeHttp", "$q", function(zeHttp, $q){
+app.factory("zeProject", ["zeHttp", "$q", function(zhttp, $q){
     var time_spent_formatted = "0h";
     var timer_color = "#00c800";
     var timer_ratio = 0;
@@ -61,7 +61,7 @@ app.factory("zeProject", ["zeHttp", "$q", function(zeHttp, $q){
         var defer = $q.defer();
         var promise;
 
-        zeHttp.project.project.update(project.id).then(function(response){
+        zhttp.project.project.update(project.id).then(function(response){
             if(response.data && response.data != "false"){
                 project.total_time_spent = parseInt(response.data.time_spent);
                 timers = response.data.timers;

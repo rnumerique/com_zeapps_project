@@ -1,5 +1,5 @@
-app.controller("ComZeappsProjectTodosCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$timeout", "menu",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $timeout, menu) {
+app.controller("ComZeappsProjectTodosCtrl", ["$scope", "zeHttp", "$timeout", "menu",
+	function ($scope, zhttp, $timeout, menu) {
 
         menu("com_ze_apps_project", "com_zeapps_projects_todos");
 

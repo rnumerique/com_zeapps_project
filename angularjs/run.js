@@ -1,11 +1,11 @@
-app.run(["zeHttp", "$rootScope", function(zeHttp, $rootScope){
+app.run(["zeHttp", "$rootScope", function(zhttp, $rootScope){
 	$rootScope.project_rights = [];
-	zeHttp.project.right.get_connected().then(function(response){
+    zhttp.project.right.get_connected().then(function(response){
 		if(response.data && response.data != "false"){
 			$rootScope.project_rights = response.data;
 		}
 	});
-	zeHttp.project.status.get_all().then(function(response){
+    zhttp.project.status.get_all().then(function(response){
 		if(response.data && response.data != "false"){
 			$rootScope.statuses = response.data;
 			angular.forEach($rootScope.statuses, function(status){
@@ -13,10 +13,10 @@ app.run(["zeHttp", "$rootScope", function(zeHttp, $rootScope){
 			});
 		}
 	});
-    zeHttp.project.timer.get_ongoing().then(function(response){
+    zhttp.project.timer.get_ongoing().then(function(response){
         if(response.data && response.data != "false"){
             $rootScope.currentTimer = response.data;
-            zeHttp.project.timer.start();
+            zhttp.project.timer.start();
         }
     });
 }]);

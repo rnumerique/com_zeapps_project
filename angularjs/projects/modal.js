@@ -13,7 +13,7 @@ listModuleModalFunction.push({
 });
 
 
-app.controller("ZeAppsProjectsModalProjectCtrl", ["$scope", "$uibModalInstance", "zeHttp", "titre", "option", function($scope, $uibModalInstance, zeHttp, titre, option) {
+app.controller("ZeAppsProjectsModalProjectCtrl", ["$scope", "$uibModalInstance", "zeHttp", "titre", "option", function($scope, $uibModalInstance, zhttp, titre, option) {
 
 	$scope.titre = titre ;
 
@@ -23,7 +23,7 @@ app.controller("ZeAppsProjectsModalProjectCtrl", ["$scope", "$uibModalInstance",
 	$scope.loadProject = loadProject;
 
 	function loadList() {
-		zeHttp.project.project.get_all(0, true, option.id).then(function (response) {
+        zhttp.project.project.get_all(0, true, option.id).then(function (response) {
 			if (response.status == 200) {
 				$scope.projects = response.data ;
 			}

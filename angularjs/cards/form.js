@@ -1,5 +1,5 @@
-app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "menu",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, menu) {
+app.controller("ComZeappsProjectCardFormCtrl", ["$scope", "$routeParams", "$location", "zeHttp", "zeapps_modal", "menu",
+	function ($scope, $routeParams, $location, zhttp, zeapps_modal, menu) {
 
         menu("com_ze_apps_project", "com_zeapps_projects_management");
 

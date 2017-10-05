@@ -1,5 +1,5 @@
-app.controller("ComZeappsProjectViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "Upload", "zeProject", "toasts", "menu",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, Upload, zeProject, toasts, menu) {
+app.controller("ComZeappsProjectViewCtrl", ["$scope", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal", "Upload", "zeProject", "toasts", "menu",
+	function ($scope, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal, Upload, zeProject, toasts, menu) {
 
         menu("com_ze_apps_project", "com_zeapps_projects_management");
 

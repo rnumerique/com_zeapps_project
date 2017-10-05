@@ -1,5 +1,5 @@
-app.controller("ComZeappsPlanningViewCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$filter", "zeCalendar", "menu",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $filter, zeCalendar, menu) {
+app.controller("ComZeappsPlanningViewCtrl", ["$scope", "zeHttp", "$filter", "zeCalendar", "menu",
+	function ($scope, zhttp, $filter, zeCalendar, menu) {
 
         menu("com_ze_apps_project", "com_zeapps_projects_planning");
 

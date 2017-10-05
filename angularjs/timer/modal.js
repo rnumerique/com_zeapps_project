@@ -14,7 +14,7 @@ listModuleModalFunction.push({
 
 
 app.controller("ZeAppsProjectsModalTimerCtrl", ["$scope", "$uibModalInstance", "zeHttp", "titre", "option", "zeapps_modal", "$rootScope",
-    function($scope, $uibModalInstance, zeHttp, titre, option, zeapps_modal, $rootScope) {
+    function($scope, $uibModalInstance, zhttp, titre, option, zeapps_modal, $rootScope) {
 
 	$scope.titre = titre ;
 	$scope.option = option;
@@ -28,7 +28,7 @@ app.controller("ZeAppsProjectsModalTimerCtrl", ["$scope", "$uibModalInstance", "
         stop_time_h : 0
 	};
 
-    $scope.userHttp = zeHttp.app.user;
+    $scope.userHttp = zhttp.app.user;
     $scope.userFields = [
         {label:'Prénom',key:'firstname'},
         {label:'Nom',key:'lastname'}
@@ -45,7 +45,7 @@ app.controller("ZeAppsProjectsModalTimerCtrl", ["$scope", "$uibModalInstance", "
 
 	function loadList() {
 		if(option.id){
-			zeHttp.project.timer.get(option.id).then(function(response){
+            zhttp.project.timer.get(option.id).then(function(response){
 				if(response.data && response.data != "false"){
 					$scope.form = response.data;
 

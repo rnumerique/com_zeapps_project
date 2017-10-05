@@ -1,4 +1,4 @@
-app.directive("timer", ["$rootScope", "$interval", "zeHttp", function($rootScope, $interval, zeHttp){
+app.directive("timer", ["$rootScope", "zeHttp", function($rootScope, zhttp){
 	return{
 		restrict: "E",
 		templateUrl: "/com_zeapps_project/timer/directive",
@@ -6,7 +6,7 @@ app.directive("timer", ["$rootScope", "$interval", "zeHttp", function($rootScope
 			scope.stop = stop;
 
 			function stop(){
-				zeHttp.project.timer.stop().then(function(){
+                zhttp.project.timer.stop().then(function(){
 					$rootScope.$broadcast('projectTimerBroadcast', {done: true});
 				});
 			}

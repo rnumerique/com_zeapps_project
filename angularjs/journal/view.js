@@ -1,5 +1,5 @@
-app.controller("ComZeappsProjectJournalCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "$filter", "zeCalendar", "menu",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, $filter, zeCalendar, menu) {
+app.controller("ComZeappsProjectJournalCtrl", ["$scope", "zeHttp", "$filter", "zeCalendar", "menu",
+	function ($scope, zhttp, $filter, zeCalendar, menu) {
 
         menu("com_ze_apps_project", "com_zeapps_projects_journal");
 

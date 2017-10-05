@@ -1,5 +1,5 @@
-app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeapps_modal", "$uibModal",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeapps_modal, $uibModal) {
+app.controller("ComZeAppsPlanningTableCtrl", ["$scope", "$location", "$rootScope", "zeHttp",
+	function ($scope, $location, $rootScope, zhttp) {
 
 		$scope.showDate = [];
 		$scope.currentStep = $rootScope.project_currentStep || "0";

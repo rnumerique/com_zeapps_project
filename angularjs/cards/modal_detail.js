@@ -10,7 +10,7 @@ listModuleModalFunction.push({
 
 
 app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstance", "zeHttp", "option", "$location", "Upload", "zeapps_modal", "zeProject", "toasts",
-    function($scope, $rootScope, $uibModalInstance, zeHttp, option, $location, Upload, zeapps_modal, zeProject, toasts) {
+    function($scope, $rootScope, $uibModalInstance, zhttp, option, $location, Upload, zeapps_modal, zeProject, toasts) {
 
 	$scope.card = option.card;
 	$scope.progress = false;
@@ -36,7 +36,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstanc
     $scope.editTimer = editTimer;
     $scope.deleteTimer = deleteTimer;
 
-    zeHttp.project.card.get($scope.card.id).then(function(response){
+    zhttp.project.card.get($scope.card.id).then(function(response){
         if(response.data && response.data != "false"){
             $scope.card = response.data.card;
 
@@ -79,7 +79,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstanc
     }
 
     function startTimer(){
-        zeHttp.project.timer.start($scope.card);
+        zhttp.project.timer.start($scope.card);
     }
 
     function newTimer(){
@@ -93,7 +93,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstanc
         zeapps_modal.loadModule("com_zeapps_project", "form_timer", options, function(objReturn) {
             if (objReturn) {
                 var formatted_data = angular.toJson(objReturn);
-                zeHttp.project.timer.post(formatted_data).then(function(response){
+                zhttp.project.timer.post(formatted_data).then(function(response){
                     if(response.data && response.data != "false"){
                         objReturn.id = response.data;
 
@@ -127,7 +127,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstanc
         zeapps_modal.loadModule("com_zeapps_project", "form_timer", options, function(objReturn) {
             if (objReturn) {
                 var formatted_data = angular.toJson(objReturn);
-                zeHttp.project.timer.post(formatted_data).then(function(response){
+                zhttp.project.timer.post(formatted_data).then(function(response){
                     if(response.data && response.data != "false"){
                         timer.time_spent_formatted = parseInt(objReturn.time_spent/60) + "h " + (objReturn.time_spent % 60 || '');
 
@@ -151,7 +151,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstanc
     }
 
     function deleteTimer(timer){
-        zeHttp.project.timer.del(timer.id).then(function(response){
+        zhttp.project.timer.del(timer.id).then(function(response){
             if(response.data && response.data != "false"){
                 $scope.timers.splice($scope.timers.indexOf(timer), 1);
 
@@ -172,7 +172,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstanc
         zeapps_modal.loadModule("com_zeapps_project", "form_document", options, function(objReturn) {
             if (objReturn) {
                 Upload.upload({
-                    url: zeHttp.project.card.document() + $scope.card.id,
+                    url: zhttp.project.card.document() + $scope.card.id,
                     data: objReturn
                 }).then(
                     function(response){
@@ -202,7 +202,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstanc
         zeapps_modal.loadModule("com_zeapps_project", "form_document", options, function(objReturn) {
             if (objReturn) {
                 Upload.upload({
-                    url: zeHttp.project.card.document() + $scope.card.id,
+                    url: zhttp.project.card.document() + $scope.card.id,
                     data: objReturn
                 }).then(
                     function(response){
@@ -223,7 +223,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstanc
     }
 
     function deleteDocument(document){
-        zeHttp.project.card.del_document(document.id).then(function(response){
+        zhttp.project.card.del_document(document.id).then(function(response){
             if(response.data && response.data != 'false'){
                 $scope.documents.splice($scope.documents.indexOf(document), 1);
             }
@@ -237,7 +237,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstanc
                 objReturn.id_card = $scope.card.id;
                 var formatted_data = angular.toJson(objReturn);
 
-                zeHttp.project.card.comment(formatted_data).then(function(response){
+                zhttp.project.card.comment(formatted_data).then(function(response){
                     if(response.data && response.data != "false"){
                         response.data.date = new Date(response.data.date);
                         $scope.comments.push(response.data);
@@ -257,7 +257,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstanc
             if (objReturn) {
                 var formatted_data = angular.toJson(objReturn);
 
-                zeHttp.project.card.comment(formatted_data).then(function(response){
+                zhttp.project.card.comment(formatted_data).then(function(response){
                     if(response.data && response.data != "false"){
                         response.data.date = new Date(response.data.date);
                         $scope.comments[$scope.comments.indexOf(comment)] = response.data;
@@ -269,7 +269,7 @@ app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstanc
     }
 
     function deleteComment(comment){
-        zeHttp.project.card.del_comment(comment.id).then(function(response){
+        zhttp.project.card.del_comment(comment.id).then(function(response){
             if(response.data && response.data != 'false'){
                 $scope.comments.splice($scope.comments.indexOf(comment), 1);
             }

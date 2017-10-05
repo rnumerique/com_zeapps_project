@@ -13,7 +13,7 @@ listModuleModalFunction.push({
 });
 
 
-app.controller("ZeAppsProjectsModalCardCtrl", ["$scope", "$uibModalInstance", "zeHttp", "titre", "option", function($scope, $uibModalInstance, zeHttp, titre, option) {
+app.controller("ZeAppsProjectsModalCardCtrl", ["$scope", "$uibModalInstance", "zeHttp", "titre", "option", function($scope, $uibModalInstance, zhttp, titre, option) {
 
 	$scope.titre = titre ;
 	$scope.option = option;
@@ -31,7 +31,7 @@ app.controller("ZeAppsProjectsModalCardCtrl", ["$scope", "$uibModalInstance", "z
 	}
 
 	function loadList() {
-		zeHttp.project.card.get_all(option.id_project).then(function (response) {
+        zhttp.project.card.get_all(option.id_project).then(function (response) {
 			if (response.status == 200) {
 				$scope.cards = response.data ;
 			}

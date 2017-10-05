@@ -1,5 +1,5 @@
-app.controller("ComZeAppsProjectCalendarCtrl", ["$scope", "$route", "$routeParams", "$location", "$rootScope", "zeHttp", "zeCalendar",
-	function ($scope, $route, $routeParams, $location, $rootScope, zhttp, zeCalendar) {
+app.controller("ComZeAppsProjectCalendarCtrl", ["$scope", "$routeParams", "zeHttp", "zeCalendar",
+	function ($scope, $routeParams, zhttp, zeCalendar) {
 
 		if($routeParams.id){
 
