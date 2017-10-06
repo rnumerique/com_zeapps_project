@@ -38,8 +38,8 @@
                             <option value="0">
                                 Sans catégorie
                             </option>
-                            <option ng-repeat="category in categories" value="{{category.id}}">
-                                {{ category.title }}
+                            <option ng-repeat="category in categories" value="{{::category.id}}">
+                                {{ ::category.title }}
                             </option>
                         </select>
                     </div>
@@ -72,8 +72,8 @@
                     <div class="form-group">
                         <label>Priorité</label>
                         <select class="form-control" ng-model="form.id_priority">
-                            <option ng-repeat="priority in priorities | orderBy:'order'" value="{{priority.id}}">
-                                {{ priority.label }}
+                            <option ng-repeat="priority in priorities | orderBy:'order'" value="{{::priority.id}}">
+                                {{ ::priority.label }}
                             </option>
                         </select>
                     </div>

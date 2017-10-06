@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title">{{titre}}</h3>
+    <h3 class="modal-title">{{::titre}}</h3>
 </div>
 
 
@@ -16,9 +16,9 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="card in cards | orderBy:'id'" ng-click="loadCard(card)">
-                    <td>{{card.id}}</td>
-                    <td>{{card.title}}</td>
-                    <td>{{card.description}}</td>
+                    <td>{{::card.id}}</td>
+                    <td>{{::card.title}}</td>
+                    <td>{{::card.description}}</td>
                 </tr>
                 </tbody>
             </table>

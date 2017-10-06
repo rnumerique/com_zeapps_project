@@ -12,7 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <a class='btn btn-xs btn-primary' ng-click="printCards(true)" project-auth="{id_project : project.id, right : 'project'}">
                     <span class='fa fa-fw fa-print' aria-hidden='true'></span> avec description
                 </a>
-                <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/card/create/card/{{ project.id }}' project-auth="{id_project : project.id, right : 'card'}">
+                <a class='btn btn-xs btn-success' ng-href='/ng/com_zeapps_project/project/card/create/card/{{:: project.id }}' project-auth="{id_project : project.id, right : 'card'}">
                     <span class='fa fa-fw fa-plus' aria-hidden='true'></span> Carte
                 </a>
             </div>
@@ -50,7 +50,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             ng-click="showDate[date.due_date] = !showDate[date.due_date]"
         >
             <td colspan="8">
-                {{ (date.due_date != '0000-00-00' ? date.due_date : 'Sans date attribuée') | date:'dd MMMM yyyy' }} ({{(cardsByDate[date.due_date] | planningFilter:options).length}})
+                {{:: (date.due_date != '0000-00-00' ? date.due_date : 'Sans date attribuée') | date:'dd MMMM yyyy' }} ({{::(cardsByDate[date.due_date] | planningFilter:options).length}})
                 <i class="fa fa-fw" ng-class="showDate[date.due_date] ? 'fa-caret-down' : 'fa-caret-up'"></i>
             </td>
         </tr>
@@ -59,17 +59,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             ng-if="!showDate[date.due_date]"
         >
             <td>
-                {{ card.deadline ? '' : card.id }}
+                {{:: card.deadline ? '' : card.id }}
             </td>
             <td ng-style="{'background-color': card.color}">
-                {{ card.category_title }}
+                {{:: card.category_title }}
             </td>
             <td ng-style="{'background-color': card.priority_color}">
-                {{ card.priority }}
+                {{:: card.priority }}
             </td>
             <td>
                 <i class="fa fa-flag-checkered fa-lg fa-fw" aria-hidden="true" ng-if="card.deadline" ng-class="card.step === '4' ? 'text-success' : ''"></i>
-                {{ card.title }}
+                {{:: card.title }}
             </td>
             <td class="text-right" project-auth="{id_project : card.id_project, right : 'card'}">
                 <select class="form-control input-sm" ng-model="card.step" ng-change="changeStep(card)">
@@ -80,10 +80,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </select>
             </td>
             <td class="text-center">
-                {{ card.name_manager }}
+                {{:: card.name_manager }}
             </td>
             <td class="text-center">
-                {{ card.name_assigned_to }}
+                {{:: card.name_assigned_to }}
             </td>
             <td class="text-right no-wrap">
                 <div>
