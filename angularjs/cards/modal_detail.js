@@ -9,7 +9,7 @@ listModuleModalFunction.push({
 });
 
 
-app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$uibModalInstance", "zeHttp", "option", "$location", "Upload", "zeapps_modal", "zeProject", "toasts",
+app.controller("ZeAppsProjectsModalDetailCardCtrl", ["$scope", "$rootScope", "$uibModalInstance", "zeHttp", "option", "$location", "Upload", "zeapps_modal", "zeProject", "toasts",
     function($scope, $rootScope, $uibModalInstance, zhttp, option, $location, Upload, zeapps_modal, zeProject, toasts) {
 
 	$scope.card = option.card;
