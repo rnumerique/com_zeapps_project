@@ -270,4 +270,16 @@ class Zeapps_project_cards extends ZeModel {
             ->table('zeapps_project_cards')
             ->result();
     }
+
+    public function searchFor($terms = array()){
+        $query = "SELECT * FROM zeapps_project_cards WHERE (1 ";
+
+        foreach($terms as $term){
+            $query .= "AND (title LIKE '%".$term."%') ";
+        }
+
+        $query .= ") AND deleted_at IS NULL LIMIT 10";
+
+        return $this->database()->customQuery($query)->result();
+    }
 }

@@ -241,4 +241,16 @@ class Zeapps_projects extends ZeModel
             }
         }
     }
+
+    public function searchFor($terms = array()){
+        $query = "SELECT * FROM zeapps_projects WHERE (1 ";
+
+        foreach($terms as $term){
+            $query .= "AND (title LIKE '%".$term."%') ";
+        }
+
+        $query .= ") AND deleted_at IS NULL LIMIT 10";
+
+        return $this->database()->customQuery($query)->result();
+    }
 }
