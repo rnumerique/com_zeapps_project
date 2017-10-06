@@ -63,6 +63,7 @@ class Zeapps_projects extends ZeModel
             ->where($where)
             ->where_not(array('zeapps_projects.archived' => null))
             ->order_by('zeapps_projects.title')
+            ->group_by('zeapps_projects.id')
             ->table('zeapps_projects')
             ->result();
     }
