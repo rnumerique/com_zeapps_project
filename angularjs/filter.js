@@ -66,7 +66,7 @@ app.filter("planningFilter", ["$filter", function($filter){
 						var regex = new RegExp(filters.search, "i");
 						if(listItem.name_company.search(regex) == -1
 							&& listItem.name_contact.search(regex) == -1
-							&& listItem.breadcrumbs.search(regex) == -1
+							&& listItem.title.search(regex) == -1
 							&& listItem.name_manager.search(regex) == -1 )
 							return false;
 					}
